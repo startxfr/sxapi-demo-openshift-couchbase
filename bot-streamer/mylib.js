@@ -1,77 +1,43 @@
-/* global resConf, $log, $app, module, require */
+/* global resConf, $log, $app, module, require, $timer */
 
 //'use strict';
 
 var mylib = {
-  messageSendToQueue: function (data, resource) {
-    if (resource && $app.resources.exist(resource)) {
-      $app.resources.get(resource).sendMessage(data, {}, function (err) {
-        if (err) {
-          $log.warn("error sending new message in " + resource + " because " + err.message, null, true);
+  myCronFunction: function (config) {
+    var moment = require('moment');
+    $log.info("cron task " + config.id + " executed at " + moment().format('YYYY-MM-DD HH:mm:ss'));
+  },
+  myTwitterFunction: function (data, message, config) {
+    $log.info("twitter reader " + config.id + " found tweet " + data.id_str);
+    var tweetKey = (config.tweetKeyPrefix || '') + data.id_str;
+    var twittosKey = (config.userKeyPrefix || '') + data.user.id_str;
+    var tweet = require('merge').recursive({}, data);
+    tweet.user = data.user.id_str;
+    var user = require('merge').recursive({}, data.user);
+    $timer.start('couchbase_insert_' + tweetKey);
+    $timer.start('couchbase_insert_' + twittosKey);
+    $app.resources.get(config.outputResource).insert(tweetKey, tweet, function (key) {
+      return function (coucherr, doc) {
+        var duration = $timer.timeStop('couchbase_insert_' + key);
+        if (coucherr) {
+          $log.warn("error adding new document '" + key + "' because " + coucherr.message, duration);
         }
         else {
-          $log.info("message is sended into " + resource);
+          $log.debug("new document '" + key + "' added ", 3, duration);
         }
-      }, true);
-    }
-    else {
-      $log.warn("could not find resource " + resource, null, true);
-    }
-  },
-  messageTransfertToQueue: function (data, resource) {
-    if (resource && $app.resources.exist(resource)) {
-      $app.resources.get(resource).sendMessage(data, {}, function (err) {
-        if (err) {
-          $log.warn("error transfering message in " + resource + " because " + err.message, null, true);
+      };
+    });
+    $app.resources.get(config.outputResource).insert(twittosKey, user, function (key) {
+      return function (coucherr, doc) {
+        var duration = $timer.timeStop('couchbase_insert_' + key);
+        if (coucherr) {
+          $log.warn("error adding new document '" + key + "' because " + coucherr.message, duration);
         }
         else {
-          $log.info("message is transfered into " + resource);
+          $log.debug("new document '" + key + "' added ", 3, duration);
         }
-      }, true);
-    }
-    else {
-      $log.warn("could not find resource " + resource, null, true);
-    }
-  },
-  messageRemoveFromQueue: function (message, resource) {
-    if (resource && $app.resources.exist(resource)) {
-      $app.resources.get(resource).removeMessage({ReceiptHandle: message.ReceiptHandle}, function (err) {
-        if (err) {
-          $log.warn("error removing message " + message.MessageId + " from " + resource + " because " + err.message, null, true);
-        }
-        else {
-          $log.info("message " + message.MessageId + " removed after processing");
-        }
-      }, true);
-    }
-    else {
-      $log.info("message " + message.MessageId + " processed without being removed");
-    }
-  },
-  cronIsAlive: function (config) {
-    var data = require('merge').recursive({}, $app.config);
-    delete data.resources;
-    delete data.log;
-    delete data.session;
-    delete data.server;
-    delete data.bot;
-    var message = {
-      event: config.event,
-      data: data,
-      time: Date.now(),
-      server: $log.config.appsign
-    };
-    mylib.messageSendToQueue(message, config.resource);
-  },
-  readerMessageUnprocessed: function (data, message, config) {
-    if (config.sendmail) {
-      $app.resources.get(config.sendmail.resource).sendMail({
-        to: config.sendmail.to || "dev@startx.fr",
-        subject: "MISSING EVENT READER on " + (data.server || data.apptype),
-        text: "server " + data.server + " sended a WARNING because we must implement a event reader for this event : \n\n" + JSON.serialize(data) + "\n\n" + JSON.serialize(message)
-      });
-    }
-    mylib.messageRemoveFromQueue(message, config.resource);
+      };
+    });
   }
 };
 

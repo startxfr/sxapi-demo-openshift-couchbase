@@ -13,6 +13,13 @@
             "bucket": "demo",
             "user": "Administrator",
             "password": "Administrator"
+        },
+        "twitter": {
+            "_class": "twitter",
+            "consumer_key": "xxxxxxxxxxxxx",
+            "consumer_secret": "xxxxxxxxxxxxx",
+            "access_token_key": "xxxxxxxxxxxxx-xxxxxxxxxxxxx",
+            "access_token_secret": "xxxxxxxxxxxxx"
         }
     },
     "log": {
@@ -38,53 +45,40 @@
         "lib": "./mylib",
         "cron": [
             {
-                "id": "send-alive-message",
-                "name": "Send alive message every hour",
-                "schedule": "0 * * * *",
-                "task": "cronIsAlive",
-                "resource": "sqs-infra",
-                "event": "application:alive"
+                "id": "test-cront-task",
+                "name": "Execute test cron task",
+                "schedule": "*/1 * * * *",
+                "task": "myCronFunction"
             }
         ],
         "readers": {
-            "sqs": [
+            "twitter": [
                 {
-                    "resource": "sqs-adv_resale",
-                    "frequency": 5,
-                    "config": {
-                        "MaxNumberOfMessages": 10,
-                        "VisibilityTimeout": 5
-                    },
+                    "resource": "twitter",
                     "filters": [
                         {
-                            "id": "commande-create-task",
-                            "event": "commande:create",
-                            "task": "readerMessageUnprocessed",
-                            "resource": "sqs-adv_resale",
-                            "sendmail": {
-                                "resource": "aws-sendmail",
-                                "to": "cl+bot-adv_resale@startx.fr"
-                            }
+                            "id": "test-twitter-startx",
+                            "match": "#paris",
+                            "task": "myTwitterFunction",
+                            "outputResource": "couchbase-api",
+                            "tweetKeyPrefix": "tweet::",
+                            "userKeyPrefix": "twittos::"
                         },
                         {
-                            "id": "commande-update-task",
-                            "event": "commande:update",
-                            "task": "readerMessageUnprocessed",
-                            "resource": "sqs-adv_resale",
-                            "sendmail": {
-                                "resource": "aws-sendmail",
-                                "to": "cl+bot-adv_resale@startx.fr"
-                            }
+                            "id": "test-twitter-startx",
+                            "match": "#london",
+                            "task": "myTwitterFunction",
+                            "outputResource": "couchbase-api",
+                            "tweetKeyPrefix": "tweet::",
+                            "userKeyPrefix": "twittos::"
                         },
                         {
-                            "id": "commande-delete-task",
-                            "event": "commande:delete",
-                            "task": "readerMessageUnprocessed",
-                            "resource": "sqs-adv_resale",
-                            "sendmail": {
-                                "resource": "aws-sendmail",
-                                "to": "cl+bot-adv_resale@startx.fr"
-                            }
+                            "id": "test-twitter-startx",
+                            "match": "#Capital",
+                            "task": "myTwitterFunction",
+                            "outputResource": "couchbase-api",
+                            "tweetKeyPrefix": "tweet::",
+                            "userKeyPrefix": "twittos::"
                         }
                     ]
                 }

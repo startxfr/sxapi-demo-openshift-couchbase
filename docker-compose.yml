@@ -46,8 +46,9 @@ db:
 bot-streamer:
   image: startx/sxapi:latest
   container_name: "sxapi-demo-openshift-bot-streamer"
+  links:
+    - "db:db"
   volumes:
   - "/secure/dev/startx/sxapi-demo-openshift-couchbase/bot-streamer/sxapi.json:/conf/sxapi.json:z"
   - "/secure/dev/startx/sxapi-demo-openshift-couchbase/bot-streamer/package.json:/usr/src/app/package.json:z"
   - "/secure/dev/startx/sxapi-demo-openshift-couchbase/bot-streamer/mylib.js:/usr/src/app/mylib.js:z"
-  command: ["npm","start"]

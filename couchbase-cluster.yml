@@ -1,10 +1,10 @@
 apiVersion: couchbase.database.couchbase.com/v1beta1
 kind: CouchbaseCluster
 metadata:
-  name: couchbase-cluster
+  name: couchbase-node
 spec:
-  baseImage: couchbase/server:5.5.0-Mar
-  version: enterprise-5.5.0-Mar
+  baseImage: couchbase/server
+  version: 5.5.0-Mar
   authSecret: couchbase-auth
   exposeAdminConsole: true
   cluster:
@@ -16,7 +16,7 @@ spec:
   buckets:
     - name: default
       type: couchbase
-      memoryQuota: 128
+      memoryQuota: 256
       replicas: 1
       ioPriority: high
       evictionPolicy: fullEviction

@@ -1,5 +1,5 @@
 {
-    "name": "sxapi-demo-openshift-dev-www",
+    "name": "sxapi-demo-openshift-couchbase-dev-www",
     "description": "Web frontend application for the sxapi openshift demo (dev)",
     "version": "0.0.10",
     "debug": true,

@@ -1,0 +1,44 @@
+api:
+  container_name: "sxapi-demo-openshift-couchbase-api"
+  build: api/
+  environment:
+  - SX_VERBOSE=true
+  - SX_DEBUG=true
+  ports:
+    - "8080:8080"
+  links:
+    - "db:db"
+  volumes:
+  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/api/app.js:/app/app.js:Z"
+  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/api/package.json:/app/package.json:Z"
+  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/api/sxapi.json:/app/sxapi.json:Z"
+  command: ["/bin/sx-nodejs" , "run"]
+
+www:
+  container_name: "sxapi-demo-openshift-couchbase-www"
+  build: www/
+  environment:
+  - SX_VERBOSE=true
+  - SX_DEBUG=true
+  - DEMO_API=api-test.apps.startx.fr
+  ports:
+    - "8081:8080"
+  volumes:
+  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/www:/app:Z"
+  command: ["/bin/sx-nodejs" , "run"]
+
+db:
+  container_name: "sxapi-demo-openshift-couchbase-db"
+  image: couchbase/server:5.5.0-Mar
+  environment:
+  - SX_VERBOSE=true
+  - SX_DEBUG=true
+  ports:
+    - "8091:8091"
+    - "8092:8092"
+    - "8093:8093"
+    - "8094:8094"
+    - "11207:11207"
+    - "11210:11210"
+    - "11211:11211"
+    - "18091-18094"

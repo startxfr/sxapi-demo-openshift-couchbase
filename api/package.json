@@ -1,15 +1,15 @@
 {
-  "name": "sxapi-core",
-  "version": "0.1.17",
-  "description": "sxapi-core is an simple and extensible framework for building microservices API using javascript technologies",
+  "name": "sxapi-demo-openshift-couchbase-dev-api",
+  "description": "API application for the sxapi openshift demo (dev)",
+  "version": "0.0.10",
   "author": "STARTX <dev+sxapi_core@startx.fr>",
-  "homepage": "https://github.com/startxfr/sxapi-core",
+  "homepage": "https://github.com/startxfr/sxapi-demo-openshift-couchbase",
   "license": "GPL-3.0-or-later",
   "private": false,
   "debug": true,
   "analyze": true,
   "dependencies": {
-    "sxapi-core": "~0.1.17"
+    "sxapi-core": "~0.2.1"
   },
   "scripts": {
     "start": "node app.js"

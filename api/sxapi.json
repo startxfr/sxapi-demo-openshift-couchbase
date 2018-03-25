@@ -1,5 +1,5 @@
 {
-    "name": "sxapi-demo-openshift-dev-api",
+    "name": "sxapi-demo-openshift-couchbase-dev-api",
     "description": "API application for the sxapi openshift demo (dev)",
     "version": "0.0.10",
     "debug": true,
@@ -17,30 +17,24 @@
             "cookie_name": "sxapi-sess"
         },
         "backend": {
-            "type": "mysql",
-            "resource": "mysql-api",
-            "table": "session",
-            "sid_field": "token_sess",
-            "id_field": "id_sess",
+            "type": "couchbase",
+            "resource": "couchbase-api",
+            "key_ns": "session::",
             "fields": {
                 "ip": "ip_sess",
+                "token": "token_sess",
                 "start": "start_sess",
                 "stop": "stop_sess"
             }
         }
     },
     "resources": {
-        "mysql-api": {
-            "_class": "mysql",
-            "type": "mysql",
-            "keepAliveInterval": 60,
-            "server": {
-                "host": "{{{MARIADB_SERVICE_HOST}}}",
-                "port": "3306",
-                "user": "dev-user",
-                "password": "dev-pwd123",
-                "database": "demo"
-            }
+        "couchbase-api": {
+            "_class": "couchbase",
+            "cluster": "http://db:8091",
+            "bucket": "demo",
+            "user": "Administrator",
+            "password": "Administrator"
         },
         "serviceinfo-api": {
             "_class": "serviceinfo"
@@ -84,7 +78,7 @@
                 "path": "/sessions",
                 "desc": "informations about user sessions",
                 "method": "ROUTER",
-                "resource": "mysql-api",
+                "resource": "couchbase-api",
                 "table": "session",
                 "id_field": "id_sess",
                 "endpoints": [
@@ -101,7 +95,7 @@
                 "path": "/sessions",
                 "desc": "List informations about users sessions",
                 "method": "ROUTER",
-                "resource": "mysql-api",
+                "resource": "couchbase-api",
                 "endpoints": [
                     {
                         "path": "/sessions",
@@ -115,7 +109,7 @@
                 "path": "/ref",
                 "desc": "References section with various Read-only endpoints to get stable data",
                 "method": "ROUTER",
-                "resource": "mysql-api",
+                "resource": "couchbase-api",
                 "endpoints": [
                     {
                         "path": "/ref/departement",
@@ -158,7 +152,7 @@
                 "path": "/entreprises",
                 "desc": "Enterprise section for managing corporate customers",
                 "method": "ROUTER",
-                "resource": "mysql-api",
+                "resource": "couchbase-api",
                 "table": "entreprise",
                 "id_field": "id_ent",
                 "endpoints": [
@@ -182,7 +176,7 @@
                     {
                         "path": "/entreprise/:id",
                         "method": "GET",
-                        "endpoint": "readOne"
+                        "endpoint": "get"
                     },
                     {
                         "path": "/entreprise/:id",

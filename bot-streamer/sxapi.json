@@ -1,0 +1,94 @@
+{
+    "name": "sxapi-demo-openshift-couchbase-bot-streamer",
+    "description": "Bot streamer service for the sxapi openshift couchbase demo (dev)",
+    "version": "0.0.10",
+    "debug": true,
+    "resources": {
+        "serviceinfo": {
+            "_class": "serviceinfo"
+        },
+        "couchbase-api": {
+            "_class": "couchbase",
+            "cluster": "http://db:8091",
+            "bucket": "demo",
+            "user": "Administrator",
+            "password": "Administrator"
+        }
+    },
+    "log": {
+        "filters": {
+            "level": "0,1,2,3,4",
+            "type": "debug,info,error,warn"
+        },
+        "couchbase": {
+            "resource": "couchbase-api",
+            "eventName": "application:log"
+        }
+    },
+    "server": {
+        "endpoints": [
+            {
+                "path": "/health",
+                "resource": "serviceinfo",
+                "endpoint": "health"
+            }
+        ]
+    },
+    "bot": {
+        "lib": "./mylib",
+        "cron": [
+            {
+                "id": "send-alive-message",
+                "name": "Send alive message every hour",
+                "schedule": "0 * * * *",
+                "task": "cronIsAlive",
+                "resource": "sqs-infra",
+                "event": "application:alive"
+            }
+        ],
+        "readers": {
+            "sqs": [
+                {
+                    "resource": "sqs-adv_resale",
+                    "frequency": 5,
+                    "config": {
+                        "MaxNumberOfMessages": 10,
+                        "VisibilityTimeout": 5
+                    },
+                    "filters": [
+                        {
+                            "id": "commande-create-task",
+                            "event": "commande:create",
+                            "task": "readerMessageUnprocessed",
+                            "resource": "sqs-adv_resale",
+                            "sendmail": {
+                                "resource": "aws-sendmail",
+                                "to": "cl+bot-adv_resale@startx.fr"
+                            }
+                        },
+                        {
+                            "id": "commande-update-task",
+                            "event": "commande:update",
+                            "task": "readerMessageUnprocessed",
+                            "resource": "sqs-adv_resale",
+                            "sendmail": {
+                                "resource": "aws-sendmail",
+                                "to": "cl+bot-adv_resale@startx.fr"
+                            }
+                        },
+                        {
+                            "id": "commande-delete-task",
+                            "event": "commande:delete",
+                            "task": "readerMessageUnprocessed",
+                            "resource": "sqs-adv_resale",
+                            "sendmail": {
+                                "resource": "aws-sendmail",
+                                "to": "cl+bot-adv_resale@startx.fr"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

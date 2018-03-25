@@ -1,0 +1,11 @@
+#!/bin/bash
+if [ "$DNSNAME" == "" ]; then
+   echo "please set your domainname using the environent variable DNSNAME (ex: export DNSNAME=my.example.com";
+   exit 1;
+fi
+if [ "$(id -u)" != "0" ]; then
+   echo "This script must be run as root"
+   exit 1;
+fi
+echo "== Start openshift origin"
+oc cluster up --public-hostname=$DNSNAME

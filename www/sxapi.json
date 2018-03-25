@@ -1,0 +1,51 @@
+{
+    "name": "sxapi-demo-openshift-dev-www",
+    "description": "Web frontend application for the sxapi openshift demo (dev)",
+    "version": "0.0.10",
+    "debug": true,
+    "log": {
+        "filters": {
+            "level": "0,1,2,3,4",
+            "type": "debug,info,error,warn"
+        }
+    },
+    "resources": {
+        "serviceinfo-api": {
+            "_class": "serviceinfo"
+        }
+    },
+    "server": {
+        "type": "express",
+        "port": "8080",
+        "static": true,
+        "static_path": "/",
+        "static_dir": "/static",
+        "bodyParserJson": true,
+        "bodyParserUrl": true,
+        "endpoints": [
+            {
+                "path": "/health",
+                "resource": "serviceinfo-api",
+                "endpoint": "health"
+            },
+            {
+                "path": "/info",
+                "desc": "Display technical informations about this API",
+                "resource": "serviceinfo-api",
+                "endpoint": "info"
+            },
+            {
+                "path": "/env",
+                "desc": "Display environements variable for this API",
+                "resource": "serviceinfo-api",
+                "endpoint": "getEnv"
+            },
+            {
+                "path": "/ping",
+                "desc": "Ping the application. Return a sample message in text",
+                "code": "200",
+                "body": "pong"
+            }
+        ]
+    }
+}

@@ -111,10 +111,12 @@ using the Web console.
 - Authenticate using the system admin user `system` with passsword `admin`
 - Create a new project (right panel) and name it. We will assume your project name for this demo will be `demo`
 
-### Create project in openshift
+### Create couchbase container cluster 
 
 ```
+cd cb/
 ./couchbase-create demo
+cd -
 ```
 
 ### Access your application in your browser

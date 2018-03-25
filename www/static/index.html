@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>SXAPI Demo Page</title>
+        <meta charset="UTF-8">
+        <link rel="icon" type="image/x-icon" href="images/favicon.ico" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    </head>
+    <body>
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/index.html">
+                        <img alt="STARTX" src="images/startx.png">
+                    </a>
+                    <h4 class="navbar-text">SXAPI Demo page</h4>
+                </div>
+            </div>
+        </nav>
+        <div class="container">
+            <br>
+            <br>
+            <br>
+            <br>
+            <div class="jumbotron">
+                <h1><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> SXAPI Demo page</h1>
+                <p>
+                    Bienvenue sur la demo d'un application multi-tier dans openshift. 
+                    le frontend statique est servi par le container <b id="appContainer"></b> 
+                    tandis que le contenu dynamique provient du container <b id="appSvContainer"></b>
+                </p>
+            </div>
+
+            <!-- sirenConvert -->
+            <h2>
+                <span class="glyphicon glyphicon-random" aria-hidden="true"></span> &nbsp;
+                Convertiseur Siren vers n&deg; TVA intra
+            </h2>
+            <form class="form-inline">
+                <div class="form-group col-sm-4">
+                    <label for="sirenConvertInputSiren" class="sr-only">SIREN</label>
+                    <input type="text" class="form-control" id="sirenConvertInputSiren" placeholder="n° Siren">
+                    <button type="button" class="btn btn-primary" id="sirenConvertBtn">Convertir</button>
+                </div>
+                <div class="col-sm-8">
+                    <p class="form-control-static hidden" id="sirenConvertSucessMessage">
+                        <span class=" text-success">
+                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                            Numéro de TVA intra-communautaire correspondant : 
+                        </span>
+                        <b>XXX XXX XXX</b>
+                    </p>
+                    <p class="form-control-static text-danger hidden" id="sirenConvertErrorMessage">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        Impossible de convertir ce numéro de SIREN (veuillez vérifier votre saisie)
+                    </p>
+                </div>
+            </form>
+
+            <!-- tvaConvert -->
+            <br class="clear">
+            <br>
+            <h2>
+                <span class="glyphicon glyphicon-random" aria-hidden="true"></span> &nbsp;
+                Convertiseur n&deg; TVA intra vers Siren
+            </h2>
+            <form class="form-inline">
+                <div class="form-group col-sm-4">
+                    <label for="tvaConvertInputTva" class="sr-only">SIREN</label>
+                    <input type="text" class="form-control" id="tvaConvertInputTva" placeholder="n° TVA intra">
+                    <button type="button" class="btn btn-primary" id="tvaConvertBtn">Convertir</button>
+                </div>
+                <div class="col-sm-8">
+                    <p class="form-control-static hidden" id="tvaConvertSucessMessage">
+                        <span class=" text-success">
+                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                            Numéro de SIREN correspondant : 
+                        </span>
+                        <b>XXX XXX XXX</b>
+                    </p>
+                    <p class="form-control-static text-danger hidden" id="tvaConvertErrorMessage">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        Impossible de convertir ce numéro de TVA intra (veuillez vérifier votre saisie)
+                    </p>
+                </div>
+            </form>
+
+            <!-- greffeSearch -->
+            <br class="clear">
+            <br>
+            <h2>
+                <span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span> &nbsp;
+                Recherche greffe du commerce
+            </h2>
+            <form class="form-inline">
+                <div class="form-group col-sm-4">
+                    <label for="greffeSearchInputSiren" class="sr-only">SIREN</label>
+                    <input type="text" class="form-control" id="greffeSearchInputSiren" placeholder="n° Siren">
+                    <button type="button" class="btn btn-primary" id="greffeSearchBtn">Convertir</button>
+                </div>
+                <div class="col-sm-8">
+                    <p class="form-control-static hidden" id="greffeSearchSucessMessage">
+                        <span class=" text-success">
+                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                            Informations sur le numero de SIREN : 
+                        </span>
+                        <b>XXX XXX XXX</b>
+                    </p>
+                    <p class="form-control-static text-danger hidden" id="greffeSearchErrorMessage">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        Impossible de convertir ce numéro de SIREN (veuillez vérifier votre saisie)
+                    </p>
+                </div>
+            </form>
+
+            <!-- listeDepartement -->
+            <br class="clear">
+            <br>
+            <h2>
+                <span class="glyphicon glyphicon-globe" aria-hidden="true"></span> &nbsp;
+                Liste des départements
+            </h2>
+            <p class="alert alert-danger" id="listeDepartementErrorMessage">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                La liste des départements n'est pas chargée
+            </p>
+            <div class="table-responsive hidden" id="listeDepartementTable">
+                <table class="table table-bordered table-striped">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Préfecture</th>
+                        <th>Région</th>
+                    </tr>
+                </table>
+            </div>
+
+
+            <!-- listePays -->
+            <br class="clear">
+            <br>
+            <h2>
+                <span class="glyphicon glyphicon-globe" aria-hidden="true"></span> &nbsp;
+                Liste des pays
+            </h2>
+            <form class="form-inline">
+                <div class="form-group col-sm-4">
+                    <button type="button" class="btn btn-primary" id="listePaysBtn">Charger la liste des pays</button>
+                </div>
+                <div class="col-sm-8">
+                    <p class="form-control-static text-danger hidden" id="listePaysErrorMessage">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        Impossible de charger la liste des pays
+                    </p>
+                </div>
+            </form>
+            <br class="clear">
+            <br>
+            <div class="table-responsive" id="listePaysTable">
+                <table class="table table-bordered table-striped">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Code</th>
+                    </tr>
+                </table>
+            </div>
+
+            <br>
+            <br>
+            <br>
+            <nav class="navbar navbar-default navbar-fixed-bottom">
+                <div class="container">
+                    &copy; STARTX - frontend : v<span id="appRelease">0.0.0</span> - api : v<span id="appSvRelease">0.0.0</span>
+                </div>
+            </nav>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+            <script src="app.js"></script>
+    </body>
+</html>

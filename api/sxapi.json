@@ -1,0 +1,201 @@
+{
+    "name": "sxapi-demo-openshift-dev-api",
+    "description": "API application for the sxapi openshift demo (dev)",
+    "version": "0.0.10",
+    "debug": true,
+    "log": {
+        "filters": {
+            "level": "0,1,2,3,4",
+            "type": "debug,info,error,warn"
+        }
+    },
+    "session": {
+        "duration": 3600,
+        "auto_create": true,
+        "transport": {
+            "type": "cookie",
+            "cookie_name": "sxapi-sess"
+        },
+        "backend": {
+            "type": "mysql",
+            "resource": "mysql-api",
+            "table": "session",
+            "sid_field": "token_sess",
+            "id_field": "id_sess",
+            "fields": {
+                "ip": "ip_sess",
+                "start": "start_sess",
+                "stop": "stop_sess"
+            }
+        }
+    },
+    "resources": {
+        "mysql-api": {
+            "_class": "mysql",
+            "type": "mysql",
+            "keepAliveInterval": 60,
+            "server": {
+                "host": "{{{MARIADB_SERVICE_HOST}}}",
+                "port": "3306",
+                "user": "dev-user",
+                "password": "dev-pwd123",
+                "database": "demo"
+            }
+        },
+        "serviceinfo-api": {
+            "_class": "serviceinfo"
+        },
+        "insee-api": {
+            "_class": "insee"
+        }
+    },
+    "server": {
+        "type": "express",
+        "port": "8080",
+        "bodyParserJson": true,
+        "bodyParserUrl": true,
+        "endpoints": [
+            {
+                "path": "/",
+                "desc": "display API welcome message",
+                "header": {
+                    "Content-Type": "application/json"
+                },
+                "body": "{ \"code: 0,\"message\":\"API application for the sxapi openshift demo (dev)\"}"
+            },
+            {
+                "path": "/health",
+                "resource": "serviceinfo-api",
+                "endpoint": "health"
+            },
+            {
+                "path": "/info",
+                "desc": "Display technical informations about this API",
+                "resource": "serviceinfo-api",
+                "endpoint": "info"
+            },
+            {
+                "path": "/ping",
+                "desc": "Ping the application. Return a sample message in text",
+                "code": "200",
+                "body": "pong"
+            },
+            {
+                "path": "/sessions",
+                "desc": "informations about user sessions",
+                "method": "ROUTER",
+                "resource": "mysql-api",
+                "table": "session",
+                "id_field": "id_sess",
+                "endpoints": [
+                    {
+                        "path": "/sessions",
+                        "desc": "List user sessions",
+                        "method": "GET",
+                        "endpoint": "list",
+                        "sql": "SELECT * FROM session ORDER BY  date_sess DESC LIMIT 200"
+                    }
+                ]
+            },
+            {
+                "path": "/sessions",
+                "desc": "List informations about users sessions",
+                "method": "ROUTER",
+                "resource": "mysql-api",
+                "endpoints": [
+                    {
+                        "path": "/sessions",
+                        "method": "GET",
+                        "endpoint": "list",
+                        "sql": "SELECT * FROM session ORDER BY date_sess DESC  LIMIT 50"
+                    }
+                ]
+            },
+            {
+                "path": "/ref",
+                "desc": "References section with various Read-only endpoints to get stable data",
+                "method": "ROUTER",
+                "resource": "mysql-api",
+                "endpoints": [
+                    {
+                        "path": "/ref/departement",
+                        "method": "GET",
+                        "endpoint": "list",
+                        "sql": "SELECT id_dep AS id, nom_dep AS name, prefecture_dep, region_dep FROM ref_departement ORDER BY id ASC LIMIT 200"
+                    },
+                    {
+                        "path": "/ref/pays",
+                        "method": "GET",
+                        "endpoint": "list",
+                        "sql": "SELECT id_pays AS id, nom_pays AS name, code_pays AS code FROM ref_pays ORDER BY id ASC LIMIT 300"
+                    }
+                ]
+            },
+            {
+                "path": "/insee",
+                "desc": "Check for insee informations",
+                "method": "ROUTER",
+                "resource": "insee-api",
+                "endpoints": [
+                    {
+                        "path": "/insee/:id",
+                        "method": "GET",
+                        "endpoint": "read"
+                    },
+                    {
+                        "path": "/insee/:id/tva",
+                        "method": "GET",
+                        "endpoint": "siret2Tva"
+                    },
+                    {
+                        "path": "/insee/:id/siren",
+                        "method": "GET",
+                        "endpoint": "tva2Siren"
+                    }
+                ]
+            },
+            {
+                "path": "/entreprises",
+                "desc": "Enterprise section for managing corporate customers",
+                "method": "ROUTER",
+                "resource": "mysql-api",
+                "table": "entreprise",
+                "id_field": "id_ent",
+                "endpoints": [
+                    {
+                        "path": "/entreprises/search/:q",
+                        "method": "GET",
+                        "endpoint": "list",
+                        "sql": "SELECT * FROM `entreprise` WHERE (id_ent='{{q}}' OR nom_ent LIKE '%{{q}}%') LIMIT 100"
+                    },
+                    {
+                        "path": "/entreprises/search",
+                        "method": "GET",
+                        "endpoint": "list",
+                        "sql": "SELECT * FROM `entreprise` LIMIT 100"
+                    },
+                    {
+                        "path": "/entreprise",
+                        "method": "POST",
+                        "endpoint": "create"
+                    },
+                    {
+                        "path": "/entreprise/:id",
+                        "method": "GET",
+                        "endpoint": "readOne"
+                    },
+                    {
+                        "path": "/entreprise/:id",
+                        "method": "PUT",
+                        "endpoint": "update"
+                    },
+                    {
+                        "path": "/entreprise/:id",
+                        "method": "DELETE",
+                        "endpoint": "delete"
+                    }
+                ]
+            }
+        ]
+    }
+}

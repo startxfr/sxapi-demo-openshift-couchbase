@@ -4,7 +4,7 @@ kind: Route
 metadata:
   labels:
     app: couchbase
-    couchbase_cluster: couchbase-cluster
+    couchbase_cluster: couchbase-node
   name: couchbase-admin
 spec:
   host: couchbase.oo.startx.fr
@@ -12,7 +12,7 @@ spec:
     targetPort: cb-admin
   to:
     kind: Service
-    name: couchbase-cluster
+    name: couchbase-node
     weight: 100
   wildcardPolicy: None
 status:

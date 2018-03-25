@@ -20,6 +20,6 @@ sleep 8
 oc create -f couchbase-cluster.yml
 echo "wait cluster to be deployed"
 sleep 70
-oc describe cbc cb-example
+oc describe cbc couchbase-cluster
 echo "Admin port for external service"
-oc describe cbc cb-example |  grep "Admin Console Port:"
+oc describe cbc couchbase-cluster |  grep "Admin Console Port:"

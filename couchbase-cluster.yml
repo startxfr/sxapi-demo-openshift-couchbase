@@ -1,14 +1,14 @@
 apiVersion: couchbase.database.couchbase.com/v1beta1
 kind: CouchbaseCluster
 metadata:
-  name: cb-example
+  name: couchbase-cluster
 spec:
-  baseImage: couchbase/server
-  version: enterprise-5.0.1
-  authSecret: cb-example-auth
+  baseImage: couchbase/server:5.5.0-Mar
+  version: enterprise-5.5.0-Mar
+  authSecret: couchbase-auth
   exposeAdminConsole: true
   cluster:
-    dataServiceMemoryQuota: 256
+    dataServiceMemoryQuota: 512
     indexServiceMemoryQuota: 256
     searchServiceMemoryQuota: 256
     indexStorageSetting: memory_optimized

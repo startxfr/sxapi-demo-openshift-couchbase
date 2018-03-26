@@ -50,5 +50,6 @@ export CURL_CA_BUNDLE=$INSTALL/openshift.local.config/master/ca.crt
 sudo chmod +r $INSTALL/openshift.local.config/master/admin.kubeconfig
 
 echo 'export PATH=/openshift-origin-3.7.2:$PATH' >> ~/.bashrc
+cd ~
 .  ~/.bashrc
 echo "== End installation of openshift origin 3.7.2"

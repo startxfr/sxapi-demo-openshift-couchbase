@@ -4,6 +4,10 @@ api:
   environment:
   - SX_VERBOSE=true
   - SX_DEBUG=true
+  - COUCHBASE_SERVICE_HOST=db
+  - COUCHBASE_BUCKET=true
+  - COUCHBASE_USER=Administrator
+  - COUCHBASE_PASSWORD=Administrator123$
   ports:
     - "8080:8080"
   links:
@@ -46,6 +50,10 @@ bot-streamer:
   environment:
   - SX_VERBOSE=true
   - SX_DEBUG=true
+  - COUCHBASE_SERVICE_HOST=db
+  - COUCHBASE_BUCKET=true
+  - COUCHBASE_USER=Administrator
+  - COUCHBASE_PASSWORD=Administrator123$
   links:
     - "db:db"
   volumes:

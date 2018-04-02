@@ -34,7 +34,11 @@
             "cluster": "http://db:8091",
             "bucket": "demo",
             "user": "Administrator",
-            "password": "Administrator"
+            "password": "Administrator123$",
+            "xxxcluster": "http://{{{COUCHBASE_SERVICE_HOST}}}:8091",
+            "xxxbucket": "{{{COUCHBASE_BUCKET}}}",
+            "xxxuser": "{{{COUCHBASE_USER}}}",
+            "xxxpassword": "{{{COUCHBASE_PASSWORD}}}"
         },
         "serviceinfo-api": {
             "_class": "serviceinfo"

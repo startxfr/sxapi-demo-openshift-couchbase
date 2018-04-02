@@ -25,17 +25,9 @@ docker build -t sxapi-demo-bot-streamer bot-streamer
 # deploy database backend container
 docker run -d \
        --name sxapi-demo-openshift-couchbase-db \
-       -p 8091:8091 \
-       -p 8092:8092 \
-       -p 8093:8093 \
-       -p 8094:8094 \
-       -p 11207:11207 \
-       -p 11210:11210 \
-       -p 11211:11211 \
-       -p 18091:18091 \
-       -p 18092:18092 \
-       -p 18093:18093 \
-       -p 18094:18094 \
+       -p 8091:8091 -p 8092:8092 -p 8093:8093 -p 8094:8094 \
+       -p 11207:11207 -p 11210:11210 -p 11211:11211 \
+       -p 18091:18091 -p 18092:18092 -p 18093:18093 -p 18094:18094 \
        couchbase/server:5.5.0-Mar
 sleep 20
 docker logs sxapi-demo-openshift-couchbase-db
@@ -61,7 +53,26 @@ You can then connect to you admin panel (web console) at [http://localhost:8091]
     - Enable bucket **flush** action
     - Click the **Add Bucket** button
 
-## Deploy API service using docker
+## Deploy twitter bot service using docker
+
+```bash
+# deploy twitter bot backend container
+docker run -d \
+       --name sxapi-demo-openshift-couchbase-bot-streamer \
+       -e SX_VERBOSE=true \
+       -e SX_DEBUG=true \
+       -e COUCHBASE_SERVICE_HOST="db" \
+       -e COUCHBASE_BUCKET="demo" \
+       -e COUCHBASE_USER="Administrator" \
+       -e COUCHBASE_PASSWORD="Administrator123$" \
+       --link sxapi-demo-openshift-couchbase-db:db \
+       sxapi-demo-bot-streamer \
+       /bin/sx-nodejs run
+sleep 1
+docker logs sxapi-demo-openshift-couchbase-bot-streamer
+```
+
+## Deploy API frontend service using docker
 
 ```bash
 # deploy api frontend container
@@ -69,10 +80,10 @@ docker run -d \
        --name sxapi-demo-openshift-couchbase-api \
        -e SX_VERBOSE=true \
        -e SX_DEBUG=true \
-       -e MARIADB_SERVICE_HOST="sxapi-demo-openshift-couchbase-db" \
-       -e MYSQL_USER="dev-user" \
-       -e MYSQL_PASSWORD="dev-pwd123" \
-       -e MYSQL_DATABASE="demo" \
+       -e COUCHBASE_SERVICE_HOST="db" \
+       -e COUCHBASE_BUCKET="demo" \
+       -e COUCHBASE_USER="Administrator" \
+       -e COUCHBASE_PASSWORD="Administrator123$" \
        --link sxapi-demo-openshift-couchbase-db:db \
        -p 8080:8080 \
        sxapi-demo-api \

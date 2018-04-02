@@ -1,7 +1,7 @@
 {
     "name": "sxapi-demo-openshift-couchbase-dev-api",
     "description": "API application for the sxapi openshift demo (dev)",
-    "version": "0.0.10",
+    "version": "0.1.0",
     "debug": true,
     "log": {
         "filters": {
@@ -53,9 +53,20 @@
                 "path": "/",
                 "desc": "display API welcome message",
                 "header": {
-                    "Content-Type": "application/json"
+                    "Content-Type": "text/html"
                 },
-                "body": "{ \"code: 0,\"message\":\"API application for the sxapi openshift demo (dev)\"}"
+                "body": [
+                    "<html>",
+                    "<head><title>Application {{name}}</title></head>",
+                    "<link rel=\"stylesheet\" href=\"https://goo.gl/4kFNLH\">",
+                    "<body><div class=\"container\">",
+                    "<h1><span class=\"glyphicon glyphicon-eye-open\"></span> Your API {{name}} is live !</h1>",
+                    "<div class=\"alert alert-success\" role=\"alert\"><p>This API is {{description}} running on <b>{{hostname}}</b> with current release <b>v{{version}}</b></p></div>",
+                    "<div class=\"alert alert-info\" role=\"alert\"><p>The application signature is <b>{{appsign}}</b> and corespond to the example API using micro-service framework <b>{{package.name}} v{{package.version}}</b>.</p></div>",
+                    "<nav class=\"navbar navbar-default navbar-fixed-bottom\"><div class=\"container\"> Microservice engine is <b>{{package.name}} v{{package.version}}</b>. {{package.description}}</div></nav>",
+                    "</div></body>",
+                    "</html>"
+                ]
             },
             {
                 "path": "/health",

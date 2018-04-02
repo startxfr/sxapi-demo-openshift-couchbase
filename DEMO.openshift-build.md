@@ -8,49 +8,21 @@ to configure the [workstation environement](https://github.com/startxfr/sxapi-de
 and [openshift environement](https://github.com/startxfr/sxapi-demo-openshift#setup-openshift-environement).
 
 
-
-
-
-
-
-
-
-
-
-
-### Create couchbase container cluster 
-
-```
-cd cb/
-./couchbase-create demo
-cd -
-```
-
-### Access your application in your browser
-
-Access your application using your browser on `https://api.openshift.demo.startx.fr`
-
-
-
-
-
-
-
-## Openshift templates
+## Openshift template
 
 ### Full template
 
-This demo provide an [all-in-one ephemeral template](https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/dev/openshift-build-all-ephemeral.json)
+This demo provide an [all-in-one build template](https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/dev/openshift-build-all-ephemeral.json)
 to build and deploy the full application stack using build config and deployement config for every services
 part of this example.
 
 This template will create the following objects :
-- **1 ImageStream** with 2 tags linked to public bases images `startx/sv-mariadb` and `startx/sv-nodejs`
-- **3 ImageStream** with 1 `latest` tag each and used for hosting the **mariadb**, **api** and **www** build image
-- **1 Secret** mariadb holding `MYSQL_ROOT_PASSWORD`, `MYSQL_USER` and `MYSQL_PASSWORD` credentials
-- **3 BuildConfig** describing how to build the **mariadb**, **api** and **www** images
-- **3 DeploymentConfig** describing how to deploy and run the **mariadb**, **api** and **www** components
-- **1 Service** to expose **mariadb** to other pods (created by the deploymentConfig)
+- **1 ImageStream** with 2 tags linked to public bases images `startx/sv-couchbase` and `startx/sv-nodejs`
+- **3 ImageStream** with 1 `latest` tag each and used for hosting the **couchbase**, **api** and **www** build image
+- **1 Secret** couchbase holding `COUCHBASE_SERVICE_HOST`, `COUCHBASE_USER` and `COUCHBASE_PASSWORD` credentials
+- **3 BuildConfig** describing how to build the **couchbase**, **api** and **www** images
+- **3 DeploymentConfig** describing how to deploy and run the **couchbase**, **api** and **www** components
+- **1 Service** to expose **couchbase** to other pods (created by the deploymentConfig)
 - **2 Service** to expose **api** and **www** internaly and linked to route objects
 - **2 Route** to expose **api** and **www** externaly
 
@@ -148,7 +120,7 @@ oc get all
 .-------------------.  .-------------.   .-----------------.   .----------.
 |   Builder image   |  | BuildConfig |   |    API image    |   | Service  |
 |-------------------|->|-------------|-->|-----------------|   |----------|
-| startx/sv-mariadb |  | demo-api    |   | demo-api:latest |   | demo-api |
+| startx/sv-couchbase |  | demo-api    |   | demo-api:latest |   | demo-api |
 '-------------------'  '-------------'   '-----------------'   '----------'
                               ^                   |                  |
                               |                   v                  v

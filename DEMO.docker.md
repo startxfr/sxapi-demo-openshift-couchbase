@@ -100,6 +100,7 @@ docker run -d \
        --name sxapi-demo-openshift-couchbase-www \
        -e SX_VERBOSE=true \
        -e SX_DEBUG=true \
+       -e DEMO_API=api-demo.apps.startx.fr \
        -p 8081:8080 \
        sxapi-demo-www \
        /bin/sx-nodejs run
@@ -110,29 +111,6 @@ docker logs sxapi-demo-openshift-couchbase-www
 ## Docker strategy workflow
 
 ```
-.--------------------------.
-| source code (sxapi-demo) |
-|--------------------------|-.
-| local copy ./www/        | |        .----------------.        .----------------.
-'--------------------------' | docker |   WWW image    | docker | WWW container  |8080
-                             .------->|----------------|------->|----------------|--.
-.--------------------------. | build  | sxapi-demo-www | run    | sxapi-demo-www |  |      .-,(  ),-.    
-|     base image (s2i)     | |        '----------------'        '----------------'  |   .-(          )-. 
-|--------------------------|-'                                                      .->(    internet    )
-| startx/sv-nodejs         |-.                                                      |   '-(          ).-'
-'--------------------------' |        .----------------.        .----------------.  |       '-.( ).-'    
-                             | docker |   API image    | docker | API container  |--'
-.--------------------------. .------->|----------------|------->|----------------|8081
-| source code (sxapi-demo) | | build  | sxapi-demo-api | run    | sxapi-demo-api |
-|--------------------------|-'        '----------------'        '----------------'
-| local copy ./api/        |                                             |
-'--------------------------'                                             |
-                                                                         v 3306
-.--------------------------.                                    .----------------.
-|     base image (s2i)     |                             docker |  DB container  |
-|--------------------------|----------------------------------->|----------------|
-| startx/sv-mariadb        |                             run    | sxapi-demo-db  |
-'--------------------------'                                    '----------------'
 ```
 
 ### Access your application in your browser

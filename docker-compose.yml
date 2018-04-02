@@ -24,7 +24,7 @@ www:
   environment:
   - SX_VERBOSE=true
   - SX_DEBUG=true
-  - DEMO_API=api-test.apps.startx.fr
+  - DEMO_API=api-demo.apps.startx.fr
   ports:
     - "8081:8080"
   volumes:

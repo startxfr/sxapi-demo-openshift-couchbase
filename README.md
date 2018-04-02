@@ -16,117 +16,95 @@ is based on [nodejs](https://nodejs.org) technologie and is
 available as a docker image on dockerhub ([sxapi image](https://hub.docker.com/r/startx/sxapi)) or as an
 npm module ([sxapi npm module](https://www.npmjs.com/package/sxapi-core))
 
-## Setup demo environement in AWS
-
-Require knowledge of [AWS services](https://aws.amazon.com) (especialy EC2, VPC, Route53) and full access to 
-EC2, VPC and Route53 services. Your AWS account must be billable and you must have access to a domain hostZone.
-
-These instruction will help you setup an openshift single instance on an AWS EC2 instance responding to a public sub-domain
-of your corporation or entity.
-
-### VPC network configuration
-
-You must setup the following resources under you AWS VPC cnfiguration. With your kwoledge of AWS VPC services
-you must configure :
-
-- 1 ***VPC*** with DHCP, DNS and Hostname resolution activated. Whatever CIDR is OK (example `192.168.0.0/24`)
-- 1 ***internet gateway*** with default configuration. Associated to the previously created VPC 
-- 1 ***Subnet*** routing all trafic from and to the internet gateway. All port opened and public IP activated.
-- 1 ***DHCP configuration*** with default configuration
-- 1 ***Security group*** with in and out traffic authorized for All traffic, TCP, ICMP and UDP inbound and outbound to/from anywhere
-
-### EC2 instance configuration
-
-Start your single node server in order to install and configure your Openshift plateform.
-
-- On EC2, click on "start a new instance"
-- Choose Marketplace then type centos (hit enter) and choose "CentOS 7 (x86_64) - with Updates HVM"
-- Select a "t2.xlarge" instance (t2.medium is minimum to run this application)
-- On next screen, choose VPC and subnet previously created. Check "automated IP" is activated. and hit "next"
-- Select a 50Go SSD for storage, with 2500/IOP on rovisionned SSD, then next
-- Create labels according to your labelling strategy
-- Associate the "openAll" security group created in the previous section
-- Review and launch
-
-### Route53 DNS configuration
-
-Enable you application to use your own domain zone and make application accessible to your domain.
-In the next sections, we will assume you are responding to the DNS record `openshift.demo.startx.fr` for 
-master node, and `*.openshift.demo.startx.fr` for applications.
-
-- Copy the public IP associated to your starting instance, then go to route53 service
-- Select a domain zone you want to use
-- Create a new DNS entry of type A, with your selected master domain name (ex: `openshift.demo.startx.fr`) and the public IP adress as value
-- Hit "create"
-- Create a new DNS entry of type CNAME, with your selected applications domain name (ex: `*.openshift.demo.startx.fr`) and the master domain name (ex: `openshift.demo.startx.fr`) as value
-- Hit "create" and wait for propagation
-
-## Server installation
-
-This section will help you install and run your openshift demo node on your EC2 instance previously launched.
-
-- Connect to the server
-```bash
-ssh -i sx-eu-key-demo-openshift.pem centos@openshift.demo.startx.fr
 ```
-- You must be root to install openshift and dependencies
-```bash
-sudo su -
-yum install -y git
+                                                  .----------------.
+                                                  |    Frontend    |
+                                                  |----------------|<---------------.
+                                                  | nodejs / html5 |                |
+.-----------.        .---------------------.      '----------------'           .-,(  ),-.    
+| Database  |        |     twitter bot     |                                .-(          )-. 
+|-----------|<-------|---------------------|<------------------------------(    internet    )
+| couchbase |        | nodejs / websockets |                                '-(          ).-'
+'-----------'        '---------------------'      .----------------.            '-.( ).-'    
+     |                                            |      API       |                |
+     '------------------------------------------->|----------------|<---------------'
+                                                  | nodejs / json  |
+                                                  '----------------'
 ```
-- Setup the DNS used for your demo environement
-```bash
-export DNSNAME=openshift.demo.startx.fr
-```
-- Run the following install script. Adapt the firsts parameters to your needs
+
+
+## Setup workstation environement
+
+Running the complete agenda of this demo require your local or demo workstation to meet the following requirements :
+- `git` command must be installed
+- internet access must be configured
+- `docker` command must be installed and running (for docker and s2i deployement strategy).
+  You must have access to the running `docker` daemon with access to the dockerhub public registry.
+  If you don't have docker runtime, please follow [docker](https://docs.docker.com/)
+  installation guide for [CentOS](https://docs.docker.com/install/linux/docker-ce/centos/), 
+  [RHEL](https://docs.docker.com/install/linux/docker-ee/rhel/), 
+  [Windows](https://docs.docker.com/docker-for-windows/install/)
+  or [MacOS](https://docs.docker.com/docker-for-mac/install/).
+- `s2i` command must be installed (for s2i deployement strategy)
+- `oc` command must be installed (for openshift deployement strategies)
+
+All openshift template is self sufficient and we can use all of them without having a local copy of the source code.
+However, for all docker build and s2i build strategy, whe need to have a local copy of source code. In order to run the 
+complete demo agenda, you need to install a local copy of the source code.
+
 ```bash
 cd ~
 git clone https://github.com/startxfr/sxapi-demo-openshift-couchbase.git
 cd sxapi-demo-openshift-couchbase
-./openshift-install
 ```
 
-- Start the openshift cluster
-```bash
-cd ~/sxapi-demo-openshift-couchbase
-./openshift-start
-```
+## Setup Openshift environement
 
-- Access your web-console using the `https://openshift.demo.startx.fr:8443` URL.
-- Access openshift cli using
-```bash
-oc login -u system:admin
-```
+### Create Openshift cluster
 
-## Deploy your application
+You will find in our [Openshift installation guide](https://github.com/startxfr/sxapi-demo-openshift/INSTALL.md) instructions for creating an Openshift cluster
+using [Openshift Online](https://github.com/startxfr/sxapi-demo-openshift/INSTALL.md#setup-openshift-online-environement), 
+[Openshift Origin on AWS](https://github.com/startxfr/sxapi-demo-openshift/INSTALL.md#setup-openshift-online-environement-AWS--environement-) as well as 
+[Minishift](https://github.com/startxfr/sxapi-demo-openshift/INSTALL.md#setup-minishift-environement) configurations.
 
-This section will help you start a build and deploy of your application stack.
+### Create Openshift project
 
-### Create project in openshift
+#### Create Openshift project using web-console
 
-In order to visualize your objects in the webconsole, you should create the project 
-using the Web console. 
+In openshift Origin, if you want to visualize your objects in the web-console, you should create the project 
+from the Web console. 
 
 - Connect to the web console using `https://openshift.demo.startx.fr:8443`
 - Authenticate using the system admin user `system` with passsword `admin`
 - Create a new project (right panel) and name it. We will assume your project name for this demo will be `demo`
 
-### Create couchbase container cluster 
+#### Create Openshift project using oc-cli
 
+```bash
+# <user> your openshift username
+# <pwd> your openshift password
+# <master_domain> your master domain name
+# <project> your project name
+# ex: oc login -u system:admin https://openshift.demo.startx.fr:8443
+# ex: oc new-project demo; oc project demo
+oc login -u <user>:<pwd> https://<master_domain>
+oc new-project <project>
+oc project <project>
 ```
-cd cb/
-./couchbase-create demo
-cd -
-```
 
-### Access your application in your browser
+## Deploy demo application
 
-Access your application using your browser on `https://api.openshift.demo.startx.fr`
+This section will help you start a build and deploy of this demo application stack using various build and
+deployement strategies.
+
+- [docker strategy](DEMO.docker.md) : Deploy demo application using docker command only
+- [openshift build strategy](DEMO.openshift-build.md) : Deploy demo application using openshift build and deployement configuration
+- [openshift pipeline strategy](DEMO.openshift-pipeline.md) : Deploy demo application using openshift pipeline configuration stategy
 
 
 ## Troubleshooting
 
-If you run into difficulties installing or running sxapi, you can [create an issue](https://github.com/startxfr/sxapi-core/issues/new).
+If you run into difficulties installing or running this demo, you can [create an issue](https://github.com/startxfr/sxapi-demo-openshift/issues/new).
 
 ## Built With
 

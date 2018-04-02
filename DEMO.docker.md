@@ -15,7 +15,9 @@ pwd
 docker build -t sxapi-demo-api api
 # build web frontend container
 docker build -t sxapi-demo-www www
-```
+# build twitter bot container
+docker build -t sxapi-demo-bot-streamer bot-streamer
+``
 
 ## Deploy database service using docker
 
@@ -23,18 +25,41 @@ docker build -t sxapi-demo-www www
 # deploy database backend container
 docker run -d \
        --name sxapi-demo-openshift-couchbase-db \
-       -e SX_VERBOSE=true \
-       -e SX_DEBUG=true \
-       -e MYSQL_USER="dev-user" \
-       -e MYSQL_PASSWORD="dev-pwd123" \
-       -e MYSQL_DATABASE="demo" \
-       -v ./db:/tmp/sql:z \
-       -p 3306:3306 \
-       startx/sv-mariadb:latest \
-       /bin/sx-mariadb run
+       -p 8091:8091 \
+       -p 8092:8092 \
+       -p 8093:8093 \
+       -p 8094:8094 \
+       -p 11207:11207 \
+       -p 11210:11210 \
+       -p 11211:11211 \
+       -p 18091:18091 \
+       -p 18092:18092 \
+       -p 18093:18093 \
+       -p 18094:18094 \
+       couchbase/server:5.5.0-Mar
 sleep 20
 docker logs sxapi-demo-openshift-couchbase-db
 ```
+
+You can then connect to you admin panel (web console) at [http://localhost:8091](http://localhost:8091) and start configuring your database.
+- Click on **Setup a new cluster**
+- Choose `Demo` as **Cluster name**, leave `Administrator` as admin user, and set **password** to `Administrator123$` (twice). Hit "Next" when finished
+- Agree to the terms & conditions and hit "Configure Disk, Memory, Services"
+- Configure cluster resources
+  - Leave Host and Disk path unchanged
+  - Set **Data Memory Quota** to `1024` (1Go). If you run under limited resource, you can reduce Index, Search and Eventing to 256Mo. Analytics is not required for this demo.
+  - Set **Index Storage Setting** to `Memory-Optimized`
+  - Hit "Save & Finish"
+- Create demo Bucket
+  - Click on the "Bucket" section (left pane)
+  - Click the "Add Bucket" button on the top right corner
+  - Under the Add data bucket dialog
+    - Set **bucket name** to `demo`
+    - Set **Memory Quota** to `300`
+    - Set **Bucket Type** to `Ephemeral`
+    - Disable bucket **replica** (single node configuration)
+    - Enable bucket **flush** action
+    - Click the **Add Bucket** button
 
 ## Deploy API service using docker
 

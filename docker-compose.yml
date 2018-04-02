@@ -30,9 +30,6 @@ www:
 db:
   container_name: "sxapi-demo-openshift-couchbase-db"
   image: couchbase/server:5.5.0-Mar
-  environment:
-  - SX_VERBOSE=true
-  - SX_DEBUG=true
   ports:
     - "8091:8091"
     - "8092:8092"
@@ -44,8 +41,11 @@ db:
     - "18091-18094"
 
 bot-streamer:
-  image: startx/sxapi:latest
+  build: bot-streamer/
   container_name: "sxapi-demo-openshift-couchbase-bot-streamer"
+  environment:
+  - SX_VERBOSE=true
+  - SX_DEBUG=true
   links:
     - "db:db"
   volumes:

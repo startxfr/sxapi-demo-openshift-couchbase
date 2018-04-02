@@ -17,7 +17,7 @@ docker build -t sxapi-demo-api api
 docker build -t sxapi-demo-www www
 # build twitter bot container
 docker build -t sxapi-demo-bot-streamer bot-streamer
-``
+```
 
 ## Deploy database service using docker
 
@@ -43,16 +43,16 @@ docker logs sxapi-demo-openshift-couchbase-db
 
 You can then connect to you admin panel (web console) at [http://localhost:8091](http://localhost:8091) and start configuring your database.
 - Click on **Setup a new cluster**
-- Choose `Demo` as **Cluster name**, leave `Administrator` as admin user, and set **password** to `Administrator123$` (twice). Hit "Next" when finished
+- Choose `Demo` as **Cluster name**, leave `Administrator` as admin user, and set **password** to `Administrator123$` (twice). Hit **Next** when finished
 - Agree to the terms & conditions and hit "Configure Disk, Memory, Services"
 - Configure cluster resources
   - Leave Host and Disk path unchanged
   - Set **Data Memory Quota** to `1024` (1Go). If you run under limited resource, you can reduce Index, Search and Eventing to 256Mo. Analytics is not required for this demo.
   - Set **Index Storage Setting** to `Memory-Optimized`
-  - Hit "Save & Finish"
+  - Hit **Save & Finish**
 - Create demo Bucket
   - Click on the "Bucket" section (left pane)
-  - Click the "Add Bucket" button on the top right corner
+  - Click the **Add Bucket** button on the top right corner
   - Under the Add data bucket dialog
     - Set **bucket name** to `demo`
     - Set **Memory Quota** to `300`

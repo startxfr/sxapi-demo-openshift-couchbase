@@ -1,17 +1,46 @@
 # Deploy demo application using Openshift build config
 
-This section of the [sxapi-demo-openshift](https://github.com/startxfr/sxapi-demo-openshift)
+This section of the [sxapi-demo-openshift-couchbase](https://github.com/startxfr/sxapi-demo-openshift-couchbase)
 will show you how to run the sxapi-demo application stack only using openshift commands.
 
 To run this demo, you must have have a demo environement setup configured. Follow guidelines 
 to configure the [workstation environement](https://github.com/startxfr/sxapi-demo-openshift#setup-workstation-environement)
 and [openshift environement](https://github.com/startxfr/sxapi-demo-openshift#setup-openshift-environement).
 
+
+
+
+
+
+
+
+
+
+
+
+### Create couchbase container cluster 
+
+```
+cd cb/
+./couchbase-create demo
+cd -
+```
+
+### Access your application in your browser
+
+Access your application using your browser on `https://api.openshift.demo.startx.fr`
+
+
+
+
+
+
+
 ## Openshift templates
 
 ### Full template
 
-This demo provide an [all-in-one ephemeral template](https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift/dev/openshift-build-all-ephemeral.json)
+This demo provide an [all-in-one ephemeral template](https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/dev/openshift-build-all-ephemeral.json)
 to build and deploy the full application stack using build config and deployement config for every services
 part of this example.
 
@@ -31,7 +60,7 @@ to deploy various stage with the same project (shared namespace) or in different
 
 ```bash
 oc new-project demo-api
-oc process -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift/dev/openshift-build-all-ephemeral.json \
+oc process -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/dev/openshift-build-all-ephemeral.json \
            -v SOURCE_BRANCH=dev \
            -v DEMO_API=api-demo-api.apps.startx.fr \
            -v MYSQL_USER="dev-user" \
@@ -45,29 +74,29 @@ oc get all
 ### Single component templates
 
 This demo provide also individual templates to build and deploy the full application stack step by step.
-- [build database template](https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift/dev/openshift-build-db-ephemeral.json),
-- [build api template](https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift/dev/openshift-build-api.json) and
-- [build www template](https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift/dev/openshift-build-www.json)
+- [build database template](https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/dev/openshift-build-db-ephemeral.json),
+- [build api template](https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/dev/openshift-build-api.json) and
+- [build www template](https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/dev/openshift-build-www.json)
 
 You can create and use theses templates running the following commands
 
 ```bash
 # Create database component objects
-oc process -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift/dev/openshift-build-db-ephemeral.json \
+oc process -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/dev/openshift-build-db-ephemeral.json \
            -v SOURCE_BRANCH=dev \
            -v MYSQL_USER="dev-user" \
            -v MYSQL_PASSWORD="dev-pwd123" \
            -v MYSQL_DATABASE="demo" | \
 oc create -f -
 # Create api frontend component objects
-oc process -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift/dev/openshift-build-api.json \
+oc process -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/dev/openshift-build-api.json \
            -v SOURCE_BRANCH=dev \
            -v MYSQL_USER="dev-user" \
            -v MYSQL_PASSWORD="dev-pwd123" \
            -v MYSQL_DATABASE="demo" | \
 oc create -f -
 # Create web frontend component objects
-oc process -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift/dev/openshift-build-www.json \
+oc process -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/dev/openshift-build-www.json \
            -v SOURCE_BRANCH=dev \
            -v DEMO_API=openshift.demo.startx.fr | \
 oc create -f -
@@ -84,7 +113,7 @@ oc get all
           .--------------------------.   .-----------------. | | demo-api | | .----------.
           |       Source code        |   |  DeployConfig   | | '----------' | | Service  |
           |--------------------------|   |-----------------|-. .----------. .------------|
-          | sxapi-demo-openshift/www |   | demo-www        | | |   Pod    | | | demo-www |
+          | sxapi-demo-openshift-couchbase/www |   | demo-www        | | |   Pod    | | | demo-www |
           '--------------------------'   '-----------------' '>|----------|<' '----------'
                               |                   ^            | demo-api |      /
                               v                   |            '----------'     /
@@ -110,7 +139,7 @@ oc get all
           .--------------------------.   .-----------------. | | demo-api | |  | Service  |
           |       Source code        |   |  DeployConfig   | | '----------' .--|----------|
           |--------------------------|   |-----------------|-. .----------. |  | demo-api |
-          | sxapi-demo-openshift/api |   | demo-api        | | |   Pod    | |  '----------'
+          | sxapi-demo-openshift-couchbase/api |   | demo-api        | | |   Pod    | |  '----------'
           '--------------------------'   '-----------------' '>|----------|<'
                                                                | demo-api |
                                                                '----------'
@@ -126,7 +155,7 @@ oc get all
           .--------------------------.   .-----------------.   .----------.
           |       Source code        |   |  DeployConfig   |   |   Pod    |
           |--------------------------|   |-----------------|-->|----------|
-          | sxapi-demo-openshift/api |   | demo-api        |   | demo-api |
+          | sxapi-demo-openshift-couchbase/api |   | demo-api        |   | demo-api |
           '--------------------------'   '-----------------'   '----------'
 ```
 
@@ -137,9 +166,9 @@ Access your application using your browser on `https://api.openshift.demo.startx
 
 ## Troubleshooting, contribute & credits
 
-If you run into difficulties installing or running this demo [create an issue](https://github.com/startxfr/sxapi-demo-openshift/issues/new).
+If you run into difficulties installing or running this demo [create an issue](https://github.com/startxfr/sxapi-demo-openshift-couchbase/issues/new).
 
-You will information on [how to contribute](https://github.com/startxfr/sxapi-demo-openshift#contributing) or 
-[technologies credits](https://github.com/startxfr/sxapi-demo-openshift#built-with) and
-[demo authors](https://github.com/startxfr/sxapi-demo-openshift#authors) on the 
-[sxapi-demo-openshift homepage](https://github.com/startxfr/sxapi-demo-openshift).
+You will information on [how to contribute](https://github.com/startxfr/sxapi-demo-openshift-couchbase#contributing) or 
+[technologies credits](https://github.com/startxfr/sxapi-demo-openshift-couchbase#built-with) and
+[demo authors](https://github.com/startxfr/sxapi-demo-openshift-couchbase#authors) on the 
+[sxapi-demo-openshift-couchbase homepage](https://github.com/startxfr/sxapi-demo-openshift-couchbase).

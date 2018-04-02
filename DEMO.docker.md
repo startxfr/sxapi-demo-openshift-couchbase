@@ -1,6 +1,6 @@
 # Deploy demo application using docker only
 
-This section of the [sxapi-demo-openshift](https://github.com/startxfr/sxapi-demo-openshift)
+This section of the [sxapi-demo-openshift-couchbase](https://github.com/startxfr/sxapi-demo-openshift-couchbase)
 will show you how to run the sxapi-demo application stack only using docker command.
 
 To run this demo, you must have have a demo environement setup configured. Follow guidelines 
@@ -10,7 +10,7 @@ to configure the [workstation environement](https://github.com/startxfr/sxapi-de
 
 ```bash
 pwd
-# $ ~/sxapi-demo-openshift
+# $ ~/sxapi-demo-openshift-couchbase
 # build api frontend container
 docker build -t sxapi-demo-api api
 # build web frontend container
@@ -22,7 +22,7 @@ docker build -t sxapi-demo-www www
 ```bash
 # deploy database backend container
 docker run -d \
-       --name sxapi-demo-openshift-db \
+       --name sxapi-demo-openshift-couchbase-db \
        -e SX_VERBOSE=true \
        -e SX_DEBUG=true \
        -e MYSQL_USER="dev-user" \
@@ -33,7 +33,7 @@ docker run -d \
        startx/sv-mariadb:latest \
        /bin/sx-mariadb run
 sleep 20
-docker logs sxapi-demo-openshift-db
+docker logs sxapi-demo-openshift-couchbase-db
 ```
 
 ## Deploy API service using docker
@@ -41,19 +41,19 @@ docker logs sxapi-demo-openshift-db
 ```bash
 # deploy api frontend container
 docker run -d \
-       --name sxapi-demo-openshift-api \
+       --name sxapi-demo-openshift-couchbase-api \
        -e SX_VERBOSE=true \
        -e SX_DEBUG=true \
-       -e MARIADB_SERVICE_HOST="sxapi-demo-openshift-db" \
+       -e MARIADB_SERVICE_HOST="sxapi-demo-openshift-couchbase-db" \
        -e MYSQL_USER="dev-user" \
        -e MYSQL_PASSWORD="dev-pwd123" \
        -e MYSQL_DATABASE="demo" \
-       --link sxapi-demo-openshift-db:db \
+       --link sxapi-demo-openshift-couchbase-db:db \
        -p 8080:8080 \
        sxapi-demo-api \
        /bin/sx-nodejs run
 sleep 1
-docker logs sxapi-demo-openshift-api
+docker logs sxapi-demo-openshift-couchbase-api
 ```
 
 ## Deploy WWW service using docker
@@ -61,14 +61,14 @@ docker logs sxapi-demo-openshift-api
 ```bash
 # deploy www frontend container
 docker run -d \
-       --name sxapi-demo-openshift-www \
+       --name sxapi-demo-openshift-couchbase-www \
        -e SX_VERBOSE=true \
        -e SX_DEBUG=true \
        -p 8081:8080 \
        sxapi-demo-www \
        /bin/sx-nodejs run
 sleep 1
-docker logs sxapi-demo-openshift-www
+docker logs sxapi-demo-openshift-couchbase-www
 ```
 
 ## Docker strategy workflow
@@ -106,9 +106,9 @@ Access your application using your browser on `http://localhost:8080`
 
 ## Troubleshooting, contribute & credits
 
-If you run into difficulties installing or running this demo [create an issue](https://github.com/startxfr/sxapi-demo-openshift/issues/new).
+If you run into difficulties installing or running this demo [create an issue](https://github.com/startxfr/sxapi-demo-openshift-couchbase/issues/new).
 
-You will information on [how to contribute](https://github.com/startxfr/sxapi-demo-openshift#contributing) or 
-[technologies credits](https://github.com/startxfr/sxapi-demo-openshift#built-with) and
-[demo authors](https://github.com/startxfr/sxapi-demo-openshift#authors) on the 
-[sxapi-demo-openshift homepage](https://github.com/startxfr/sxapi-demo-openshift).
+You will information on [how to contribute](https://github.com/startxfr/sxapi-demo-openshift-couchbase#contributing) or 
+[technologies credits](https://github.com/startxfr/sxapi-demo-openshift-couchbase#built-with) and
+[demo authors](https://github.com/startxfr/sxapi-demo-openshift-couchbase#authors) on the 
+[sxapi-demo-openshift-couchbase homepage](https://github.com/startxfr/sxapi-demo-openshift-couchbase).

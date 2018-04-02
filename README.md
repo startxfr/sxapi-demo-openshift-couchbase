@@ -104,7 +104,7 @@ deployement strategies.
 
 ## Troubleshooting
 
-If you run into difficulties installing or running this demo, you can [create an issue](https://github.com/startxfr/sxapi-demo-openshift/issues/new).
+If you run into difficulties installing or running this demo, you can [create an issue](https://github.com/startxfr/sxapi-demo-openshift-couchbase/issues/new).
 
 ## Built With
 

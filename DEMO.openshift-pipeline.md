@@ -1,6 +1,6 @@
 # Deploy demo application using Openshift pipeline
 
-This section of the [sxapi-demo-openshift](https://github.com/startxfr/sxapi-demo-openshift)
+This section of the [sxapi-demo-openshift-couchbase](https://github.com/startxfr/sxapi-demo-openshift-couchbase)
 will show you how to run the sxapi-demo application stack using openshift Openshift pipeline
 strategy. Jenkins will be used as a CI/CD backend for your deployement process.
 
@@ -10,7 +10,7 @@ and [openshift environement](https://github.com/startxfr/sxapi-demo-openshift#se
 
 ## Openshift template
 
-This demo provide an [all-in-one pipeline template](https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift/dev/openshift-pipeline-all-ephemeral.json)
+This demo provide an [all-in-one pipeline template](https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/dev/openshift-pipeline-all-ephemeral.json)
 to build and deploy test and run stagging environement each containing the full application stack.
 
 This template will create the following objects :
@@ -31,7 +31,7 @@ users, network and node allocation.
 
 ```bash
 oc new-project demo
-oc process -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift/dev/openshift-pipeline-all-ephemeral.json \
+oc process -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/dev/openshift-pipeline-all-ephemeral.json \
            -v DEMO_API=demo.apps.startx.fr \
            -v MYSQL_USER="demouser" \
            -v MYSQL_PASSWORD="demopwd123" \
@@ -61,7 +61,7 @@ oc get all
  .--------------------------------.
  |          Source code           |            .--------------.         .-------------------.
  |--------------------------------|----------->| BuildConfig  |         |     API image     |
- | sxapi-demo-openshift:test www/ |    .------>|--------------|-------->|-------------------|
+ | sxapi-demo-openshift-couchbase:test www/ |    .------>|--------------|-------->|-------------------|
  '--------------------------------'    |       | www-test     |         | demo-www:test     |
                .------------------.    |       '--------------'         '-------------------'
                |  Builder image   |    |
@@ -71,7 +71,7 @@ oc get all
  .--------------------------------.    |       | BuildConfig  |         |     API image     |
  |          Source code           |    '------>|--------------|-------->|-------------------|
  |--------------------------------|----------->| api-test     |         | demo-api:test     |
- | sxapi-demo-openshift:test api/ |            '--------------'         '-------------------'
+ | sxapi-demo-openshift-couchbase:test api/ |            '--------------'         '-------------------'
  '--------------------------------'
               .-------------------.
               |   Builder image   |            .--------------.         .-------------------.
@@ -81,7 +81,7 @@ oc get all
  .--------------------------------.    |       '--------------'         '-------------------'
  |          Source code           |    |
  |--------------------------------|    |
- | sxapi-demo-openshift:test db/  |----'
+ | sxapi-demo-openshift-couchbase:test db/  |----'
  '--------------------------------'
 ```
 
@@ -92,7 +92,7 @@ oc get all
  .--------------------------------.
  |          Source code           |            .--------------.         .-------------------.
  |--------------------------------|----------->| BuildConfig  |         |     API image     |
- | sxapi-demo-openshift:prod www/ |    .------>|--------------|-------->|-------------------|
+ | sxapi-demo-openshift-couchbase:prod www/ |    .------>|--------------|-------->|-------------------|
  '--------------------------------'    |       | www-prod     |         | demo-www:prod     |
                .------------------.    |       '--------------'         '-------------------'
                |  Builder image   |    |
@@ -102,7 +102,7 @@ oc get all
  .--------------------------------.    |       | BuildConfig  |         |     API image     |
  |          Source code           |    '------>|--------------|-------->|-------------------|
  |--------------------------------|----------->| api-prod     |         | demo-api:prod     |
- | sxapi-demo-openshift:prod api/ |            '--------------'         '-------------------'
+ | sxapi-demo-openshift-couchbase:prod api/ |            '--------------'         '-------------------'
  '--------------------------------'
               .-------------------.
               |   Builder image   |            .--------------.         .-------------------.
@@ -112,7 +112,7 @@ oc get all
  .--------------------------------.    |       '--------------'         '-------------------'
  |          Source code           |    |
  |--------------------------------|    |
- | sxapi-demo-openshift:prod db/  |----'
+ | sxapi-demo-openshift-couchbase:prod db/  |----'
  '--------------------------------'
 ```
 
@@ -182,9 +182,9 @@ Access your application using your browser on `https://api.openshift.demo.startx
 
 ## Troubleshooting, contribute & credits
 
-If you run into difficulties installing or running this demo [create an issue](https://github.com/startxfr/sxapi-demo-openshift/issues/new).
+If you run into difficulties installing or running this demo [create an issue](https://github.com/startxfr/sxapi-demo-openshift-couchbase/issues/new).
 
-You will information on [how to contribute](https://github.com/startxfr/sxapi-demo-openshift#contributing) or 
-[technologies credits](https://github.com/startxfr/sxapi-demo-openshift#built-with) and
-[demo authors](https://github.com/startxfr/sxapi-demo-openshift#authors) on the 
-[sxapi-demo-openshift homepage](https://github.com/startxfr/sxapi-demo-openshift).
+You will information on [how to contribute](https://github.com/startxfr/sxapi-demo-openshift-couchbase#contributing) or 
+[technologies credits](https://github.com/startxfr/sxapi-demo-openshift-couchbase#built-with) and
+[demo authors](https://github.com/startxfr/sxapi-demo-openshift-couchbase#authors) on the 
+[sxapi-demo-openshift-couchbase homepage](https://github.com/startxfr/sxapi-demo-openshift-couchbase).

@@ -45,7 +45,7 @@ db:
 
 bot-streamer:
   image: startx/sxapi:latest
-  container_name: "sxapi-demo-openshift-bot-streamer"
+  container_name: "sxapi-demo-openshift-couchbase-bot-streamer"
   links:
     - "db:db"
   volumes:

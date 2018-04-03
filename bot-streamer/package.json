@@ -1,6 +1,6 @@
 {
   "name": "sxapi-demo-openshift-couchbase-bot-streamer",
-  "description": "Bot streamer service for the sxapi openshift couchbase demo (dev)",
+  "description": "Bot streamer service for the sxapi openshift couchbase demo (master)",
   "version": "0.0.10",
   "author": "STARTX <dev+sxapi_core@startx.fr>",
   "homepage": "https://github.com/startxfr/sxapi-demo-openshift-couchbase",

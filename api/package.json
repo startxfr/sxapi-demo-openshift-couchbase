@@ -1,6 +1,6 @@
 {
-  "name": "sxapi-demo-openshift-couchbase-dev-api",
-  "description": "API application for the sxapi openshift demo (dev)",
+  "name": "sxapi-demo-openshift-couchbase-master-api",
+  "description": "API application for the sxapi openshift demo (master)",
   "version": "0.0.10",
   "author": "STARTX <dev+sxapi_core@startx.fr>",
   "homepage": "https://github.com/startxfr/sxapi-demo-openshift-couchbase",

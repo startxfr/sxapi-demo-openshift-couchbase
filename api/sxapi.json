@@ -31,14 +31,10 @@
     "resources": {
         "couchbase-api": {
             "_class": "couchbase",
-            "cluster": "http://db:8091",
-            "bucket": "demo",
-            "user": "Administrator",
-            "password": "Administrator123$",
-            "xxxcluster": "http://{{{COUCHBASE_SERVICE_HOST}}}:8091",
-            "xxxbucket": "{{{COUCHBASE_BUCKET}}}",
-            "xxxuser": "{{{COUCHBASE_USER}}}",
-            "xxxpassword": "{{{COUCHBASE_PASSWORD}}}"
+            "cluster": "http://{{{COUCHBASE_SERVICE_HOST}}}:8091",
+            "bucket": "{{{COUCHBASE_BUCKET}}}",
+            "user": "{{{COUCHBASE_USER}}}",
+            "password": "{{{COUCHBASE_PASSWORD}}}"
         },
         "serviceinfo-api": {
             "_class": "serviceinfo"

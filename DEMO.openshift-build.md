@@ -35,42 +35,9 @@ oc new-project demo-api
 oc process -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/dev/openshift-build-all-ephemeral.json \
            -v SOURCE_BRANCH=dev \
            -v DEMO_API=api-demo-api.apps.startx.fr \
-           -v MYSQL_USER="dev-user" \
-           -v MYSQL_PASSWORD="dev-pwd123" \
-           -v MYSQL_DATABASE="demo" | \
-oc create -f -
-sleep 5
-oc get all
-```
-
-### Single component templates
-
-This demo provide also individual templates to build and deploy the full application stack step by step.
-- [build database template](https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/dev/openshift-build-db-ephemeral.json),
-- [build api template](https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/dev/openshift-build-api.json) and
-- [build www template](https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/dev/openshift-build-www.json)
-
-You can create and use theses templates running the following commands
-
-```bash
-# Create database component objects
-oc process -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/dev/openshift-build-db-ephemeral.json \
-           -v SOURCE_BRANCH=dev \
-           -v MYSQL_USER="dev-user" \
-           -v MYSQL_PASSWORD="dev-pwd123" \
-           -v MYSQL_DATABASE="demo" | \
-oc create -f -
-# Create api frontend component objects
-oc process -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/dev/openshift-build-api.json \
-           -v SOURCE_BRANCH=dev \
-           -v MYSQL_USER="dev-user" \
-           -v MYSQL_PASSWORD="dev-pwd123" \
-           -v MYSQL_DATABASE="demo" | \
-oc create -f -
-# Create web frontend component objects
-oc process -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/dev/openshift-build-www.json \
-           -v SOURCE_BRANCH=dev \
-           -v DEMO_API=openshift.demo.startx.fr | \
+           -v COUCHBASE_USER="Administrator" \
+           -v COUCHBASE_PASSWORD="Administrator123$" \
+           -v COUCHBASE_BUCKET="demo" | \
 oc create -f -
 sleep 5
 oc get all

@@ -17,7 +17,7 @@ This template will create the following objects :
 - **1 BuildConfig** describing the Jenkins pipeline workflow and CI/CD orchestration
 - **1 ImageStream** with 2 tags linked to public bases images `startx/sv-mariadb` and `startx/sv-nodejs`
 - **3 ImageStream** with `latest`, `test` and `prod` tag each and used for hosting the **mariadb**, **api** and **www** build image coresponding to both stages
-- **2 Secret** `mariadb-test` and `mariadb-prod` holding `MYSQL_ROOT_PASSWORD`, `MYSQL_USER` and `MYSQL_PASSWORD` credentials
+- **2 Secret** `mariadb-test` and `mariadb-prod` holding `COUCHBASE_USER` and `COUCHBASE_PASSWORD` credentials
 - **6 BuildConfig** describing how to build the **mariadb**, **api** and **www** images for both `test` and `prod` stage
 - **6 DeploymentConfig** describing how to deploy and run the **mariadb**, **api** and **www** components for both `test` and `prod` stage
 - **2 Service** to expose **mariadb** to other pods (created by the deploymentConfig) for both `test` and `prod` stage
@@ -33,9 +33,9 @@ users, network and node allocation.
 oc new-project demo
 oc process -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/dev/openshift-pipeline-all-ephemeral.json \
            -v DEMO_API=demo.apps.startx.fr \
-           -v MYSQL_USER="demouser" \
-           -v MYSQL_PASSWORD="demopwd123" \
-           -v MYSQL_DATABASE="demo" | \
+           -v COUCHBASE_USER="Administrator" \
+           -v COUCHBASE_PASSWORD="Administrator123$" \
+           -v COUCHBASE_BUCKET="demo" | \
 oc create -f -
 sleep 5
 oc get all

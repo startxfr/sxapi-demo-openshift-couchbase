@@ -4,6 +4,10 @@ api:
   environment:
   - SX_VERBOSE=true
   - SX_DEBUG=true
+  - COUCHBASE_SERVICE_HOST=db
+  - COUCHBASE_BUCKET=true
+  - COUCHBASE_USER=Administrator
+  - COUCHBASE_PASSWORD=Administrator123$
   ports:
     - "8080:8080"
   links:
@@ -20,7 +24,7 @@ www:
   environment:
   - SX_VERBOSE=true
   - SX_DEBUG=true
-  - DEMO_API=api-test.apps.startx.fr
+  - DEMO_API=api-demo.apps.startx.fr
   ports:
     - "8081:8080"
   volumes:
@@ -46,6 +50,10 @@ bot-streamer:
   environment:
   - SX_VERBOSE=true
   - SX_DEBUG=true
+  - COUCHBASE_SERVICE_HOST=db
+  - COUCHBASE_BUCKET=true
+  - COUCHBASE_USER=Administrator
+  - COUCHBASE_PASSWORD=Administrator123$
   links:
     - "db:db"
   volumes:

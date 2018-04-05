@@ -5,7 +5,7 @@ api:
   - SX_VERBOSE=true
   - SX_DEBUG=true
   - COUCHBASE_SERVICE_HOST=db
-  - COUCHBASE_BUCKET=true
+  - COUCHBASE_BUCKET=demo
   - COUCHBASE_USER=Administrator
   - COUCHBASE_PASSWORD=Administrator123$
   ports:

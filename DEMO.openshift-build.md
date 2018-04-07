@@ -36,7 +36,7 @@ oc process -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-co
            -v SOURCE_BRANCH=dev \
            -v DEMO_API=api-demo-api.apps.startx.fr \
            -v COUCHBASE_USER="Administrator" \
-           -v COUCHBASE_PASSWORD="Administrator123$" \
+           -v COUCHBASE_PASSWORD="Administrator123" \
            -v COUCHBASE_BUCKET="demo" | \
 oc create -f -
 sleep 5

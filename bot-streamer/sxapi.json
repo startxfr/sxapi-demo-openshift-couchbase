@@ -16,10 +16,10 @@
         },
         "twitter": {
             "_class": "twitter",
-            "consumer_key": "xxxxxxxxxxxxx",
-            "consumer_secret": "xxxxxxxxxxxxx",
-            "access_token_key": "xxxxxxxxxxxxx-xxxxxxxxxxxxx",
-            "access_token_secret": "xxxxxxxxxxxxx"
+            "consumer_key": "{{{twitter_consumer_key}}}",
+            "consumer_secret": "{{{twitter_consumer_secret}}}",
+            "access_token_key": "{{{twitter_access_token_key}}}",
+            "access_token_secret": "{{{twitter_access_token_secret}}}"
         }
     },
     "log": {
@@ -33,6 +33,26 @@
         }
     },
     "server": {
+        "type": "express",
+        "port": "8080",
+        "lib": "./mylib",
+        "enableWebsockets": true,
+        "websockets": {
+            "events": [
+                {
+                    "event": "test",
+                    "handler": "$ws.websockets.onMessageDefaultCallback"
+                },
+                {
+                    "event": "testGlobal",
+                    "handler": "$ws.lib.mySocketEndpointFunction"
+                },
+                {
+                    "event": "disconnect",
+                    "handler": "$ws.websockets.onMessageDefaultCallback"
+                }
+            ]
+        },
         "endpoints": [
             {
                 "path": "/health",

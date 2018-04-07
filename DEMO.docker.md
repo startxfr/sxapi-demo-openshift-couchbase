@@ -35,7 +35,7 @@ docker logs sxapi-demo-openshift-couchbase-db
 
 You can then connect to you admin panel (web console) at [http://localhost:8091](http://localhost:8091) and start configuring your database.
 - Click on **Setup a new cluster**
-- Choose `Demo` as **Cluster name**, leave `Administrator` as admin user, and set **password** to `Administrator123$` (twice). Hit **Next** when finished
+- Choose `Demo` as **Cluster name**, leave `Administrator` as admin user, and set **password** to `Administrator123` (twice). Hit **Next** when finished
 - Agree to the terms & conditions and hit "Configure Disk, Memory, Services"
 - Configure cluster resources
   - Leave Host and Disk path unchanged
@@ -64,7 +64,7 @@ docker run -d \
        -e COUCHBASE_SERVICE_HOST="db" \
        -e COUCHBASE_BUCKET="demo" \
        -e COUCHBASE_USER="Administrator" \
-       -e COUCHBASE_PASSWORD="Administrator123$" \
+       -e COUCHBASE_PASSWORD="Administrator123" \
        --link sxapi-demo-openshift-couchbase-db:db \
        sxapi-demo-bot-streamer \
        /bin/sx-nodejs run
@@ -83,7 +83,7 @@ docker run -d \
        -e COUCHBASE_SERVICE_HOST="db" \
        -e COUCHBASE_BUCKET="demo" \
        -e COUCHBASE_USER="Administrator" \
-       -e COUCHBASE_PASSWORD="Administrator123$" \
+       -e COUCHBASE_PASSWORD="Administrator123" \
        --link sxapi-demo-openshift-couchbase-db:db \
        -p 8080:8080 \
        sxapi-demo-api \

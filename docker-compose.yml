@@ -7,7 +7,7 @@ api:
   - COUCHBASE_SERVICE_HOST=db
   - COUCHBASE_BUCKET=demo
   - COUCHBASE_USER=Administrator
-  - COUCHBASE_PASSWORD=Administrator123$
+  - COUCHBASE_PASSWORD=Administrator123
   ports:
     - "8080:8080"
   links:
@@ -51,12 +51,17 @@ bot-streamer:
   - SX_VERBOSE=true
   - SX_DEBUG=true
   - COUCHBASE_SERVICE_HOST=db
-  - COUCHBASE_BUCKET=true
+  - COUCHBASE_BUCKET=demo
   - COUCHBASE_USER=Administrator
-  - COUCHBASE_PASSWORD=Administrator123$
+  - COUCHBASE_PASSWORD=Administrator123
+  - twitter_consumer_key=xxxxxxxxxxxxx
+  - twitter_consumer_secret=xxxxxxxxxxxxx
+  - twitter_access_token_key=xxxxxxxxxxxxx
+  - twitter_access_token_secret=xxxxxxxxxxxxx
   links:
     - "db:db"
   volumes:
   - "/secure/dev/startx/sxapi-demo-openshift-couchbase/bot-streamer/sxapi.json:/conf/sxapi.json:z"
   - "/secure/dev/startx/sxapi-demo-openshift-couchbase/bot-streamer/package.json:/usr/src/app/package.json:z"
   - "/secure/dev/startx/sxapi-demo-openshift-couchbase/bot-streamer/mylib.js:/usr/src/app/mylib.js:z"
+  command: ["/bin/sx-nodejs" , "run"]

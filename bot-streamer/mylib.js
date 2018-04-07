@@ -38,6 +38,14 @@ var mylib = {
         }
       };
     });
+  },
+  mySocketEndpointFunction: function (client, config) {
+    return function (data) {
+      console.log("------mySocketEndpointFunction");
+      console.log(client.id, config, data);
+      client.broadcast.emit("test", data);
+      client.emit("test", data);
+    };
   }
 };
 

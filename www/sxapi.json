@@ -17,11 +17,12 @@
     "server": {
         "type": "express",
         "port": "8080",
-        "static": true,
-        "static_path": "/",
-        "static_dir": "/static",
-        "bodyParserJson": true,
-        "bodyParserUrl": true,
+        "static": [
+            {
+                "path": "/",
+                "dir": "/static"
+            }
+        ],
         "endpoints": [
             {
                 "path": "/health",
@@ -45,6 +46,17 @@
                 "desc": "Ping the application. Return a sample message in text",
                 "code": "200",
                 "body": "pong"
+            }
+        ]
+    },
+    "bot": {
+        "lib": "./mylib",
+        "cron": [
+            {
+                "id": "test-cront-task",
+                "name": "Execute test cron task",
+                "schedule": "*/1 * * * *",
+                "task": "myCronFunction"
             }
         ]
     }

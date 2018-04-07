@@ -46,8 +46,24 @@
     "server": {
         "type": "express",
         "port": "8080",
-        "bodyParserJson": true,
-        "bodyParserUrl": true,
+        "lib": "./mylib",
+        "enableWebsockets": true,
+        "websockets": {
+            "events": [
+                {
+                    "event": "test",
+                    "handler": "$ws.websockets.onMessageDefaultCallback"
+                },
+                {
+                    "event": "testGlobal",
+                    "handler": "$ws.lib.mySocketEndpointFunction"
+                },
+                {
+                    "event": "disconnect",
+                    "handler": "$ws.websockets.onMessageDefaultCallback"
+                }
+            ]
+        },
         "endpoints": [
             {
                 "path": "/",
@@ -200,6 +216,17 @@
                         "endpoint": "delete"
                     }
                 ]
+            }
+        ]
+    },
+    "bot": {
+        "lib": "./mylib",
+        "cron": [
+            {
+                "id": "test-cront-task",
+                "name": "Execute test cron task",
+                "schedule": "*/1 * * * *",
+                "task": "myCronFunction"
             }
         ]
     }

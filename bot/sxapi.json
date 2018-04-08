@@ -1,5 +1,5 @@
 {
-    "name": "sxapi-demo-openshift-couchbase-bot-streamer",
+    "name": "sxapi-demo-openshift-couchbase-bot",
     "description": "Bot streamer service for the sxapi openshift couchbase demo (dev)",
     "version": "0.1.11",
     "debug": true,
@@ -16,10 +16,10 @@
         },
         "twitter": {
             "_class": "twitter",
-            "consumer_key": "xxxxxxxxxxxxx",
-            "consumer_secret": "xxxxxxxxxxxxx",
-            "access_token_key": "xxxxxxxxxxxxx-xxxxxxxxxxxxx",
-            "access_token_secret": "xxxxxxxxxxxxx"
+            "consumer_key": "{{{twitter_consumer_key}}}",
+            "consumer_secret": "{{{twitter_consumer_secret}}}",
+            "access_token_key": "{{{twitter_access_token_key}}}",
+            "access_token_secret": "{{{twitter_access_token_secret}}}"
         }
     },
     "log": {
@@ -29,10 +29,31 @@
         },
         "couchbase": {
             "resource": "couchbase-api",
-            "eventName": "application:log"
+            "eventName": "application:log",
+            "keyPrefix": "log::"
         }
     },
     "server": {
+        "type": "express",
+        "port": "8080",
+        "lib": "./mylib",
+        "enableWebsockets": true,
+        "websockets": {
+            "events": [
+                {
+                    "event": "connect",
+                    "handler": "$ws.lib.mySocketEventTest"
+                },
+                {
+                    "event": "test",
+                    "handler": "$ws.lib.mySocketEventTest"
+                },
+                {
+                    "event": "disconnect",
+                    "handler": "$ws.lib.mySocketEventDisconnect"
+                }
+            ]
+        },
         "endpoints": [
             {
                 "path": "/health",
@@ -58,6 +79,14 @@
                     "filters": [
                         {
                             "id": "test-twitter-startx",
+                            "match": "#onpc",
+                            "task": "myTwitterFunction",
+                            "outputResource": "couchbase-api",
+                            "tweetKeyPrefix": "tweet::",
+                            "userKeyPrefix": "twittos::"
+                        },
+                        {
+                            "id": "test-twitter-startx",
                             "match": "#paris",
                             "task": "myTwitterFunction",
                             "outputResource": "couchbase-api",
@@ -67,14 +96,6 @@
                         {
                             "id": "test-twitter-startx",
                             "match": "#london",
-                            "task": "myTwitterFunction",
-                            "outputResource": "couchbase-api",
-                            "tweetKeyPrefix": "tweet::",
-                            "userKeyPrefix": "twittos::"
-                        },
-                        {
-                            "id": "test-twitter-startx",
-                            "match": "#Capital",
                             "task": "myTwitterFunction",
                             "outputResource": "couchbase-api",
                             "tweetKeyPrefix": "tweet::",

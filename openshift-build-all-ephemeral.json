@@ -729,6 +729,10 @@
                                         "value": "couchbase-${SOURCE_BRANCH}"
                                     },
                                     {
+                                        "name": "BOT_SERVICE_HOST",
+                                        "value": "bot-${SOURCE_BRANCH}"
+                                    },
+                                    {
                                         "name": "COUCHBASE_USER",
                                         "valueFrom": {
                                             "secretKeyRef": {
@@ -1282,7 +1286,7 @@
             "name": "COUCHBASE_PASSWORD",
             "displayName": "Couchbase password",
             "description": "Database password of the application user",
-            "value": "Administrator123$",
+            "value": "Administrator123",
             "from": "[A-Z0-9]{16}",
             "generate": "expression",
             "required": true

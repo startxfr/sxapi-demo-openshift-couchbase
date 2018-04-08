@@ -9,7 +9,7 @@
   "debug": true,
   "analyze": true,
   "dependencies": {
-    "sxapi-core": "~0.2.7"
+    "sxapi-core": "~0.2.16"
   },
   "scripts": {
     "start": "node app.js"

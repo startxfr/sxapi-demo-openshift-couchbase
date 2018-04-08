@@ -34,7 +34,7 @@ oc new-project demo
 oc process -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/master/openshift-pipeline-all-ephemeral.json \
            -v DEMO_API=demo.apps.startx.fr \
            -v COUCHBASE_USER="Administrator" \
-           -v COUCHBASE_PASSWORD="Administrator123$" \
+           -v COUCHBASE_PASSWORD="Administrator123" \
            -v COUCHBASE_BUCKET="demo" | \
 oc create -f -
 sleep 5

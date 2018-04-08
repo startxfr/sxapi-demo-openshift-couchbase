@@ -1,52 +1,79 @@
 
-
 app = {
+  currentMousePos: {x: -1, y: -1, time: 0},
   config: {
-    apiUrl: "http://api-test.apps.startx.fr/"
+    apiUrl: "http://localhost/",
+    traceFrequency: 100
   },
   init: function () {
+    // listening mouse position
+    $(document).mousemove(function (event) {
+      var t = new Date();
+      app.currentMousePos.time = t.getTime();
+      app.currentMousePos.href = window.location.href;
+      app.currentMousePos.x = event.pageX;
+      app.currentMousePos.y = event.pageY;
+    }).mouseover();
     $.ajax({method: "GET", url: "/env"})
     .always(function (response, status) {
       if (status === "success" && response.code === "ok") {
-        if(response.data && response.data.DEMO_API) {
-          app.config.apiUrl = "http://"+response.data.DEMO_API+"/";
+        if (response.data && response.data.DEMO_API) {
+          app.config.apiUrl = "http://" + response.data.DEMO_API + "/";
         }
-        $.ajax({method: "GET", url: "/info"})
-        .always(function (response, status) {
-          if (status === "success" && response.code === "ok") {
-            console.log(response);
-            $("#appContainer").text(response.data.server.hostname);
-            $("#appRelease").html(response.data.service.version + " <span style='color:grey'>via " + response.data.server.hostname + "</span>");
-          }
-          else {
-            console.error(response.data || response);
-          }
-        });
+        app.loadFrontendInfo();
         app.api.init();
-        app.sirenConvert.init();
-        app.tvaConvert.init();
-        app.greffeSearch.init();
-        app.listeDepartement.init();
-        app.listePays.init();
+        app.socket.init();
       }
       else {
-        console.error(response);
-        var message = "impossible de contacter le backend www car " + (response.message || response);
-        $(app.tools.alertBox("danger", message)).insertAfter("div.jumbotron");
-        console.error(message);
+        app.tools.displayError("impossible de contacter le frontend www car " + (response.message || response));
       }
     });
 
+  },
+  loadFrontendInfo: function () {
+    $.ajax({method: "GET", url: "/info"})
+    .always(function (response, status) {
+      if (status === "success" && response.code === "ok") {
+        $("#appContainer").text(response.data.server.hostname);
+        $("#appRelease").html(response.data.service.version + " <span style='color:grey'>via " + response.data.server.hostname + "</span>");
+      }
+      else {
+        app.tools.displayError(response.data.message || response.message || response.statusText);
+      }
+    });
+  },
+  socket: {
+    io: null,
+    init: function () {
+      app.socket.io = io(app.config.apiUrl);
+      app.socket.io.on('connect', app.socket.onConnectCallback);
+      app.socket.on('disconnect', app.socket.onDisconnectCallback);
+    },
+    onConnectCallback: function () {
+      app.tools.displaySuccess("Connection websocket avec l'API établie (session " + app.socket.io.id + ")");
+      setInterval(app.socket.emitTrace, app.config.traceFrequency);
+    },
+    onDisconnectCallback: function () {
+      app.tools.displayError("Deconnection websocket avec l'API");
+    },
+    on: function (event, callback) {
+      return app.socket.io.on(event, callback);
+    },
+    emit: function (event, data, callback) {
+      return app.socket.io.emit(event, data, callback);
+    },
+    emitTrace: function () {
+      var t = new Date();
+      app.currentMousePos.time = t.getTime();
+      app.socket.emit('system:log:trace', app.currentMousePos);
+    }
   },
   api: {
     info: null,
     init: function () {
       this.get("info", null, function (error, response) {
         if (error) {
-          console.error(error, response);
-          var message = "impossible de contacter l'API car " + (error.message || error.statusText || error);
-          $(app.tools.alertBox("danger", message)).insertAfter("div.jumbotron");
-          console.error(message);
+          app.tools.displayError("impossible de contacter l'API car " + (error.message || error.statusText || error));
         }
         else {
           app.api.info = response;
@@ -96,182 +123,17 @@ app = {
       });
     }
   },
-  sirenConvert: {
-    inputEl: null,
-    btnEl: null,
-    msgOkEl: null,
-    msgNokEl: null,
-    init: function () {
-      this.inputEl = $("#sirenConvertInputSiren");
-      this.btnEl = $("#sirenConvertBtn");
-      this.msgOkEl = $("#sirenConvertSucessMessage");
-      this.msgNokEl = $("#sirenConvertErrorMessage");
-      this.msgOkEl.removeClass("hidden").hide();
-      this.msgNokEl.removeClass("hidden").hide();
-      this.btnEl.click(this.onClickConvert);
-    },
-    onClickConvert: function () {
-      var $this = app.sirenConvert;
-      $this.msgOkEl.hide();
-      $this.msgNokEl.hide();
-      if ($this.inputEl.val().length === 0) {
-        $this.msgNokEl.show();
-      }
-      else {
-        app.api.get("insee/" + $this.inputEl.val() + "/tva", null, function (error, response) {
-          if (error) {
-            $this.msgNokEl.show();
-            console.error(error);
-          }
-          else {
-            console.log(response);
-            $("b", $this.msgOkEl).text(response);
-            $this.msgOkEl.show();
-          }
-        });
-      }
-    }
-  },
-  tvaConvert: {
-    inputEl: null,
-    btnEl: null,
-    msgOkEl: null,
-    msgNokEl: null,
-    init: function () {
-      this.inputEl = $("#tvaConvertInputTva");
-      this.btnEl = $("#tvaConvertBtn");
-      this.msgOkEl = $("#tvaConvertSucessMessage");
-      this.msgNokEl = $("#tvaConvertErrorMessage");
-      this.msgOkEl.removeClass("hidden").hide();
-      this.msgNokEl.removeClass("hidden").hide();
-      this.btnEl.click(this.onClickConvert);
-    },
-    onClickConvert: function () {
-      var $this = app.tvaConvert;
-      $this.msgOkEl.hide();
-      $this.msgNokEl.hide();
-      if ($this.inputEl.val().length === 0) {
-        $this.msgNokEl.show();
-      }
-      else {
-        app.api.get("insee/" + $this.inputEl.val() + "/siren", null, function (error, response) {
-          if (error) {
-            $this.msgNokEl.show();
-            console.error(error);
-          }
-          else {
-            console.log(response);
-            $("b", $this.msgOkEl).text(response);
-            $this.msgOkEl.show();
-          }
-        });
-      }
-    }
-  },
-  greffeSearch: {
-    inputEl: null,
-    btnEl: null,
-    msgOkEl: null,
-    msgNokEl: null,
-    init: function () {
-      this.inputEl = $("#greffeSearchInputSiren");
-      this.btnEl = $("#greffeSearchBtn");
-      this.msgOkEl = $("#greffeSearchSucessMessage");
-      this.msgNokEl = $("#greffeSearchErrorMessage");
-      this.msgOkEl.removeClass("hidden").hide();
-      this.msgNokEl.removeClass("hidden").hide();
-      this.btnEl.click(this.onClickConvert);
-    },
-    onClickConvert: function () {
-      var $this = app.greffeSearch;
-      $this.msgOkEl.hide();
-      $this.msgNokEl.hide();
-      if ($this.inputEl.val().length === 0) {
-        $this.msgNokEl.show();
-      }
-      else {
-        app.api.get("insee/" + $this.inputEl.val(), null, function (error, response) {
-          if (error) {
-            $this.msgNokEl.show();
-            console.error(error);
-          }
-          else {
-            console.log(response);
-            $("b", $this.msgOkEl).text(response);
-            $this.msgOkEl.show();
-          }
-        });
-      }
-    }
-  },
-  listeDepartement: {
-    tableDivEl: null,
-    msgNokEl: null,
-    init: function () {
-      this.tableDivEl = $("#listeDepartementTable");
-      this.msgNokEl = $("#listeDepartementErrorMessage");
-      this.tableDivEl.removeClass("hidden").hide();
-      app.api.get("ref/departement", null, function (error, response) {
-        if (error) {
-          app.listeDepartement.tableDivEl.hide();
-          app.listeDepartement.msgNokEl.show();
-          console.error(error);
-        }
-        else {
-          console.log(response);
-          var table = $("table", app.listeDepartement.tableDivEl);
-          $(response).each(function (index, item) {
-            var row = "<tr><td>" + item.id + "</td>";
-            row += "<td>" + item.name + "</td>";
-            row += "<td>" + item.prefecture_dep + "</td>";
-            row += "<td>" + item.region_dep + "</td></tr>";
-            table.append(row);
-          });
-          app.listeDepartement.tableDivEl.show();
-          app.listeDepartement.msgNokEl.hide();
-        }
-      });
-    }
-  },
-  listePays: {
-    tableDivEl: null,
-    btnEl: null,
-    msgNokEl: null,
-    init: function () {
-      this.tableDivEl = $("#listePaysTable");
-      this.btnEl = $("#listePaysBtn");
-      this.msgNokEl = $("#listePaysErrorMessage");
-      this.tableDivEl.removeClass("hidden").hide();
-      this.msgNokEl.removeClass("hidden").hide();
-      this.btnEl.click(this.onClickLoad);
-    },
-    onClickLoad: function () {
-      var $this = app.listePays;
-      $this.msgNokEl.hide();
-      app.api.get("ref/pays", null, function (error, response) {
-        if (error) {
-          $this.msgNokEl.show();
-          console.error(error);
-        }
-        else {
-          console.log(response);
-          var table = $("table", app.listePays.tableDivEl);
-          $(response).each(function (index, item) {
-            var row = "<tr><td>" + item.id + "</td>";
-            row += "<td>" + item.name + "</td>";
-            row += "<td>" + item.code + "</td></tr>";
-            console.log(table);
-            table.append(row);
-          });
-          app.listePays.tableDivEl.show();
-          app.listePays.msgNokEl.hide();
-        }
-      });
-    }
-  },
   tools: {
     alertBox: function (type, message) {
       return '<div class="alert alert-' + type + ' alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + message + "</div>";
+    },
+    displaySuccess: function (message) {
+      $(app.tools.alertBox("success", message)).insertAfter("div.jumbotron");
+      console.info(message);
+    },
+    displayError: function (message) {
+      $(app.tools.alertBox("danger", message)).insertAfter("div.jumbotron");
+      console.error(message);
     }
   }
 };

@@ -8,7 +8,8 @@ var mylib = {
     $log.info("cron task " + config.id + " executed at " + moment().format('YYYY-MM-DD HH:mm:ss'));
   },
   myTwitterFunction: function (data, message, config) {
-    $log.info("twitter reader " + config.id + " found tweet " + data.id_str);
+    var logPrefix = "twitter reader " + config.id;
+    $log.info(logPrefix + " received tweet " + data.id_str);
     var tweetKey = (config.tweetKeyPrefix || '') + data.id_str;
     var twittosKey = (config.userKeyPrefix || '') + data.user.id_str;
     var tweet = require('merge').recursive({}, data);
@@ -20,10 +21,11 @@ var mylib = {
       return function (coucherr, doc) {
         var duration = $timer.timeStop('couchbase_insert_' + key);
         if (coucherr) {
-          $log.warn("error adding new document '" + key + "' because " + coucherr.message, duration);
+          $log.warn(logPrefix + " can't record document '" + key + "' because " + coucherr.message, duration);
         }
         else {
-          $log.debug("new document '" + key + "' added ", 3, duration);
+          $log.debug(logPrefix + " recorded document '" + key + "'", 3, duration);
+          $app.ws.io.emit("tweet:add", tweet);
         }
       };
     });
@@ -39,12 +41,20 @@ var mylib = {
       };
     });
   },
-  mySocketEndpointFunction: function (client, config) {
-    return function (data) {
-      console.log("------mySocketEndpointFunction");
+  mySocketEventTest: function (client, config) {
+    return function (data,param) {
+      console.log(data,param);
+      console.log("------mySocketEventTest bot");
       console.log(client.id, config, data);
       client.broadcast.emit("test", data);
       client.emit("test", data);
+    };
+  },
+  mySocketEventDisconnect: function (client, config) {
+    return function (data,param) {
+      console.log(data,param);
+      $log.debug("websocket client " + client.id + " is disconnected", 3);
+      $app.ws.io.emit("disconnected", {id: client.id});
     };
   }
 };

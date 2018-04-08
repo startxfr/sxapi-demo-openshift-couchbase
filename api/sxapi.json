@@ -5,8 +5,13 @@
     "debug": true,
     "log": {
         "filters": {
-            "level": "0,1,2,3,4",
+            "level": "0,1,2,3,4,5",
             "type": "debug,info,error,warn"
+        },
+        "couchbase": {
+            "resource": "couchbase-api",
+            "eventName": "application:log",
+            "keyPrefix": "log::"
         }
     },
     "session": {
@@ -36,6 +41,10 @@
             "user": "{{{COUCHBASE_USER}}}",
             "password": "{{{COUCHBASE_PASSWORD}}}"
         },
+        "websocket-bot": {
+            "_class": "websocket-client",
+            "host": "http://{{{BOT_SERVICE_HOST}}}:8080"
+        },
         "serviceinfo-api": {
             "_class": "serviceinfo"
         },
@@ -51,16 +60,15 @@
         "websockets": {
             "events": [
                 {
-                    "event": "test",
-                    "handler": "$ws.websockets.onMessageDefaultCallback"
-                },
-                {
-                    "event": "testGlobal",
-                    "handler": "$ws.lib.mySocketEndpointFunction"
+                    "event": "system:log:trace",
+                    "handler": "$ws.lib.websockets.systemLogTraceEndpoint",
+                    "outputResource": "couchbase-api",
+                    "eventName": "browser:trace",
+                    "keyPrefix": "browser_trace::"
                 },
                 {
                     "event": "disconnect",
-                    "handler": "$ws.websockets.onMessageDefaultCallback"
+                    "handler": "$ws.lib.websockets.disconnectEndpoint"
                 }
             ]
         },
@@ -128,92 +136,7 @@
                         "path": "/sessions",
                         "method": "GET",
                         "endpoint": "list",
-                        "sql": "SELECT * FROM session ORDER BY date_sess DESC  LIMIT 50"
-                    }
-                ]
-            },
-            {
-                "path": "/ref",
-                "desc": "References section with various Read-only endpoints to get stable data",
-                "method": "ROUTER",
-                "resource": "couchbase-api",
-                "endpoints": [
-                    {
-                        "path": "/ref/departement",
-                        "method": "GET",
-                        "endpoint": "list",
-                        "sql": "SELECT id_dep AS id, nom_dep AS name, prefecture_dep, region_dep FROM ref_departement ORDER BY id ASC LIMIT 200"
-                    },
-                    {
-                        "path": "/ref/pays",
-                        "method": "GET",
-                        "endpoint": "list",
-                        "sql": "SELECT id_pays AS id, nom_pays AS name, code_pays AS code FROM ref_pays ORDER BY id ASC LIMIT 300"
-                    }
-                ]
-            },
-            {
-                "path": "/insee",
-                "desc": "Check for insee informations",
-                "method": "ROUTER",
-                "resource": "insee-api",
-                "endpoints": [
-                    {
-                        "path": "/insee/:id",
-                        "method": "GET",
-                        "endpoint": "read"
-                    },
-                    {
-                        "path": "/insee/:id/tva",
-                        "method": "GET",
-                        "endpoint": "siret2Tva"
-                    },
-                    {
-                        "path": "/insee/:id/siren",
-                        "method": "GET",
-                        "endpoint": "tva2Siren"
-                    }
-                ]
-            },
-            {
-                "path": "/entreprises",
-                "desc": "Enterprise section for managing corporate customers",
-                "method": "ROUTER",
-                "resource": "couchbase-api",
-                "table": "entreprise",
-                "id_field": "id_ent",
-                "endpoints": [
-                    {
-                        "path": "/entreprises/search/:q",
-                        "method": "GET",
-                        "endpoint": "list",
-                        "sql": "SELECT * FROM `entreprise` WHERE (id_ent='{{q}}' OR nom_ent LIKE '%{{q}}%') LIMIT 100"
-                    },
-                    {
-                        "path": "/entreprises/search",
-                        "method": "GET",
-                        "endpoint": "list",
-                        "sql": "SELECT * FROM `entreprise` LIMIT 100"
-                    },
-                    {
-                        "path": "/entreprise",
-                        "method": "POST",
-                        "endpoint": "create"
-                    },
-                    {
-                        "path": "/entreprise/:id",
-                        "method": "GET",
-                        "endpoint": "get"
-                    },
-                    {
-                        "path": "/entreprise/:id",
-                        "method": "PUT",
-                        "endpoint": "update"
-                    },
-                    {
-                        "path": "/entreprise/:id",
-                        "method": "DELETE",
-                        "endpoint": "delete"
+                        "n1ql": "SELECT * FROM session ORDER BY date_sess DESC  LIMIT 50"
                     }
                 ]
             }
@@ -223,10 +146,11 @@
         "lib": "./mylib",
         "cron": [
             {
-                "id": "test-cront-task",
+                "id": "test-cron-task",
                 "name": "Execute test cron task",
                 "schedule": "*/1 * * * *",
-                "task": "myCronFunction"
+                "task": "cronTestHandler",
+                "socketResource": "websocket-bot"
             }
         ]
     }

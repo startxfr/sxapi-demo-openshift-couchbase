@@ -1,19 +1,53 @@
-/* global resConf, $log, $app, module, require, $timer */
+/* global resConf, $log, $app, module, require, $timer, $ws */
 
 //'use strict';
 
 var mylib = {
-  myCronFunction: function (config) {
+  cronTestHandler: function (config) {
     var moment = require('moment');
     $log.info("cron task " + config.id + " executed at " + moment().format('YYYY-MM-DD HH:mm:ss'));
+//    if (mylib.socketLoaded !== true) {
+//      $app.resources.get(config.socketResource).on("tweet:add", function (client, data) {
+//        console.log("--------------------");
+//        console.log(client, data);
+//      });
+//      mylib.socketLoaded = true;
+//    }
   },
-  mySocketEndpointFunction: function (client, config) {
-    return function (data) {
-      console.log("------mySocketEndpointFunction");
-      console.log(client.id, config, data);
-      client.broadcast.emit("test", data);
-      client.emit("test", data);
-    };
+  websockets: {
+    systemLogTraceEndpoint: function (client, config) {
+      return function (data) {
+        var logPrefix = "log browser trace for session " + client.id;
+        var key = require('uuid').v4();
+        data.socketSession = client.id;
+        if (config.eventName !== false) {
+          data.event = config.eventName;
+        }
+        if (typeof config.keyPrefix === "string") {
+          key = config.keyPrefix + key;
+        }
+        $app.resources.get(config.outputResource).insert(key, data, function (key) {
+          return function (coucherr, doc) {
+            var duration = $timer.timeStop('couchbase_insert_' + key);
+            if (coucherr) {
+              $log.warn(logPrefix + " can't record document '" + key + "' because " + coucherr.message, duration);
+            }
+            else {
+              $log.debug(logPrefix + " recorded document '" + key + "'", 3, duration);
+            }
+          };
+        });
+      };
+    },
+    disconnectEndpoint: function (client, config) {
+      return function (data, param) {
+        console.log(data, param);
+        console.log("------disconnectEndpoint api");
+        console.log(client.id, config, data);
+        client.broadcast.emit("test", data);
+        client.emit("test", data);
+      };
+    }
   }
 };
 

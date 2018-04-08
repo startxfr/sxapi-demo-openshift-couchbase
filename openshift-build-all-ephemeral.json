@@ -729,6 +729,10 @@
                                         "value": "couchbase-${SOURCE_BRANCH}"
                                     },
                                     {
+                                        "name": "BOT_SERVICE_HOST",
+                                        "value": "bot-${SOURCE_BRANCH}"
+                                    },
+                                    {
                                         "name": "COUCHBASE_USER",
                                         "valueFrom": {
                                             "secretKeyRef": {

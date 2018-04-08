@@ -12,7 +12,7 @@ api:
   ports:
     - "8080:8080"
   links:
-    - "bot-streamer:bot"
+    - "bot:bot"
     - "db:db"
   volumes:
   - "/secure/dev/startx/sxapi-demo-openshift-couchbase/api/app.js:/app/app.js:Z"
@@ -51,9 +51,9 @@ db:
     - "11211:11211"
     - "18091-18094"
 
-bot-streamer:
-  build: bot-streamer/
-  container_name: "sxapi-demo-openshift-couchbase-bot-streamer"
+bot:
+  build: bot/
+  container_name: "sxapi-demo-openshift-couchbase-bot"
   environment:
   - SX_VERBOSE=true
   - SX_DEBUG=true
@@ -70,7 +70,7 @@ bot-streamer:
   links:
     - "db:db"
   volumes:
-  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/bot-streamer/sxapi.json:/app/sxapi.json:z"
-  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/bot-streamer/package.json:/app/package.json:z"
-  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/bot-streamer/mylib.js:/app/mylib.js:z"
+  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/bot/sxapi.json:/app/sxapi.json:z"
+  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/bot/package.json:/app/package.json:z"
+  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/bot/mylib.js:/app/mylib.js:z"
   command: ["/bin/sx-nodejs" , "run"]

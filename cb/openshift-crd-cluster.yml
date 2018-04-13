@@ -32,7 +32,7 @@ spec:
       enableFlush: true
       enableIndexReplica: false
   servers:
-    - size: 4
+    - size: 6
       name: all_services
       services:
         - data

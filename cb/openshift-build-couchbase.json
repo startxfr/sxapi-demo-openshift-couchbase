@@ -243,7 +243,7 @@
                         "enableFlush": true,
                         "enableIndexReplica": false,
                         "ioPriority": "high",
-                        "memoryQuota": "${COUCHBASE_BUCKET_MEMORY}",
+                        "memoryQuota": 400,
                         "name": "${COUCHBASE_BUCKET}",
                         "replicas": 1,
                         "type": "${COUCHBASE_BUCKET_TYPE}"
@@ -251,7 +251,7 @@
                 ],
                 "cluster": {
                     "autoFailoverTimeout": 20,
-                    "dataServiceMemoryQuota": "${COUCHBASE_DATA_MEMORY}",
+                    "dataServiceMemoryQuota": 800,
                     "indexServiceMemoryQuota": 256,
                     "indexStorageSetting": "memory_optimized",
                     "searchServiceMemoryQuota": 256
@@ -265,10 +265,9 @@
                         "services": [
                             "data",
                             "index",
-                            "query",
-                            "search"
+                            "query"
                         ],
-                        "size": "${COUCHBASE_NB_NODES}"
+                        "size": 4
                     }
                 ],
                 "version": "${BASE_IMAGE_TAG}"
@@ -306,8 +305,7 @@
                                 "name": "couchbase-workload",
                                 "image": "couchbase/server:${BASE_IMAGE_TAG}",
                                 "command": [
-                                    "sleep",
-                                    "60;",
+                                    "sleep 60;",
                                     "cbworkloadgen",
                                     "-n",
                                     "$COUCHBASE_NODE_UI_SERVICE_HOST:$COUCHBASE_NODE_UI_SERVICE_PORT_CB_ADMIN",
@@ -325,25 +323,16 @@
                                 "resources": {},
                                 "terminationMessagePath": "/dev/termination-log",
                                 "terminationMessagePolicy": "File",
-                                "imagePullPolicy": "Always"
+                                "imagePullPolicy": "Always",
+                                "restartPolicy": "Never"
                             }
                         ],
-                        "restartPolicy": "OnFailure",
+                        "restartPolicy": "Never",
                         "terminationGracePeriodSeconds": 30,
                         "dnsPolicy": "ClusterFirst",
                         "securityContext": {},
                         "schedulerName": "default-scheduler"
                     }
-                }
-            }
-        },
-        {
-            "kind": "Job",
-            "apiVersion": "batch/v1",
-            "metadata": {
-                "name": "couchbase-workload",
-                "labels": {
-                    "job-name": "couchbase-workload"
                 }
             }
         }
@@ -375,20 +364,6 @@
             "required": true
         },
         {
-            "name": "COUCHBASE_NB_NODES",
-            "displayName": "Couchbase node number",
-            "description": "Number of cluster node to create",
-            "value": "4",
-            "required": true
-        },
-        {
-            "name": "COUCHBASE_DATA_MEMORY",
-            "displayName": "Node data memory",
-            "description": "Number of RAM allocated to the data service on each node",
-            "value": "600",
-            "required": true
-        },
-        {
             "name": "COUCHBASE_BUCKET",
             "displayName": "Couchbase bucket",
             "description": "name of the bucket to create for example",
@@ -400,13 +375,6 @@
             "displayName": "Couchbase bucket type",
             "description": "Bucket type for the couchabse bucket (ephemeral, couchbase or memcache)",
             "value": "ephemeral",
-            "required": true
-        },
-        {
-            "name": "COUCHBASE_BUCKET_MEMORY",
-            "displayName": "Couchbase bucket memory data",
-            "description": "RAM quota allocated to the bucket",
-            "value": "400",
             "required": true
         }
     ]

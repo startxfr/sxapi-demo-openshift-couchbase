@@ -4,8 +4,8 @@
     "metadata": {
         "name": "sxapi-demo-openshift-couchbase-template",
         "annotations": {
-            "openshift.io/display-name": "SXAPI Demo Couchbase (Ephemeral)",
-            "description": "Template for deploying a full Couchbase cluster using operator in an openshift PaaS",
+            "openshift.io/display-name": "SXAPI Demo Couchbase operator (Ephemeral)",
+            "description": "Template for building a full couchbase cluster (multi-node and services) using Openshift v3.7+ Operator component (experimental)",
             "iconClass": "icon-database",
             "tags": "startx,demo,couchbase",
             "openshift.io/provider-display-name": "STARTX",
@@ -242,27 +242,16 @@
                         "conflictResolution": "seqno",
                         "enableFlush": true,
                         "enableIndexReplica": false,
-                        "evictionPolicy": "fullEviction",
                         "ioPriority": "high",
-                        "memoryQuota": 256,
-                        "name": "default",
+                        "memoryQuota": "${COUCHBASE_BUCKET_MEMORY}",
+                        "name": "${COUCHBASE_BUCKET}",
                         "replicas": 1,
-                        "type": "couchbase"
-                    },
-                    {
-                        "conflictResolution": "seqno",
-                        "enableFlush": true,
-                        "enableIndexReplica": false,
-                        "ioPriority": "high",
-                        "memoryQuota": 256,
-                        "name": "demo",
-                        "replicas": 1,
-                        "type": "ephemeral"
+                        "type": "${COUCHBASE_BUCKET_TYPE}"
                     }
                 ],
                 "cluster": {
-                    "autoFailoverTimeout": 30,
-                    "dataServiceMemoryQuota": 1024,
+                    "autoFailoverTimeout": 20,
+                    "dataServiceMemoryQuota": "${COUCHBASE_DATA_MEMORY}",
                     "indexServiceMemoryQuota": 256,
                     "indexStorageSetting": "memory_optimized",
                     "searchServiceMemoryQuota": 256
@@ -279,10 +268,10 @@
                             "query",
                             "search"
                         ],
-                        "size": 4
+                        "size": "${COUCHBASE_NB_NODES}"
                     }
                 ],
-                "version": "5.5.0-Mar"
+                "version": "${BASE_IMAGE_TAG}"
             }
         },
         {
@@ -315,7 +304,7 @@
                         "containers": [
                             {
                                 "name": "couchbase-workload",
-                                "image": "couchbase/server:5.5.0-Mar",
+                                "image": "couchbase/server:${BASE_IMAGE_TAG}",
                                 "command": [
                                     "sleep",
                                     "60;",
@@ -356,80 +345,15 @@
                 "labels": {
                     "job-name": "couchbase-workload"
                 }
-            },
-            "spec": {
-                "parallelism": 1,
-                "completions": 1,
-                "backoffLimit": 6,
-                "selector": {
-                    "matchLabels": {
-                        "job-name": "couchbase-workload"
-                    }
-                },
-                "template": {
-                    "metadata": {
-                        "name": "couchbase-workload",
-                        "creationTimestamp": null,
-                        "labels": {
-                            "job-name": "couchbase-workload"
-                        }
-                    },
-                    "spec": {
-                        "containers": [
-                            {
-                                "name": "couchbase-workload",
-                                "image": "perl",
-                                "command": [
-                                    "perl",
-                                    "-Mbignum=bpi",
-                                    "-wle",
-                                    "print bpi(2000)"
-                                ],
-                                "resources": {},
-                                "terminationMessagePath": "/dev/termination-log",
-                                "terminationMessagePolicy": "File",
-                                "imagePullPolicy": "Always"
-                            }
-                        ],
-                        "restartPolicy": "OnFailure",
-                        "terminationGracePeriodSeconds": 30,
-                        "dnsPolicy": "ClusterFirst",
-                        "securityContext": {},
-                        "schedulerName": "default-scheduler"
-                    }
-                }
             }
         }
-
     ],
     "parameters": [
         {
-            "name": "SOURCE_BRANCH",
-            "displayName": "Application source-code branch",
-            "description": "Name of the branch to use for building this application (dev, master, test, prod)",
-            "value": "dev",
-            "required": true
-        },
-        {
             "name": "BASE_IMAGE_TAG",
-            "displayName": "Base image tag",
-            "description": "Base image flavour to use for buidling this application (latest, fc27, fc28, centos6, centos7)",
-            "value": "latest",
-            "required": true
-        },
-        {
-            "name": "DEMO_API",
-            "displayName": "API fqdn",
-            "description": "Domain name of the API endpoint to use in this frontend (api-xxxxx.apps.startx.fr were xxxxx is your project namespace)",
-            "value": "api-dev-demo.apps.startx.fr",
-            "required": true
-        },
-        {
-            "name": "WEBHOOK_TOKEN",
-            "displayName": "Webhook token",
-            "description": "Secret token to use in github, gitlab or other to hook build action when code change",
-            "generate": "expression",
-            "from": "[a-zA-Z0-9]{24}",
+            "displayName": "Couchbase release",
+            "description": "Couchbase image release to use for buidling cluster nodes and job task (5.1.0, 5.5.0-Mar, 5.5.0-beta)",
+            "value": "5.5.0-beta",
             "required": true
         },
         {
@@ -451,10 +375,38 @@
             "required": true
         },
         {
+            "name": "COUCHBASE_NB_NODES",
+            "displayName": "Couchbase node number",
+            "description": "Number of cluster node to create",
+            "value": "4",
+            "required": true
+        },
+        {
+            "name": "COUCHBASE_DATA_MEMORY",
+            "displayName": "Node data memory",
+            "description": "Number of RAM allocated to the data service on each node",
+            "value": "600",
+            "required": true
+        },
+        {
             "name": "COUCHBASE_BUCKET",
             "displayName": "Couchbase bucket",
-            "description": "name of the default bucket to create",
+            "description": "name of the bucket to create for example",
             "value": "demo",
+            "required": true
+        },
+        {
+            "name": "COUCHBASE_BUCKET_TYPE",
+            "displayName": "Couchbase bucket type",
+            "description": "Bucket type for the couchabse bucket (ephemeral, couchbase or memcache)",
+            "value": "ephemeral",
+            "required": true
+        },
+        {
+            "name": "COUCHBASE_BUCKET_MEMORY",
+            "displayName": "Couchbase bucket memory data",
+            "description": "RAM quota allocated to the bucket",
+            "value": "400",
             "required": true
         }
     ]

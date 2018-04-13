@@ -25,7 +25,7 @@ spec:
       enableIndexReplica: false
     - name: demo
       type: ephemeral
-      memoryQuota: 256
+      memoryQuota: 400
       replicas: 1
       ioPriority: high
       conflictResolution: seqno

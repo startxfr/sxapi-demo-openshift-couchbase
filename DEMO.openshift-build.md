@@ -52,7 +52,7 @@ oc get all
           .--------------------------.   .-----------------. | | demo-api | | .----------.
           |       Source code        |   |  DeployConfig   | | '----------' | | Service  |
           |--------------------------|   |-----------------|-. .----------. .------------|
-          | sxapi-demo-openshift-couchbase/www |   | demo-www        | | |   Pod    | | | demo-www |
+          | sxapi-demo...chbase/www  |   | demo-www        | | |   Pod    | | | demo-www |
           '--------------------------'   '-----------------' '>|----------|<' '----------'
                               |                   ^            | demo-api |      /
                               v                   |            '----------'     /
@@ -78,7 +78,7 @@ oc get all
           .--------------------------.   .-----------------. | | demo-api | |  | Service  |
           |       Source code        |   |  DeployConfig   | | '----------' .--|----------|
           |--------------------------|   |-----------------|-. .----------. |  | demo-api |
-          | sxapi-demo-openshift-couchbase/api |   | demo-api        | | |   Pod    | |  '----------'
+          | sxapi-demo...chbase/api  |   | demo-api        | | |   Pod    | |  '----------'
           '--------------------------'   '-----------------' '>|----------|<'
                                                                | demo-api |
                                                                '----------'
@@ -87,14 +87,14 @@ oc get all
 .-------------------.  .-------------.   .-----------------.   .----------.
 |   Builder image   |  | BuildConfig |   |    API image    |   | Service  |
 |-------------------|->|-------------|-->|-----------------|   |----------|
-| startx/sv-couchbase |  | demo-api    |   | demo-api:latest |   | demo-api |
+| startx/couchbase  |  | demo-api    |   | demo-api:latest |   | demo-api |
 '-------------------'  '-------------'   '-----------------'   '----------'
                               ^                   |                  |
                               |                   v                  v
           .--------------------------.   .-----------------.   .----------.
           |       Source code        |   |  DeployConfig   |   |   Pod    |
           |--------------------------|   |-----------------|-->|----------|
-          | sxapi-demo-openshift-couchbase/api |   | demo-api        |   | demo-api |
+          | sxapi-demo...chbase/api  |   | demo-api        |   | demo-api |
           '--------------------------'   '-----------------'   '----------'
 ```
 

@@ -8,11 +8,11 @@ spec:
   authSecret: couchbase-auth
   exposeAdminConsole: true
   cluster:
-    dataServiceMemoryQuota: 512
+    dataServiceMemoryQuota: 1024
     indexServiceMemoryQuota: 256
     searchServiceMemoryQuota: 256
     indexStorageSetting: memory_optimized
-    autoFailoverTimeout: 30
+    autoFailoverTimeout: 20
   buckets:
     - name: default
       type: couchbase
@@ -23,8 +23,16 @@ spec:
       conflictResolution: seqno
       enableFlush: true
       enableIndexReplica: false
+    - name: demo
+      type: ephemeral
+      memoryQuota: 400
+      replicas: 1
+      ioPriority: high
+      conflictResolution: seqno
+      enableFlush: true
+      enableIndexReplica: false
   servers:
-    - size: 4
+    - size: 6
       name: all_services
       services:
         - data

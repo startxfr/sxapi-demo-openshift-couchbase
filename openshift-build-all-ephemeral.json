@@ -5,7 +5,7 @@
         "name": "sxapi-demo-openshift-couchbase-template",
         "annotations": {
             "openshift.io/display-name": "SXAPI Demo Couchbase (Ephemeral)",
-            "description": "Template for building a full demo application (frontend + api + bucket) using sxapi in an openshift PaaS",
+            "description": "Template for building a full demo application (frontend + api + bot + bucket) using sxapi in an openshift PaaS",
             "iconClass": "icon-nodejs",
             "tags": "startx,demo,sxapi,couchbase",
             "openshift.io/provider-display-name": "STARTX",

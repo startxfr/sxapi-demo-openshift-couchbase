@@ -26,7 +26,7 @@ npm module ([sxapi npm module](https://www.npmjs.com/package/sxapi-core))
 |-----------|<-------|---------------------|<------------------------------(    internet    )
 | couchbase |        | nodejs / websockets |                                '-(          ).-'
 '-----------'        '---------------------'      .----------------.            '-.( ).-'    
-     |                                            |      API       |                |
+     |                          `---------------->|      API       |------------->  |
      '------------------------------------------->|----------------|<---------------'
                                                   | nodejs / json  |
                                                   '----------------'
@@ -85,7 +85,7 @@ from the Web console.
 # <pwd> your openshift password
 # <master_domain> your master domain name
 # <project> your project name
-# ex: oc login -u system:admin https://openshift.demo.startx.fr:8443
+# ex: oc login -u dev -p dev https://openshift.demo.startx.fr:8443
 # ex: oc new-project demo; oc project demo
 oc login -u <user>:<pwd> https://<master_domain>
 oc new-project <project>
@@ -97,9 +97,9 @@ oc project <project>
 This section will help you start a build and deploy of this demo application stack using various build and
 deployement strategies.
 
-- [docker strategy](DEMO.docker.md) : Deploy demo application using docker command only
-- [openshift build strategy](DEMO.openshift-build.md) : Deploy demo application using openshift build and deployement configuration
-- [openshift pipeline strategy](DEMO.openshift-pipeline.md) : Deploy demo application using openshift pipeline configuration stategy
+- [docker strategy](DEMO.docker.md) : Deploy this demo stack using docker command only
+- [openshift build strategy](DEMO.openshift-build.md) : Deploy this demo stack using openshift build and deployement configuration
+- [openshift pipeline strategy](DEMO.openshift-pipeline.md) : Deploy this demo stack using openshift pipeline configuration stategy
 
 
 ## Troubleshooting

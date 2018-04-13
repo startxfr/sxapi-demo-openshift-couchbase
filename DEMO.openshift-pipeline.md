@@ -32,7 +32,7 @@ users, network and node allocation.
 ```bash
 oc new-project demo
 oc process -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/dev/openshift-pipeline-all-ephemeral.json \
-           -v DEMO_API=demo.apps.startx.fr \
+           -v DEMO_API=demo.openshift.demo.startx.fr \
            -v COUCHBASE_USER="Administrator" \
            -v COUCHBASE_PASSWORD="Administrator123" \
            -v COUCHBASE_BUCKET="demo" | \

@@ -270,7 +270,7 @@
                         "size": 4
                     }
                 ],
-                "version": "${BASE_IMAGE_TAG}"
+                "version": "${CB_BASE_IMAGE_TAG}"
             }
         },
         {
@@ -303,7 +303,7 @@
                         "containers": [
                             {
                                 "name": "couchbase-workload",
-                                "image": "couchbase/server:${BASE_IMAGE_TAG}",
+                                "image": "couchbase/server:${CB_BASE_IMAGE_TAG}",
                                 "command": [
                                     "sleep 60;",
                                     "cbworkloadgen",
@@ -339,7 +339,7 @@
     ],
     "parameters": [
         {
-            "name": "BASE_IMAGE_TAG",
+            "name": "CB_BASE_IMAGE_TAG",
             "displayName": "Couchbase release",
             "description": "Couchbase image release to use for buidling cluster nodes and job task (5.1.0, 5.5.0-Mar, 5.5.0-beta)",
             "value": "5.5.0-beta",

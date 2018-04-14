@@ -663,7 +663,7 @@
                                     },
                                     {
                                         "name": "COUCHBASE_BUCKET",
-                                        "value": "${COUCHBASE_BUCKET}test"
+                                        "value": "${COUCHBASE_BUCKET}-test"
                                     },
                                     {
                                         "name": "twitter_consumer_key",
@@ -857,7 +857,7 @@
                                     },
                                     {
                                         "name": "COUCHBASE_BUCKET",
-                                        "value": "${COUCHBASE_BUCKET}test"
+                                        "value": "${COUCHBASE_BUCKET}-test"
                                     }
                                 ],
                                 "command": [
@@ -1503,7 +1503,7 @@
                                     },
                                     {
                                         "name": "COUCHBASE_BUCKET",
-                                        "value": "${COUCHBASE_BUCKET}prod"
+                                        "value": "${COUCHBASE_BUCKET}-prod"
                                     },
                                     {
                                         "name": "twitter_consumer_key",
@@ -1697,7 +1697,7 @@
                                     },
                                     {
                                         "name": "COUCHBASE_BUCKET",
-                                        "value": "${COUCHBASE_BUCKET}prod"
+                                        "value": "${COUCHBASE_BUCKET}-prod"
                                     }
                                 ],
                                 "command": [
@@ -1974,7 +1974,7 @@
                 "labels": {
                     "app": "${APP_NAME}-prod",
                     "stage": "prod",
-                    "type": "api",
+                    "type": "www",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
@@ -1993,7 +1993,7 @@
                 "selector": {
                     "app": "${APP_NAME}-prod",
                     "stage": "prod",
-                    "type": "api",
+                    "type": "www",
                     "deploymentconfig": "www-prod"
                 },
                 "type": "ClusterIP",
@@ -2094,24 +2094,25 @@
                 "baseImage": "couchbase/server",
                 "buckets": [
                     {
-                        "name": "${COUCHBASE_BUCKET}test",
+                        "name": "${COUCHBASE_BUCKET}-test",
                         "conflictResolution": "seqno",
+                        "evictionPolicy": "nruEviction",
                         "enableFlush": true,
-                        "enableIndexReplica": false,
                         "ioPriority": "low",
-                        "memoryQuota": 150,
+                        "memoryQuota": 100,
                         "replicas": 1,
                         "type": "ephemeral"
                     },
                     {
-                        "name": "${COUCHBASE_BUCKET}prod",
+                        "name": "${COUCHBASE_BUCKET}-prod",
                         "conflictResolution": "seqno",
+                        "evictionPolicy": "valueOnly",
                         "enableFlush": false,
-                        "enableIndexReplica": false,
+                        "enableIndexReplica": true,
                         "ioPriority": "high",
-                        "memoryQuota": 350,
+                        "memoryQuota": 300,
                         "replicas": 1,
-                        "type": "${COUCHBASE_BUCKET_TYPE}"
+                        "type": "couchbase"
                     }
                 ],
                 "cluster": {
@@ -2209,13 +2210,6 @@
             "displayName": "Couchbase bucket",
             "description": "name of the bucket to create for example",
             "value": "twitter",
-            "required": true
-        },
-        {
-            "name": "COUCHBASE_BUCKET_TYPE",
-            "displayName": "Couchbase bucket type (for prod)",
-            "description": "Bucket type for the couchabse bucket (ephemeral, couchbase or memcache)",
-            "value": "couchbase",
             "required": true
         },
         {

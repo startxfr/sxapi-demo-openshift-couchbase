@@ -39,24 +39,30 @@ to build and deploy the full application stack using build config and deployemen
 part of this example.
 
 This template will create the following objects :
-- **1 ImageStream** with 2 tags linked to public bases images `startx/sv-couchbase` and `startx/sv-nodejs`
-- **3 ImageStream** with 1 `latest` tag each and used for hosting the **couchbase**, **api** and **www** build image
-- **1 Secret** couchbase holding `COUCHBASE_SERVICE_HOST`, `COUCHBASE_USER` and `COUCHBASE_PASSWORD` credentials
-- **3 BuildConfig** describing how to build the **couchbase**, **api** and **www** images
-- **3 DeploymentConfig** describing how to deploy and run the **couchbase**, **api** and **www** components
-- **1 Service** to expose **couchbase** to other pods (created by the deploymentConfig)
-- **2 Service** to expose **api** and **www** internaly and linked to route objects
-- **2 Route** to expose **api** and **www** externaly
+- **1 ImageStream** with 3 tags linked to public bases images `couchbase/k8s-operator`, `startx/sv-couchbase` and `startx/sv-nodejs`
+- **1 ImageStream** with 3 tag used for hosting the **bot**, **api** and **www** build image
+- **2 Secret** holding `couchbase-auth` and `twitter-auth` credentials
+- **3 BuildConfig** describing how to build the **bot**, **api** and **www** images
+- **4 DeploymentConfig** describing how to deploy and run the **couchbase**, **bot**, **api** and **www** components
+- **3 Service** to expose **bot**, **api** and **www** internaly and/or link them to route objects
+- **3 Route** to expose **couchbase** admin, **api** and **www** externaly
+- **1 CRD** to describe the **couchbase** cluster for the operator
+
+### Running from command line
 
 You can create and use this template running the following command. You can only run it one time per project with an 
-identical SOURCE_BRANCH. Because Source branch corespond to different stage of the application, you can choose 
+identical APP_NAME. 
+Source branch corespond to different stage of the application, you can choose 
 to deploy various stage with the same project (shared namespace) or in differents projects (isolated namespace).
 
+Don't forget to follow previous requirement before running this command otherwise your couchbase cluster won't start 
+and api as well as bot components will follow 
 ```bash
-oc new-project demo-api
+oc project demo
 oc process -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/master/openshift-build-all-ephemeral.json \
+           -v APP_NAME=twitter \
            -v SOURCE_BRANCH=master \
-           -v DEMO_API=api-master-demo.openshift.demo.startx.fr \
+           -v DEMO_API=demo.openshift.demo.startx.fr \
            -v COUCHBASE_USER="Administrator" \
            -v COUCHBASE_PASSWORD="Administrator123" \
            -v COUCHBASE_BUCKET="demo" | \
@@ -65,23 +71,37 @@ sleep 5
 oc get all
 ```
 
+### Running from web interface
+
+If you run this demo from the web interface, you will face an error explaining that the CRD resource could not be created
+You can run the template anyway. 
+Your installation will be the partial and you will need to add the 
+[couchbase cluster CRD](https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/master/openshift-crd-cluster.yml) 
+using the CLI.
+
+```bash
+oc project demo
+oc create -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/master/openshift-crd-cluster.yml
+```
+
+
 ## Openshift build and deploy strategy workflow
 
 ```
                                                                .----------.
                                                                |   Pod    |
                                                              .>|----------|<.
-          .--------------------------.   .-----------------. | | demo-api | | .----------.
+          .--------------------------.   .-----------------. | | dev-api  | | .----------.
           |       Source code        |   |  DeployConfig   | | '----------' | | Service  |
           |--------------------------|   |-----------------|-. .----------. .------------|
-          | sxapi-demo...chbase/www  |   | demo-www        | | |   Pod    | | | demo-www |
+          | sxapi-demo...chbase/www  |   | twitter-dev-www | | |   Pod    | | | dev-www  |
           '--------------------------'   '-----------------' '>|----------|<' '----------'
-                              |                   ^            | demo-api |      /
+                              |                   ^            | dev-api  |      /
                               v                   |            '----------'     /
                        .-------------.   .-----------------.        .----------v
-                       | BuildConfig |   |    API image    |        |  Route   |
+                       | BuildConfig |   |    WWW image    |        |  Route   |
                        |-------------|-->|-----------------|        |----------|
-                       | demo-www    |   | demo-www:latest |        | demo-www |
+                       | twitter-www |   | twitter-dev:www |        | dev-www  |
                        ^-------------'   '-----------------'        '----------\
    .------------------/                                                         v .-,(  ),-.    
    |  Builder image   |                                                        .-(          )-. 
@@ -91,38 +111,60 @@ oc get all
                        v-------------.   .-----------------.        .----------/
                        | BuildConfig |   |    API image    |        |  Route   |
                        |-------------|-->|-----------------|        |----------|
-                       | demo-api    |   | demo-api:latest |        | demo-api |
+                       | twitter-api |   | twitter-dev:api |        | dev-api  |
                        '-------------'   '-----------------'        '----------^
                               ^                   |                             \
                               |                   |            .----------.      \
                               |                   |            |   Pod    |       \
                               |                   v          .>|----------|<.  .----------.
-          .--------------------------.   .-----------------. | | demo-api | |  | Service  |
+          .--------------------------.   .-----------------. | | dev-api  | |  | Service  |
           |       Source code        |   |  DeployConfig   | | '----------' .--|----------|
-          |--------------------------|   |-----------------|-. .----------. |  | demo-api |
-          | sxapi-demo...chbase/api  |   | demo-api        | | |   Pod    | |  '----------'
+          |--------------------------|   |-----------------|-. .----------. |  | dev-api  |
+          | sxapi-demo...chbase/api  |   | twitter-dev-api | | |   Pod    | |  '----------'
           '--------------------------'   '-----------------' '>|----------|<'
-                                                               | demo-api |
-                                                               '----------'
-                                                                     ^
-                                                                     |
-.-------------------.  .-------------.   .-----------------.   .----------.
-|   Builder image   |  | BuildConfig |   |    API image    |   | Service  |
-|-------------------|->|-------------|-->|-----------------|   |----------|
-| startx/couchbase  |  | demo-api    |   | demo-api:latest |   | demo-api |
-'-------------------'  '-------------'   '-----------------'   '----------'
-                              ^                   |                  |
-                              |                   v                  v
-          .--------------------------.   .-----------------.   .----------.
-          |       Source code        |   |  DeployConfig   |   |   Pod    |
-          |--------------------------|   |-----------------|-->|----------|
-          | sxapi-demo...chbase/api  |   | demo-api        |   | demo-api |
-          '--------------------------'   '-----------------'   '----------'
+                                                               | dev-api  |<--.
+                                                               '----------'   |
+                                                                     ^        |
+                                                                     |        |
+.-------------------.  .-------------.   .-----------------.   .----------.   |
+|   Builder image   |  | BuildConfig |   |    API image    |   | Service  |   |
+|-------------------|->|-------------|-->|-----------------|   |----------|   |
+| startx/sv-nodejs  |  | twitter-bot |   | twitter-dev:bot |   | dev-bot  |   |
+'-------------------'  '-------------'   '-----------------'   '----------'   |
+                              ^                   |                  |        |
+                              |                   v                  v        |
+          .--------------------------.   .-----------------.   .----------.   |
+          |       Source code        |   |  DeployConfig   |   |   Pod    |<-.|
+          |--------------------------|   |-----------------|-->|----------|  ||
+          | sxapi-demo...chbase/bot  |   | twitter-dev-bot |   | dev-bot  |  ||
+          '--------------------------'   '-----------------'   '----------'  ||
+                                                                             ||
+                                                                             ||
+                                                                             ||
+  .--------------------.                                                     ||
+  |    DeployConfig    |                        .----------------.           ||
+  |--------------------|------.                 |      Pod       |           ||
+  | couchbase-operator |      |             .-->|----------------|<--.       ||
+  '--------------------'      |             |   | couchbase-node |   |       ||
+                              |             |   '----------------'   |       ||
+                              v             |                        |       vv
+                   .--------------------.   |   .----------------.   |   .----------------.
+                   |        Pod         |---'   |      Pod       |   '---|    Service     |
+                   |--------------------|------>|----------------|<------|----------------|
+                   | couchbase-operator |---.   | couchbase-node |   .---| couchbase-node |
+                   '--------------------'   |   '----------------'   |   '----------------'
+                              ^             |                        |
+                              |             |   .----------------.   |
+  .--------------------.      |             |   |      Pod       |   |
+  |        CRD         |      |             '-->|----------------|<--'
+  |--------------------|------'                 | couchbase-node |
+  | couchbase-cluster  |                        '----------------'
+  '--------------------'
 ```
 
 ### Access your application in your browser
 
-Access your application using your browser on `https://api.openshift.demo.startx.fr`
+Access your application using your browser on `http://twitter-master-www-demo.openshift.demo.startx.fr`
 
 
 ## Troubleshooting, contribute & credits

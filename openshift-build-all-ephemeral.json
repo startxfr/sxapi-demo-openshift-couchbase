@@ -176,10 +176,10 @@
             "kind": "BuildConfig",
             "apiVersion": "v1",
             "metadata": {
-                "name": "api-${SOURCE_BRANCH}",
+                "name": "${APP_NAME}-${SOURCE_BRANCH}-api",
                 "labels": {
                     "app": "${APP_NAME}",
-                    "type": "api-${SOURCE_BRANCH}",
+                    "type": "${SOURCE_BRANCH}-api",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-template"
                 },
@@ -246,10 +246,10 @@
             "kind": "BuildConfig",
             "apiVersion": "v1",
             "metadata": {
-                "name": "bot-${SOURCE_BRANCH}",
+                "name": "${APP_NAME}-${SOURCE_BRANCH}-bot",
                 "labels": {
                     "app": "${APP_NAME}",
-                    "type": "bot-${SOURCE_BRANCH}",
+                    "type": "${SOURCE_BRANCH}-bot",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-template"
                 },
@@ -316,10 +316,10 @@
             "kind": "BuildConfig",
             "apiVersion": "v1",
             "metadata": {
-                "name": "www-${SOURCE_BRANCH}",
+                "name": "${APP_NAME}-${SOURCE_BRANCH}-www",
                 "labels": {
                     "app": "${APP_NAME}",
-                    "type": "www-${SOURCE_BRANCH}",
+                    "type": "${SOURCE_BRANCH}-www",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-template"
                 },
@@ -387,7 +387,6 @@
             "apiVersion": "v1",
             "metadata": {
                 "name": "couchbase-operator",
-                "generation": 2,
                 "labels": {
                     "app": "couchbase",
                     "type": "couchbase-operator",
@@ -497,11 +496,10 @@
             "kind": "DeploymentConfig",
             "apiVersion": "v1",
             "metadata": {
-                "name": "api-${SOURCE_BRANCH}",
-                "generation": 2,
+                "name": "${APP_NAME}-${SOURCE_BRANCH}-api",
                 "labels": {
                     "app": "${APP_NAME}",
-                    "type": "api-${SOURCE_BRANCH}",
+                    "type": "${SOURCE_BRANCH}-api",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-template"
                 },
@@ -541,17 +539,17 @@
                 "test": false,
                 "selector": {
                     "app": "${APP_NAME}",
-                    "type": "api-${SOURCE_BRANCH}",
-                    "deploymentconfig": "api-${SOURCE_BRANCH}"
+                    "type": "${SOURCE_BRANCH}-api",
+                    "deploymentconfig": "${APP_NAME}-${SOURCE_BRANCH}-api"
                 },
                 "template": {
                     "metadata": {
                         "labels": {
                             "app": "${APP_NAME}",
-                            "type": "api-${SOURCE_BRANCH}",
+                            "type": "${SOURCE_BRANCH}-api",
                             "provider": "startx",
                             "template": "sxapi-demo-openshift-couchbase-template",
-                            "deploymentconfig": "api-${SOURCE_BRANCH}"
+                            "deploymentconfig": "${APP_NAME}-${SOURCE_BRANCH}-api"
                         },
                         "annotations": {
                             "openshift.io/generated-by": "STARTX"
@@ -652,11 +650,10 @@
             "kind": "DeploymentConfig",
             "apiVersion": "v1",
             "metadata": {
-                "name": "bot-${SOURCE_BRANCH}",
-                "generation": 2,
+                "name": "${APP_NAME}-${SOURCE_BRANCH}-bot",
                 "labels": {
                     "app": "${APP_NAME}",
-                    "type": "bot-${SOURCE_BRANCH}",
+                    "type": "${SOURCE_BRANCH}-bot",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-template"
                 },
@@ -696,17 +693,17 @@
                 "test": false,
                 "selector": {
                     "app": "${APP_NAME}",
-                    "type": "bot-${SOURCE_BRANCH}",
-                    "deploymentconfig": "bot-${SOURCE_BRANCH}"
+                    "type": "${SOURCE_BRANCH}-bot",
+                    "deploymentconfig": "${APP_NAME}-${SOURCE_BRANCH}-bot"
                 },
                 "template": {
                     "metadata": {
                         "labels": {
                             "app": "${APP_NAME}",
-                            "type": "bot-${SOURCE_BRANCH}",
+                            "type": "${SOURCE_BRANCH}-bot",
                             "provider": "startx",
                             "template": "sxapi-demo-openshift-couchbase-template",
-                            "deploymentconfig": "bot-${SOURCE_BRANCH}"
+                            "deploymentconfig": "${APP_NAME}-${SOURCE_BRANCH}-bot"
                         },
                         "annotations": {
                             "openshift.io/generated-by": "STARTX"
@@ -843,11 +840,10 @@
             "kind": "DeploymentConfig",
             "apiVersion": "v1",
             "metadata": {
-                "name": "www-${SOURCE_BRANCH}",
-                "generation": 2,
+                "name": "${APP_NAME}-${SOURCE_BRANCH}-www",
                 "labels": {
                     "app": "${APP_NAME}",
-                    "type": "www-${SOURCE_BRANCH}",
+                    "type": "${SOURCE_BRANCH}-www",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-template"
                 },
@@ -887,17 +883,17 @@
                 "test": false,
                 "selector": {
                     "app": "${APP_NAME}",
-                    "type": "www-${SOURCE_BRANCH}",
-                    "deploymentconfig": "www-${SOURCE_BRANCH}"
+                    "type": "${SOURCE_BRANCH}-www",
+                    "deploymentconfig": "${APP_NAME}-${SOURCE_BRANCH}-www"
                 },
                 "template": {
                     "metadata": {
                         "labels": {
                             "app": "${APP_NAME}",
-                            "type": "www-${SOURCE_BRANCH}",
+                            "type": "${SOURCE_BRANCH}-www",
                             "provider": "startx",
                             "template": "sxapi-demo-openshift-couchbase-template",
-                            "deploymentconfig": "www-${SOURCE_BRANCH}"
+                            "deploymentconfig": "${APP_NAME}-${SOURCE_BRANCH}-www"
                         },
                         "annotations": {
                             "openshift.io/generated-by": "STARTX"
@@ -980,10 +976,10 @@
             "kind": "Service",
             "apiVersion": "v1",
             "metadata": {
-                "name": "www-${SOURCE_BRANCH}",
+                "name": "${APP_NAME}-${SOURCE_BRANCH}-api",
                 "labels": {
                     "app": "${APP_NAME}",
-                    "type": "www-${SOURCE_BRANCH}",
+                    "type": "${SOURCE_BRANCH}-api",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-template"
                 },
@@ -1001,8 +997,8 @@
                 ],
                 "selector": {
                     "app": "${APP_NAME}",
-                    "type": "www-${SOURCE_BRANCH}",
-                    "deploymentconfig": "www-${SOURCE_BRANCH}"
+                    "type": "${SOURCE_BRANCH}-api",
+                    "deploymentconfig": "${APP_NAME}-${SOURCE_BRANCH}-api"
                 },
                 "type": "ClusterIP",
                 "sessionAffinity": "None"
@@ -1012,10 +1008,10 @@
             "kind": "Service",
             "apiVersion": "v1",
             "metadata": {
-                "name": "api-${SOURCE_BRANCH}",
+                "name": "${APP_NAME}-${SOURCE_BRANCH}-bot",
                 "labels": {
                     "app": "${APP_NAME}",
-                    "type": "api-${SOURCE_BRANCH}",
+                    "type": "${SOURCE_BRANCH}-bot",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-template"
                 },
@@ -1033,8 +1029,8 @@
                 ],
                 "selector": {
                     "app": "${APP_NAME}",
-                    "type": "api-${SOURCE_BRANCH}",
-                    "deploymentconfig": "api-${SOURCE_BRANCH}"
+                    "type": "${SOURCE_BRANCH}-bot",
+                    "deploymentconfig": "${APP_NAME}-${SOURCE_BRANCH}-bot"
                 },
                 "type": "ClusterIP",
                 "sessionAffinity": "None"
@@ -1044,10 +1040,10 @@
             "kind": "Service",
             "apiVersion": "v1",
             "metadata": {
-                "name": "bot-${SOURCE_BRANCH}",
+                "name": "${APP_NAME}-${SOURCE_BRANCH}-www",
                 "labels": {
                     "app": "${APP_NAME}",
-                    "type": "bot-${SOURCE_BRANCH}",
+                    "type": "${SOURCE_BRANCH}-www",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-template"
                 },
@@ -1065,8 +1061,8 @@
                 ],
                 "selector": {
                     "app": "${APP_NAME}",
-                    "type": "bot-${SOURCE_BRANCH}",
-                    "deploymentconfig": "bot-${SOURCE_BRANCH}"
+                    "type": "${SOURCE_BRANCH}-www",
+                    "deploymentconfig": "${APP_NAME}-${SOURCE_BRANCH}-www"
                 },
                 "type": "ClusterIP",
                 "sessionAffinity": "None"
@@ -1102,10 +1098,10 @@
             "kind": "Route",
             "apiVersion": "v1",
             "metadata": {
-                "name": "api-${SOURCE_BRANCH}",
+                "name": "${APP_NAME}-${SOURCE_BRANCH}-api",
                 "labels": {
                     "app": "${APP_NAME}",
-                    "type": "api-${SOURCE_BRANCH}",
+                    "type": "${SOURCE_BRANCH}-api",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-template"
                 },
@@ -1117,7 +1113,7 @@
             "spec": {
                 "to": {
                     "kind": "Service",
-                    "name": "api-${SOURCE_BRANCH}",
+                    "name": "${APP_NAME}-${SOURCE_BRANCH}-api",
                     "weight": 100
                 }
             }
@@ -1126,10 +1122,10 @@
             "kind": "Route",
             "apiVersion": "v1",
             "metadata": {
-                "name": "www-${SOURCE_BRANCH}",
+                "name": "${APP_NAME}-${SOURCE_BRANCH}-www",
                 "labels": {
                     "app": "${APP_NAME}",
-                    "type": "www-${SOURCE_BRANCH}",
+                    "type": "${SOURCE_BRANCH}-www",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-template"
                 },
@@ -1141,7 +1137,7 @@
             "spec": {
                 "to": {
                     "kind": "Service",
-                    "name": "www-${SOURCE_BRANCH}",
+                    "name": "${APP_NAME}-${SOURCE_BRANCH}-www",
                     "weight": 100
                 }
             }
@@ -1151,7 +1147,6 @@
             "kind": "CouchbaseCluster",
             "metadata": {
                 "clusterName": "couchbase-cluster",
-                "generation": 0,
                 "name": "couchbase-node",
                 "labels": {
                     "app": "couchbase",
@@ -1193,7 +1188,7 @@
                             "index",
                             "query"
                         ],
-                        "size": 4
+                        "size": 3
                     }
                 ],
                 "version": "${CB_BASE_IMAGE_TAG}"

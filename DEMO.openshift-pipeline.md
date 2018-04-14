@@ -36,7 +36,7 @@ oc process -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-co
            -v COUCHBASE_USER="Administrator" \
            -v COUCHBASE_PASSWORD="Administrator123" \
            -v COUCHBASE_BUCKET="demo" | \
-oc create -f -
+oc apply -f -
 sleep 5
 oc get all
 ```
@@ -188,3 +188,4 @@ You will information on [how to contribute](https://github.com/startxfr/sxapi-de
 [technologies credits](https://github.com/startxfr/sxapi-demo-openshift-couchbase#built-with) and
 [demo authors](https://github.com/startxfr/sxapi-demo-openshift-couchbase#authors) on the 
 [sxapi-demo-openshift-couchbase homepage](https://github.com/startxfr/sxapi-demo-openshift-couchbase).
+Usefull informations regarding the couchbase deployement could be found on the [couchbase-operator documentation](http://docs.couchbase.com/prerelease/couchbase-operator/beta/couchbaseClusterConfig.html)

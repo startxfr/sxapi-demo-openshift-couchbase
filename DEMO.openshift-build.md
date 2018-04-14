@@ -175,3 +175,4 @@ You will information on [how to contribute](https://github.com/startxfr/sxapi-de
 [technologies credits](https://github.com/startxfr/sxapi-demo-openshift-couchbase#built-with) and
 [demo authors](https://github.com/startxfr/sxapi-demo-openshift-couchbase#authors) on the 
 [sxapi-demo-openshift-couchbase homepage](https://github.com/startxfr/sxapi-demo-openshift-couchbase).
+Usefull informations regarding the couchbase deployement could be found on the [couchbase-operator documentation](http://docs.couchbase.com/prerelease/couchbase-operator/beta/couchbaseClusterConfig.html)

@@ -2,20 +2,20 @@
     "kind": "Template",
     "apiVersion": "v1",
     "metadata": {
-        "name": "sxapi-demo-pipeline-template",
+        "name": "sxapi-demo-openshift-couchbase-pipeline-template",
         "annotations": {
-            "openshift.io/display-name": "SXAPI Demo (Pipeline)",
-            "description": "Template for building a full demo application (frontend + api + database) using Jenkins CI/CD pipeline build strategy integrated with openshift PaaS",
-            "iconClass": "icon-jenkins",
-            "tags": "startx,demo,sxapi,mariadb,nodejs,jenkins",
+            "openshift.io/display-name": "SXAPI Demo Couchbase (Ephemeral)",
+            "description": "Template for building a full demo application (frontend + api + bot + bucket) using sxapi in an openshift PaaS",
+            "iconClass": "icon-nodejs",
+            "tags": "startx,demo,sxapi,couchbase",
             "openshift.io/provider-display-name": "STARTX",
-            "openshift.io/documentation-url": "https://github.com/startxfr/sxapi-demo-openshift/blob/dev/README.md",
-            "openshift.io/support-url": "https://github.com/startxfr/sxapi-demo-openshift/issues/new"
+            "openshift.io/documentation-url": "https://github.com/startxfr/sxapi-demo-openshift-couchbase/blob/master/README.md",
+            "openshift.io/support-url": "https://github.com/startxfr/sxapi-demo-openshift-couchbase/issues/new"
         }
     },
     "message": "Your demo stack started a build pipeline in your project. You can use openshift console to observe deployment.",
     "labels": {
-        "template": "sxapi-demo-pipeline-template"
+        "template": "sxapi-demo-openshift-couchbase-pipeline-template"
     },
     "objects": [
         {
@@ -33,14 +33,14 @@
                 },
                 "annotations": {
                     "openshift.io/generated-by": "STARTX",
-                    "pipeline.alpha.openshift.io/uses": "[{\"name\": \"www-test\", \"namespace\": \"\", \"kind\": \"DeploymentConfig\"},{\"name\": \"api-test\", \"namespace\": \"\", \"kind\": \"DeploymentConfig\"},{\"name\": \"mariadb-test\", \"namespace\": \"\", \"kind\": \"DeploymentConfig\"},{\"name\": \"www-prod\", \"namespace\": \"\", \"kind\": \"DeploymentConfig\"},{\"name\": \"api-prod\", \"namespace\": \"\", \"kind\": \"DeploymentConfig\"},{\"name\": \"mariadb-prod\", \"namespace\": \"\", \"kind\": \"DeploymentConfig\"}]"
+                    "pipeline.alpha.openshift.io/uses": "[{\"name\": \"www-test\", \"namespace\": \"\", \"kind\": \"DeploymentConfig\"},{\"name\": \"api-test\", \"namespace\": \"\", \"kind\": \"DeploymentConfig\"},{\"name\": \"bot-test\", \"namespace\": \"\", \"kind\": \"DeploymentConfig\"},{\"name\": \"www-prod\", \"namespace\": \"\", \"kind\": \"DeploymentConfig\"},{\"name\": \"api-prod\", \"namespace\": \"\", \"kind\": \"DeploymentConfig\"},{\"name\": \"bot-prod\", \"namespace\": \"\", \"kind\": \"DeploymentConfig\"}]"
                 }
             },
             "spec": {
                 "strategy": {
                     "type": "JenkinsPipeline",
                     "jenkinsPipelineStrategy": {
-                        "jenkinsfile": "try { \n    timeout(time: 30, unit: 'MINUTES') { \n        node('nodejs') { \n            stage('Construction (test)') { \n                openshiftBuild(buildConfig: 'mariadb-test', showBuildLogs: 'true');\n                openshiftBuild(buildConfig: 'api-test', showBuildLogs: 'true');\n                openshiftBuild(buildConfig: 'www-test', showBuildLogs: 'true');\n            };\n            stage('Construction (prod)') {\n                openshiftBuild(buildConfig: 'mariadb-prod', showBuildLogs: 'true');\n                openshiftBuild(buildConfig: 'api-prod', showBuildLogs: 'true');\n                openshiftBuild(buildConfig: 'www-prod', showBuildLogs: 'true');\n            };\n             stage('Deploiement (test)') { \n                openshiftDeploy(deploymentConfig: 'mariadb-test');\n                openshiftDeploy(deploymentConfig: 'api-test');\n                openshiftDeploy(deploymentConfig: 'www-test');\n            }; \n            stage('Approbation'){ \n                input 'Valider le test et lancer le déploiement en production ?'; \n            };\n            stage('Deploiement (prod)') { \n                openshiftDeploy(deploymentConfig: 'mariadb-prod');\n                openshiftDeploy(deploymentConfig: 'api-prod');\n               openshiftDeploy(deploymentConfig: 'www-prod');\n            }; \n        } \n    } \n} \ncatch (err) {     echo \"in catch block\";\n    echo \"Caught: ${err}\";\n    currentBuild.result = 'FAILURE';\n    throw err; }"
+                        "jenkinsfile": "try { \n    timeout(time: 30, unit: 'MINUTES') { \n        node('nodejs') { \n            stage('Construction (test)') { \n                openshiftBuild(buildConfig: 'bot-test', showBuildLogs: 'true');\n                openshiftBuild(buildConfig: 'api-test', showBuildLogs: 'true');\n                openshiftBuild(buildConfig: 'www-test', showBuildLogs: 'true');\n            };\n            stage('Construction (prod)') {\n                openshiftBuild(buildConfig: 'bot-prod', showBuildLogs: 'true');\n                openshiftBuild(buildConfig: 'api-prod', showBuildLogs: 'true');\n                openshiftBuild(buildConfig: 'www-prod', showBuildLogs: 'true');\n            };\n             stage('Deploiement (test)') { \n                openshiftDeploy(deploymentConfig: 'bot-test');\n                openshiftDeploy(deploymentConfig: 'api-test');\n                openshiftDeploy(deploymentConfig: 'www-test');\n            }; \n            stage('Approbation'){ \n                input 'Valider le test et lancer le déploiement en production ?'; \n            };\n            stage('Deploiement (prod)') { \n                openshiftDeploy(deploymentConfig: 'bot-prod');\n                openshiftDeploy(deploymentConfig: 'api-prod');\n               openshiftDeploy(deploymentConfig: 'www-prod');\n            }; \n        } \n    } \n} \ncatch (err) {     echo \"in catch block\";\n    echo \"Caught: ${err}\";\n    currentBuild.result = 'FAILURE';\n    throw err; }"
                     }
                 },
                 "triggers": [
@@ -72,31 +72,45 @@
             "metadata": {
                 "name": "startx-${BASE_IMAGE_TAG}",
                 "annotations": {
-                    "openshift.io/display-name": "Base images startx (${BASE_IMAGE_TAG})",
+                    "openshift.io/display-name": "STARTX Base images (${BASE_IMAGE_TAG})",
                     "openshift.io/generated-by": "STARTX"
                 },
                 "labels": {
                     "base-image": "startx-${BASE_IMAGE_TAG}",
-                    "app": "sxapi",
+                    "app": "sxapi-demo",
                     "type": "backend",
                     "provider": "startx",
-                    "template": "sxapi-demo-pipeline-template"
+                    "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 }
             },
             "spec": {
                 "tags": [
                     {
-                        "name": "mariadb",
+                        "name": "couchbase-operator",
                         "annotations": {
-                            "openshift.io/display-name": "MariaDB base image (${BASE_IMAGE_TAG})",
-                            "description": "MariaDB base image relying on ${BASE_IMAGE_TAG} and based on startx/mariadb docker image",
-                            "iconClass": "icon-mariadb",
-                            "version": "${BASE_IMAGE_TAG}",
-                            "sampleRepo": "https://github.com/startxfr/docker-images-example-mariadb.git"
+                            "openshift.io/display-name": "Couchbase operator (beta)",
+                            "description": "Couchbase operator beta image relying on Kubernetes 1.7 or Openshift 3.7",
+                            "iconClass": "icon-couchbase",
+                            "version": "beta",
+                            "sampleRepo": "https://github.com/startxfr/docker-images-example-couchbase.git"
                         },
                         "from": {
                             "kind": "DockerImage",
-                            "name": "startx/sv-mariadb:${BASE_IMAGE_TAG}"
+                            "name": "couchbase/k8s-operator:beta"
+                        }
+                    },
+                    {
+                        "name": "couchbase",
+                        "annotations": {
+                            "openshift.io/display-name": "Couchbase base image (CentOS 7)",
+                            "description": "Couchbase base image relying on CentOS 7 and based on startx/sv-couchbase docker image",
+                            "iconClass": "icon-couchbase",
+                            "version": "centos7",
+                            "sampleRepo": "https://github.com/startxfr/docker-images-example-couchbase.git"
+                        },
+                        "from": {
+                            "kind": "DockerImage",
+                            "name": "startx/sv-couchbase:centos7"
                         }
                     },
                     {
@@ -120,17 +134,17 @@
             "kind": "ImageStream",
             "apiVersion": "v1",
             "metadata": {
-                "name": "mariadb",
+                "name": "bot",
                 "annotations": {
-                    "openshift.io/display-name": "SXAPI Demo - MariaDB",
+                    "openshift.io/display-name": "SXAPI Demo - Bot",
                     "openshift.io/generated-by": "STARTX"
                 },
                 "labels": {
-                    "base-image": "startx-${BASE_IMAGE_TAG}-mariadb",
+                    "base-image": "startx-${BASE_IMAGE_TAG}-bot",
                     "app": "sxapi",
                     "type": "frontend",
                     "provider": "startx",
-                    "template": "sxapi-demo-pipeline-template"
+                    "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 }
             },
             "spec": {
@@ -138,22 +152,22 @@
                     {
                         "name": "test",
                         "annotations": {
-                            "openshift.io/display-name": "SXAPI Demo - MariaDB (test)",
-                            "description": "MariaDB database for the SXAPI Demo",
-                            "iconClass": "icon-mariadb",
-                            "tags": "startx,mariadb,db,database,mariadb",
-                            "supports": "mysql,mariadb",
+                            "openshift.io/display-name": "SXAPI Demo - Bot (test)",
+                            "description": "Bot database for the SXAPI Demo",
+                            "iconClass": "icon-nodejs",
+                            "tags": "startx,bot,nodejs",
+                            "supports": "http,websockets",
                             "version": "test"
                         }
                     },
                     {
                         "name": "prod",
                         "annotations": {
-                            "openshift.io/display-name": "SXAPI Demo - MariaDB (prod)",
-                            "description": "MariaDB database for the SXAPI Demo",
-                            "iconClass": "icon-mariadb",
-                            "tags": "startx,mariadb,db,database,mariadb",
-                            "supports": "mysql,mariadb",
+                            "openshift.io/display-name": "SXAPI Demo - Bot (prod)",
+                            "description": "Bot database for the SXAPI Demo",
+                            "iconClass": "icon-nodejs",
+                            "tags": "startx,bot,nodejs",
+                            "supports": "http,websockets",
                             "version": "prod"
                         }
                     },
@@ -161,10 +175,10 @@
                         "name": "latest",
                         "annotations": {
                             "openshift.io/display-name": "SXAPI Demo - MariaDB (latest)",
-                            "description": "MariaDB database for the SXAPI Demo",
-                            "iconClass": "icon-mariadb",
-                            "tags": "startx,mariadb,db,database,mariadb",
-                            "supports": "mysql,mariadb",
+                            "description": "Bot database for the SXAPI Demo",
+                            "iconClass": "icon-nodejs",
+                            "tags": "startx,bot,nodejs",
+                            "supports": "http,websockets",
                             "version": "latest"
                         },
                         "from": {
@@ -189,7 +203,7 @@
                     "app": "sxapi",
                     "type": "frontend",
                     "provider": "startx",
-                    "template": "sxapi-demo-pipeline-template"
+                    "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 }
             },
             "spec": {
@@ -248,7 +262,7 @@
                     "app": "sxapi",
                     "type": "backend",
                     "provider": "startx",
-                    "template": "sxapi-demo-pipeline-template"
+                    "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 }
             },
             "spec": {
@@ -297,51 +311,48 @@
             "kind": "Secret",
             "apiVersion": "v1",
             "metadata": {
-                "name": "mariadb-test",
-                "creationTimestamp": null,
+                "name": "couchbase-auth-test",
                 "labels": {
-                    "app": "mariadb-test",
-                    "stage": "test",
                     "type": "backend",
                     "provider": "startx",
-                    "template": "sxapi-demo-pipeline-template"
+                    "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 }
             },
             "stringData": {
-                "MYSQL_ROOT_PASSWORD": "${MYSQL_ROOT_PASSWORD}",
-                "MYSQL_USER": "${MYSQL_USER}",
-                "MYSQL_PASSWORD": "${MYSQL_PASSWORD}"
+                "username": "${COUCHBASE_USER}",
+                "password": "${COUCHBASE_PASSWORD}"
             }
         },
         {
             "kind": "Secret",
             "apiVersion": "v1",
             "metadata": {
-                "name": "www-test",
-                "creationTimestamp": null,
+                "name": "twitter-auth-test",
                 "labels": {
-                    "app": "www-test",
-                    "stage": "test",
-                    "type": "frontend",
+                    "app": "${APP_NAME}",
+                    "type": "all",
                     "provider": "startx",
-                    "template": "sxapi-demo-pipeline-template"
+                    "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 }
             },
             "stringData": {
-                "DEMO_API": "api-test-${DEMO_API}"
+                "consumer_key": "${twitter_consumer_key}",
+                "consumer_secret": "${twitter_consumer_secret}",
+                "access_token_key": "${twitter_access_token_key}",
+                "access_token_secret": "${twitter_access_token_secret}"
             }
         },
         {
             "kind": "BuildConfig",
             "apiVersion": "v1",
             "metadata": {
-                "name": "mariadb-test",
+                "name": "bot-test",
                 "labels": {
-                    "app": "mariadb-test",
+                    "app": "bot-test",
                     "stage": "test",
                     "type": "backend",
                     "provider": "startx",
-                    "template": "sxapi-demo-pipeline-template"
+                    "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
                 "annotations": {
                     "openshift.io/generated-by": "STARTX"
@@ -354,42 +365,22 @@
                 "source": {
                     "type": "Git",
                     "git": {
-                        "uri": "https://github.com/startxfr/sxapi-demo-openshift.git",
+                        "uri": "https://github.com/startxfr/sxapi-demo-openshift-couchbase.git",
                         "ref": "test"
                     },
-                    "contextDir": "db"
+                    "contextDir": "bot"
                 },
                 "strategy": {
                     "type": "Source",
                     "sourceStrategy": {
                         "from": {
                             "kind": "ImageStreamTag",
-                            "name": "startx-${BASE_IMAGE_TAG}:mariadb"
+                            "name": "startx-${BASE_IMAGE_TAG}:bot"
                         },
                         "env": [
                             {
                                 "name": "SX_VERBOSE",
                                 "value": "true"
-                            },
-                            {
-                                "name": "SX_DEBUG",
-                                "value": "true"
-                            },
-                            {
-                                "name": "MYSQL_ROOT_PASSWORD",
-                                "value": "${MYSQL_ROOT_PASSWORD}"
-                            },
-                            {
-                                "name": "MYSQL_USER",
-                                "value": "${MYSQL_USER}"
-                            },
-                            {
-                                "name": "MYSQL_PASSWORD",
-                                "value": "${MYSQL_PASSWORD}"
-                            },
-                            {
-                                "name": "MYSQL_DATABASE",
-                                "value": "${MYSQL_DATABASE}"
                             }
                         ]
                     }
@@ -397,7 +388,7 @@
                 "output": {
                     "to": {
                         "kind": "ImageStreamTag",
-                        "name": "mariadb:test"
+                        "name": "bot:test"
                     }
                 },
                 "resources": {}
@@ -413,7 +404,7 @@
                     "stage": "test",
                     "type": "frontend",
                     "provider": "startx",
-                    "template": "sxapi-demo-pipeline-template"
+                    "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
                 "annotations": {
                     "openshift.io/generated-by": "STARTX"
@@ -426,7 +417,7 @@
                 "source": {
                     "type": "Git",
                     "git": {
-                        "uri": "https://github.com/startxfr/sxapi-demo-openshift.git",
+                        "uri": "https://github.com/startxfr/sxapi-demo-openshift-couchbase.git",
                         "ref": "test"
                     },
                     "contextDir": "api"
@@ -465,7 +456,7 @@
                     "stage": "test",
                     "type": "frontend",
                     "provider": "startx",
-                    "template": "sxapi-demo-pipeline-template"
+                    "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
                 "annotations": {
                     "openshift.io/generated-by": "STARTX"
@@ -478,7 +469,7 @@
                 "source": {
                     "type": "Git",
                     "git": {
-                        "uri": "https://github.com/startxfr/sxapi-demo-openshift.git",
+                        "uri": "https://github.com/startxfr/sxapi-demo-openshift-couchbase.git",
                         "ref": "test"
                     },
                     "contextDir": "www"
@@ -511,14 +502,124 @@
             "kind": "DeploymentConfig",
             "apiVersion": "v1",
             "metadata": {
-                "name": "mariadb-test",
+                "name": "couchbase-operator",
+                "labels": {
+                    "app": "couchbase",
+                    "type": "couchbase-operator",
+                    "provider": "startx",
+                    "template": "sxapi-demo-openshift-couchbase-pipeline-template"
+                },
+                "annotations": {
+                    "openshift.io/generated-by": "STARTX"
+                }
+            },
+            "spec": {
+                "strategy": {
+                    "type": "Rolling",
+                    "rollingParams": {
+                        "timeoutSeconds": 50,
+                        "maxUnavailable": "25%",
+                        "maxSurge": "25%"
+                    },
+                    "resources": {}
+                },
+                "triggers": [
+                    {
+                        "type": "ImageChange",
+                        "imageChangeParams": {
+                            "automatic": true,
+                            "containerNames": [
+                                "couchbase-operator"
+                            ],
+                            "from": {
+                                "kind": "ImageStreamTag",
+                                "name": "startx-${BASE_IMAGE_TAG}:couchbase-operator"
+                            }
+                        }
+                    },
+                    {
+                        "type": "ConfigChange"
+                    }
+                ],
+                "replicas": 1,
+                "selector": {
+                    "app": "couchbase",
+                    "type": "couchbase",
+                    "name": "couchbase-operator",
+                    "deploymentconfig": "couchbase-operator"
+                },
+                "template": {
+                    "metadata": {
+                        "labels": {
+                            "app": "couchbase",
+                            "type": "couchbase",
+                            "name": "couchbase-operator",
+                            "provider": "startx",
+                            "deploymentconfig": "couchbase-operator",
+                            "template": "sxapi-demo-openshift-couchbase-pipeline-template"
+                        },
+                        "annotations": {
+                            "openshift.io/generated-by": "STARTX"
+                        }
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "name": "couchbase-operator",
+                                "image": " ",
+                                "env": [
+                                    {
+                                        "name": "MY_POD_NAMESPACE",
+                                        "valueFrom": {
+                                            "fieldRef": {
+                                                "fieldPath": "metadata.namespace"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "MY_POD_NAME",
+                                        "valueFrom": {
+                                            "fieldRef": {
+                                                "fieldPath": "metadata.name"
+                                            }
+                                        }
+                                    }
+                                ],
+                                "ports": [
+                                    {
+                                        "containerPort": 8080,
+                                        "name": "readiness-port"
+                                    }
+                                ],
+                                "readinessProbe": {
+                                    "httpGet": {
+                                        "path": "/readyz",
+                                        "port": "readiness-port"
+                                    },
+                                    "initialDelaySeconds": 3,
+                                    "timeoutSeconds": 2,
+                                    "periodSeconds": 3,
+                                    "successThreshold": 1,
+                                    "failureThreshold": 19
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "kind": "DeploymentConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "bot-test",
                 "generation": 2,
                 "labels": {
-                    "app": "mariadb-test",
+                    "app": "bot-test",
                     "stage": "test",
                     "type": "backend",
                     "provider": "startx",
-                    "template": "sxapi-demo-pipeline-template"
+                    "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
                 "annotations": {
                     "openshift.io/generated-by": "STARTX"
@@ -538,11 +639,11 @@
                         "imageChangeParams": {
                             "automatic": false,
                             "containerNames": [
-                                "mariadb-test"
+                                "bot-test"
                             ],
                             "from": {
                                 "kind": "ImageStreamTag",
-                                "name": "mariadb:test"
+                                "name": "bot:test"
                             }
                         }
                     },
@@ -553,18 +654,18 @@
                 "replicas": 1,
                 "test": false,
                 "selector": {
-                    "app": "mariadb-test",
-                    "deploymentconfig": "mariadb-test"
+                    "app": "bot-test",
+                    "deploymentconfig": "bot-test"
                 },
                 "template": {
                     "metadata": {
                         "labels": {
-                            "app": "mariadb-test",
+                            "app": "bot-test",
                             "stage": "test",
                             "type": "backend",
                             "provider": "startx",
-                            "template": "sxapi-demo-pipeline-template",
-                            "deploymentconfig": "mariadb-test"
+                            "template": "sxapi-demo-openshift-couchbase-pipeline-template",
+                            "deploymentconfig": "bot-test"
                         },
                         "annotations": {
                             "openshift.io/generated-by": "STARTX"
@@ -573,7 +674,7 @@
                     "spec": {
                         "containers": [
                             {
-                                "name": "mariadb-test",
+                                "name": "bot-test",
                                 "image": " ",
                                 "env": [
                                     {
@@ -585,83 +686,103 @@
                                         "value": "true"
                                     },
                                     {
-                                        "name": "MYSQL_ROOT_PASSWORD",
+                                        "name": "COUCHBASE_USER",
                                         "valueFrom": {
                                             "secretKeyRef": {
-                                                "name": "mariadb-test",
-                                                "key": "MYSQL_ROOT_PASSWORD"
+                                                "name": "couchbase-auth-test",
+                                                "key": "username"
                                             }
                                         }
                                     },
                                     {
-                                        "name": "MYSQL_USER",
+                                        "name": "COUCHBASE_PASSWORD",
                                         "valueFrom": {
                                             "secretKeyRef": {
-                                                "name": "mariadb-test",
-                                                "key": "MYSQL_USER"
+                                                "name": "couchbase-auth-test",
+                                                "key": "password"
                                             }
                                         }
                                     },
                                     {
-                                        "name": "MYSQL_PASSWORD",
+                                        "name": "COUCHBASE_BUCKET",
+                                        "value": "${COUCHBASE_BUCKET}"
+                                    },
+                                    {
+                                        "name": "twitter_consumer_key",
                                         "valueFrom": {
                                             "secretKeyRef": {
-                                                "name": "mariadb-test",
-                                                "key": "MYSQL_PASSWORD"
+                                                "name": "twitter-auth-test",
+                                                "key": "consumer_key"
                                             }
                                         }
                                     },
                                     {
-                                        "name": "MYSQL_DATABASE",
-                                        "value": "${MYSQL_DATABASE}"
+                                        "name": "twitter_consumer_secret",
+                                        "valueFrom": {
+                                            "secretKeyRef": {
+                                                "name": "twitter-auth-test",
+                                                "key": "consumer_secret"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "twitter_access_token_key",
+                                        "valueFrom": {
+                                            "secretKeyRef": {
+                                                "name": "twitter-auth-test",
+                                                "key": "access_token_key"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "twitter_access_token_secret",
+                                        "valueFrom": {
+                                            "secretKeyRef": {
+                                                "name": "twitter-auth-test",
+                                                "key": "access_token_secret"
+                                            }
+                                        }
                                     }
                                 ],
                                 "ports": [
                                     {
-                                        "containerPort": 3306,
+                                        "containerPort": 8080,
                                         "protocol": "TCP"
                                     }
                                 ],
                                 "command": [
-                                    "/bin/sx-mariadb"
+                                    "/bin/sx-nodejs"
                                 ],
                                 "args": [
                                     "run"
                                 ],
                                 "resources": {
                                     "limits": {
-                                        "memory": "512Mi"
+                                        "memory": "128Mi"
                                     }
                                 },
-                                "volumeMounts": [
-                                    {
-                                        "name": "mariadb-test-data",
-                                        "mountPath": "/data"
-                                    }
-                                ],
                                 "livenessProbe": {
                                     "exec": {
                                         "command": [
-                                            "/bin/sx-mariadb",
+                                            "/bin/sx-nodejs",
                                             "isLive"
                                         ]
                                     },
                                     "initialDelaySeconds": 5,
                                     "timeoutSeconds": 1,
-                                    "periodSeconds": 10,
+                                    "periodSeconds": 20,
                                     "successThreshold": 1,
                                     "failureThreshold": 3
                                 },
                                 "readinessProbe": {
-                                    "exec": {
-                                        "command": [
-                                            "/bin/sx-mariadb",
-                                            "isReady"
-                                        ]
+                                    "httpGet": {
+                                        "path": "/health",
+                                        "port": 8080,
+                                        "scheme": "HTTP"
                                     },
-                                    "initialDelaySeconds": 15,
-                                    "timeoutSeconds": 2,
-                                    "periodSeconds": 20,
+                                    "initialDelaySeconds": 10,
+                                    "timeoutSeconds": 1,
+                                    "periodSeconds": 15,
                                     "successThreshold": 1,
                                     "failureThreshold": 3
                                 },
@@ -669,16 +790,8 @@
                                 "imagePullPolicy": "Always"
                             }
                         ],
-                        "volumes": [
-                            {
-                                "name": "mariadb-test-data",
-                                "emptyDir": {
-                                    "medium": ""
-                                }
-                            }
-                        ],
                         "restartPolicy": "Always",
-                        "terminationGracePeriodSeconds": 20,
+                        "terminationGracePeriodSeconds": 30,
                         "dnsPolicy": "ClusterFirst",
                         "securityContext": {}
                     }
@@ -696,7 +809,7 @@
                     "stage": "test",
                     "type": "frontend",
                     "provider": "startx",
-                    "template": "sxapi-demo-pipeline-template"
+                    "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
                 "annotations": {
                     "openshift.io/generated-by": "STARTX"
@@ -743,7 +856,7 @@
                             "stage": "test",
                             "type": "frontend",
                             "provider": "startx",
-                            "template": "sxapi-demo-pipeline-template",
+                            "template": "sxapi-demo-openshift-couchbase-pipeline-template",
                             "deploymentconfig": "api-test"
                         },
                         "annotations": {
@@ -765,30 +878,26 @@
                                         "value": "true"
                                     },
                                     {
-                                        "name": "MARIADB_SERVICE_HOST",
-                                        "value": "mariadb-test"
-                                    },
-                                    {
-                                        "name": "MYSQL_USER",
+                                        "name": "COUCHBASE_USER",
                                         "valueFrom": {
                                             "secretKeyRef": {
-                                                "name": "mariadb-test",
-                                                "key": "MYSQL_USER"
+                                                "name": "couchbase-auth-test",
+                                                "key": "username"
                                             }
                                         }
                                     },
                                     {
-                                        "name": "MYSQL_PASSWORD",
+                                        "name": "COUCHBASE_PASSWORD",
                                         "valueFrom": {
                                             "secretKeyRef": {
-                                                "name": "mariadb-test",
-                                                "key": "MYSQL_PASSWORD"
+                                                "name": "couchbase-auth-test",
+                                                "key": "password"
                                             }
                                         }
                                     },
                                     {
-                                        "name": "MYSQL_DATABASE",
-                                        "value": "${MYSQL_DATABASE}"
+                                        "name": "COUCHBASE_BUCKET",
+                                        "value": "${COUCHBASE_BUCKET}"
                                     }
                                 ],
                                 "command": [
@@ -856,7 +965,7 @@
                     "stage": "test",
                     "type": "frontend",
                     "provider": "startx",
-                    "template": "sxapi-demo-pipeline-template"
+                    "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
                 "annotations": {
                     "openshift.io/generated-by": "STARTX"
@@ -903,7 +1012,7 @@
                             "stage": "test",
                             "type": "frontend",
                             "provider": "startx",
-                            "template": "sxapi-demo-pipeline-template",
+                            "template": "sxapi-demo-openshift-couchbase-pipeline-template",
                             "deploymentconfig": "www-test"
                         },
                         "annotations": {
@@ -926,12 +1035,7 @@
                                     },
                                     {
                                         "name": "DEMO_API",
-                                        "valueFrom": {
-                                            "secretKeyRef": {
-                                                "name": "www-test",
-                                                "key": "DEMO_API"
-                                            }
-                                        }
+                                        "value": "${DEMO_API}"
                                     }
                                 ],
                                 "command": [
@@ -992,32 +1096,32 @@
             "kind": "Service",
             "apiVersion": "v1",
             "metadata": {
-                "name": "mariadb-test",
+                "name": "bot-test",
                 "labels": {
-                    "app": "mariadb-test",
+                    "app": "bot-test",
                     "stage": "test",
                     "type": "backend",
                     "provider": "startx",
-                    "template": "sxapi-demo-pipeline-template"
+                    "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
                 "annotations": {
                     "openshift.io/generated-by": "STARTX",
-                    "template.openshift.io/expose-uri": "mysql://{.spec.clusterIP}:{.spec.ports[?(.name==\"mysql\")].port}"
+                    "template.openshift.io/expose-uri": "http://{.spec.clusterIP}:{.spec.ports[?(.name==\"http\")].port}"
                 }
             },
             "spec": {
                 "ports": [
                     {
-                        "name": "mysql",
+                        "name": "http",
                         "protocol": "TCP",
-                        "port": 3306,
-                        "targetPort": 3306,
+                        "port": 8080,
+                        "targetPort": 8080,
                         "nodePort": 0
                     }
                 ],
                 "selector": {
-                    "app": "mariadb-test",
-                    "deploymentconfig": "mariadb-test"
+                    "app": "bot-test",
+                    "deploymentconfig": "bot-test"
                 },
                 "type": "ClusterIP",
                 "sessionAffinity": "None"
@@ -1033,10 +1137,10 @@
                     "stage": "test",
                     "type": "frontend",
                     "provider": "startx",
-                    "template": "sxapi-demo-pipeline-template"
+                    "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
                 "annotations": {
-                    "service.alpha.openshift.io/dependencies": "[{\"name\": \"mariadb-test\", \"namespace\": \"\", \"kind\": \"Service\"}]",
+                    "service.alpha.openshift.io/dependencies": "[{\"name\": \"bot-test\", \"namespace\": \"\", \"kind\": \"Service\"}]",
                     "openshift.io/generated-by": "STARTX"
                 }
             },
@@ -1066,7 +1170,7 @@
                     "stage": "test",
                     "type": "frontend",
                     "provider": "startx",
-                    "template": "sxapi-demo-pipeline-template"
+                    "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
                 "annotations": {
                     "openshift.io/generated-by": "STARTX"
@@ -1098,7 +1202,7 @@
                     "stage": "test",
                     "type": "frontend",
                     "provider": "startx",
-                    "template": "sxapi-demo-pipeline-template"
+                    "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
                 "annotations": {
                     "openshift.io/generated-by": "STARTX",
@@ -1123,7 +1227,7 @@
                     "stage": "test",
                     "type": "frontend",
                     "provider": "startx",
-                    "template": "sxapi-demo-pipeline-template"
+                    "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
                 "annotations": {
                     "openshift.io/generated-by": "STARTX",
@@ -1142,51 +1246,48 @@
             "kind": "Secret",
             "apiVersion": "v1",
             "metadata": {
-                "name": "mariadb-prod",
-                "creationTimestamp": null,
+                "name": "couchbase-auth-prod",
                 "labels": {
-                    "app": "mariadb-prod",
-                    "stage": "prod",
                     "type": "backend",
                     "provider": "startx",
-                    "template": "sxapi-demo-pipeline-template"
+                    "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 }
             },
             "stringData": {
-                "MYSQL_ROOT_PASSWORD": "${MYSQL_ROOT_PASSWORD}",
-                "MYSQL_USER": "${MYSQL_USER}",
-                "MYSQL_PASSWORD": "${MYSQL_PASSWORD}"
+                "username": "${COUCHBASE_USER}",
+                "password": "${COUCHBASE_PASSWORD}"
             }
         },
         {
             "kind": "Secret",
             "apiVersion": "v1",
             "metadata": {
-                "name": "www-prod",
-                "creationTimestamp": null,
+                "name": "twitter-auth-prod",
                 "labels": {
-                    "app": "www-prod",
-                    "stage": "prod",
-                    "type": "frontend",
+                    "app": "${APP_NAME}",
+                    "type": "all",
                     "provider": "startx",
-                    "template": "sxapi-demo-pipeline-template"
+                    "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 }
             },
             "stringData": {
-                "DEMO_API": "api-prod-${DEMO_API}"
+                "consumer_key": "${twitter_consumer_key}",
+                "consumer_secret": "${twitter_consumer_secret}",
+                "access_token_key": "${twitter_access_token_key}",
+                "access_token_secret": "${twitter_access_token_secret}"
             }
         },
         {
             "kind": "BuildConfig",
             "apiVersion": "v1",
             "metadata": {
-                "name": "mariadb-prod",
+                "name": "bot-prod",
                 "labels": {
-                    "app": "mariadb-prod",
+                    "app": "bot-prod",
                     "stage": "prod",
                     "type": "backend",
                     "provider": "startx",
-                    "template": "sxapi-demo-pipeline-template"
+                    "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
                 "annotations": {
                     "openshift.io/generated-by": "STARTX"
@@ -1199,42 +1300,22 @@
                 "source": {
                     "type": "Git",
                     "git": {
-                        "uri": "https://github.com/startxfr/sxapi-demo-openshift.git",
+                        "uri": "https://github.com/startxfr/sxapi-demo-openshift-couchbase.git",
                         "ref": "prod"
                     },
-                    "contextDir": "db"
+                    "contextDir": "bot"
                 },
                 "strategy": {
                     "type": "Source",
                     "sourceStrategy": {
                         "from": {
                             "kind": "ImageStreamTag",
-                            "name": "startx-${BASE_IMAGE_TAG}:mariadb"
+                            "name": "startx-${BASE_IMAGE_TAG}:bot"
                         },
                         "env": [
                             {
                                 "name": "SX_VERBOSE",
                                 "value": "true"
-                            },
-                            {
-                                "name": "SX_DEBUG",
-                                "value": "true"
-                            },
-                            {
-                                "name": "MYSQL_ROOT_PASSWORD",
-                                "value": "${MYSQL_ROOT_PASSWORD}"
-                            },
-                            {
-                                "name": "MYSQL_USER",
-                                "value": "${MYSQL_USER}"
-                            },
-                            {
-                                "name": "MYSQL_PASSWORD",
-                                "value": "${MYSQL_PASSWORD}"
-                            },
-                            {
-                                "name": "MYSQL_DATABASE",
-                                "value": "${MYSQL_DATABASE}"
                             }
                         ]
                     }
@@ -1242,7 +1323,7 @@
                 "output": {
                     "to": {
                         "kind": "ImageStreamTag",
-                        "name": "mariadb:prod"
+                        "name": "bot:prod"
                     }
                 },
                 "resources": {}
@@ -1258,7 +1339,7 @@
                     "stage": "prod",
                     "type": "frontend",
                     "provider": "startx",
-                    "template": "sxapi-demo-pipeline-template"
+                    "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
                 "annotations": {
                     "openshift.io/generated-by": "STARTX"
@@ -1271,7 +1352,7 @@
                 "source": {
                     "type": "Git",
                     "git": {
-                        "uri": "https://github.com/startxfr/sxapi-demo-openshift.git",
+                        "uri": "https://github.com/startxfr/sxapi-demo-openshift-couchbase.git",
                         "ref": "prod"
                     },
                     "contextDir": "api"
@@ -1310,7 +1391,7 @@
                     "stage": "prod",
                     "type": "frontend",
                     "provider": "startx",
-                    "template": "sxapi-demo-pipeline-template"
+                    "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
                 "annotations": {
                     "openshift.io/generated-by": "STARTX"
@@ -1323,7 +1404,7 @@
                 "source": {
                     "type": "Git",
                     "git": {
-                        "uri": "https://github.com/startxfr/sxapi-demo-openshift.git",
+                        "uri": "https://github.com/startxfr/sxapi-demo-openshift-couchbase.git",
                         "ref": "prod"
                     },
                     "contextDir": "www"
@@ -1356,14 +1437,14 @@
             "kind": "DeploymentConfig",
             "apiVersion": "v1",
             "metadata": {
-                "name": "mariadb-prod",
+                "name": "bot-prod",
                 "generation": 2,
                 "labels": {
-                    "app": "mariadb-prod",
+                    "app": "bot-prod",
                     "stage": "prod",
                     "type": "backend",
                     "provider": "startx",
-                    "template": "sxapi-demo-pipeline-template"
+                    "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
                 "annotations": {
                     "openshift.io/generated-by": "STARTX"
@@ -1383,11 +1464,11 @@
                         "imageChangeParams": {
                             "automatic": false,
                             "containerNames": [
-                                "mariadb-prod"
+                                "bot-prod"
                             ],
                             "from": {
                                 "kind": "ImageStreamTag",
-                                "name": "mariadb:prod"
+                                "name": "bot:prod"
                             }
                         }
                     },
@@ -1398,18 +1479,18 @@
                 "replicas": 1,
                 "test": false,
                 "selector": {
-                    "app": "mariadb-prod",
-                    "deploymentconfig": "mariadb-prod"
+                    "app": "bot-prod",
+                    "deploymentconfig": "bot-prod"
                 },
                 "template": {
                     "metadata": {
                         "labels": {
-                            "app": "mariadb-prod",
+                            "app": "bot-prod",
                             "stage": "prod",
                             "type": "backend",
                             "provider": "startx",
-                            "template": "sxapi-demo-pipeline-template",
-                            "deploymentconfig": "mariadb-prod"
+                            "template": "sxapi-demo-openshift-couchbase-pipeline-template",
+                            "deploymentconfig": "bot-prod"
                         },
                         "annotations": {
                             "openshift.io/generated-by": "STARTX"
@@ -1418,7 +1499,7 @@
                     "spec": {
                         "containers": [
                             {
-                                "name": "mariadb-prod",
+                                "name": "bot-prod",
                                 "image": " ",
                                 "env": [
                                     {
@@ -1430,83 +1511,103 @@
                                         "value": "true"
                                     },
                                     {
-                                        "name": "MYSQL_ROOT_PASSWORD",
+                                        "name": "COUCHBASE_USER",
                                         "valueFrom": {
                                             "secretKeyRef": {
-                                                "name": "mariadb-prod",
-                                                "key": "MYSQL_ROOT_PASSWORD"
+                                                "name": "couchbase-auth",
+                                                "key": "username"
                                             }
                                         }
                                     },
                                     {
-                                        "name": "MYSQL_USER",
+                                        "name": "COUCHBASE_PASSWORD",
                                         "valueFrom": {
                                             "secretKeyRef": {
-                                                "name": "mariadb-prod",
-                                                "key": "MYSQL_USER"
+                                                "name": "couchbase-auth",
+                                                "key": "password"
                                             }
                                         }
                                     },
                                     {
-                                        "name": "MYSQL_PASSWORD",
+                                        "name": "COUCHBASE_BUCKET",
+                                        "value": "${COUCHBASE_BUCKET}"
+                                    },
+                                    {
+                                        "name": "twitter_consumer_key",
                                         "valueFrom": {
                                             "secretKeyRef": {
-                                                "name": "mariadb-prod",
-                                                "key": "MYSQL_PASSWORD"
+                                                "name": "twitter-auth",
+                                                "key": "consumer_key"
                                             }
                                         }
                                     },
                                     {
-                                        "name": "MYSQL_DATABASE",
-                                        "value": "${MYSQL_DATABASE}"
+                                        "name": "twitter_consumer_secret",
+                                        "valueFrom": {
+                                            "secretKeyRef": {
+                                                "name": "twitter-auth",
+                                                "key": "consumer_secret"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "twitter_access_token_key",
+                                        "valueFrom": {
+                                            "secretKeyRef": {
+                                                "name": "twitter-auth",
+                                                "key": "access_token_key"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "twitter_access_token_secret",
+                                        "valueFrom": {
+                                            "secretKeyRef": {
+                                                "name": "twitter-auth",
+                                                "key": "access_token_secret"
+                                            }
+                                        }
                                     }
                                 ],
                                 "ports": [
                                     {
-                                        "containerPort": 3306,
+                                        "containerPort": 8080,
                                         "protocol": "TCP"
                                     }
                                 ],
                                 "command": [
-                                    "/bin/sx-mariadb"
+                                    "/bin/sx-nodejs"
                                 ],
                                 "args": [
                                     "run"
                                 ],
                                 "resources": {
                                     "limits": {
-                                        "memory": "512Mi"
+                                        "memory": "128Mi"
                                     }
                                 },
-                                "volumeMounts": [
-                                    {
-                                        "name": "mariadb-prod-data",
-                                        "mountPath": "/data"
-                                    }
-                                ],
                                 "livenessProbe": {
                                     "exec": {
                                         "command": [
-                                            "/bin/sx-mariadb",
+                                            "/bin/sx-nodejs",
                                             "isLive"
                                         ]
                                     },
                                     "initialDelaySeconds": 5,
                                     "timeoutSeconds": 1,
-                                    "periodSeconds": 10,
+                                    "periodSeconds": 20,
                                     "successThreshold": 1,
                                     "failureThreshold": 3
                                 },
                                 "readinessProbe": {
-                                    "exec": {
-                                        "command": [
-                                            "/bin/sx-mariadb",
-                                            "isReady"
-                                        ]
+                                    "httpGet": {
+                                        "path": "/health",
+                                        "port": 8080,
+                                        "scheme": "HTTP"
                                     },
-                                    "initialDelaySeconds": 15,
-                                    "timeoutSeconds": 2,
-                                    "periodSeconds": 20,
+                                    "initialDelaySeconds": 10,
+                                    "timeoutSeconds": 1,
+                                    "periodSeconds": 15,
                                     "successThreshold": 1,
                                     "failureThreshold": 3
                                 },
@@ -1514,16 +1615,8 @@
                                 "imagePullPolicy": "Always"
                             }
                         ],
-                        "volumes": [
-                            {
-                                "name": "mariadb-prod-data",
-                                "emptyDir": {
-                                    "medium": ""
-                                }
-                            }
-                        ],
                         "restartPolicy": "Always",
-                        "terminationGracePeriodSeconds": 20,
+                        "terminationGracePeriodSeconds": 30,
                         "dnsPolicy": "ClusterFirst",
                         "securityContext": {}
                     }
@@ -1541,7 +1634,7 @@
                     "stage": "prod",
                     "type": "frontend",
                     "provider": "startx",
-                    "template": "sxapi-demo-pipeline-template"
+                    "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
                 "annotations": {
                     "openshift.io/generated-by": "STARTX"
@@ -1588,7 +1681,7 @@
                             "stage": "prod",
                             "type": "frontend",
                             "provider": "startx",
-                            "template": "sxapi-demo-pipeline-template",
+                            "template": "sxapi-demo-openshift-couchbase-pipeline-template",
                             "deploymentconfig": "api-prod"
                         },
                         "annotations": {
@@ -1610,30 +1703,26 @@
                                         "value": "true"
                                     },
                                     {
-                                        "name": "MARIADB_SERVICE_HOST",
-                                        "value": "mariadb-prod"
-                                    },
-                                    {
-                                        "name": "MYSQL_USER",
+                                        "name": "COUCHBASE_USER",
                                         "valueFrom": {
                                             "secretKeyRef": {
-                                                "name": "mariadb-prod",
-                                                "key": "MYSQL_USER"
+                                                "name": "couchbase-auth",
+                                                "key": "username"
                                             }
                                         }
                                     },
                                     {
-                                        "name": "MYSQL_PASSWORD",
+                                        "name": "COUCHBASE_PASSWORD",
                                         "valueFrom": {
                                             "secretKeyRef": {
-                                                "name": "mariadb-prod",
-                                                "key": "MYSQL_PASSWORD"
+                                                "name": "couchbase-auth",
+                                                "key": "password"
                                             }
                                         }
                                     },
                                     {
-                                        "name": "MYSQL_DATABASE",
-                                        "value": "${MYSQL_DATABASE}"
+                                        "name": "COUCHBASE_BUCKET",
+                                        "value": "${COUCHBASE_BUCKET}"
                                     }
                                 ],
                                 "command": [
@@ -1701,7 +1790,7 @@
                     "stage": "prod",
                     "type": "frontend",
                     "provider": "startx",
-                    "template": "sxapi-demo-pipeline-template"
+                    "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
                 "annotations": {
                     "openshift.io/generated-by": "STARTX"
@@ -1748,7 +1837,7 @@
                             "stage": "prod",
                             "type": "frontend",
                             "provider": "startx",
-                            "template": "sxapi-demo-pipeline-template",
+                            "template": "sxapi-demo-openshift-couchbase-pipeline-template",
                             "deploymentconfig": "www-prod"
                         },
                         "annotations": {
@@ -1771,12 +1860,7 @@
                                     },
                                     {
                                         "name": "DEMO_API",
-                                        "valueFrom": {
-                                            "secretKeyRef": {
-                                                "name": "www-prod",
-                                                "key": "DEMO_API"
-                                            }
-                                        }
+                                        "value": "${DEMO_API}"
                                     }
                                 ],
                                 "command": [
@@ -1837,32 +1921,32 @@
             "kind": "Service",
             "apiVersion": "v1",
             "metadata": {
-                "name": "mariadb-prod",
+                "name": "bot-prod",
                 "labels": {
-                    "app": "mariadb-prod",
+                    "app": "bot-prod",
                     "stage": "prod",
                     "type": "backend",
                     "provider": "startx",
-                    "template": "sxapi-demo-pipeline-template"
+                    "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
                 "annotations": {
                     "openshift.io/generated-by": "STARTX",
-                    "template.openshift.io/expose-uri": "mysql://{.spec.clusterIP}:{.spec.ports[?(.name==\"mysql\")].port}"
+                    "template.openshift.io/expose-uri": "http://{.spec.clusterIP}:{.spec.ports[?(.name==\"http\")].port}"
                 }
             },
             "spec": {
                 "ports": [
                     {
-                        "name": "mysql",
+                        "name": "http",
                         "protocol": "TCP",
-                        "port": 3306,
-                        "targetPort": 3306,
+                        "port": 8080,
+                        "targetPort": 8080,
                         "nodePort": 0
                     }
                 ],
                 "selector": {
-                    "app": "mariadb-prod",
-                    "deploymentconfig": "mariadb-prod"
+                    "app": "bot-prod",
+                    "deploymentconfig": "bot-prod"
                 },
                 "type": "ClusterIP",
                 "sessionAffinity": "None"
@@ -1878,10 +1962,10 @@
                     "stage": "prod",
                     "type": "frontend",
                     "provider": "startx",
-                    "template": "sxapi-demo-pipeline-template"
+                    "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
                 "annotations": {
-                    "service.alpha.openshift.io/dependencies": "[{\"name\": \"mariadb-prod\", \"namespace\": \"\", \"kind\": \"Service\"}]",
+                    "service.alpha.openshift.io/dependencies": "[{\"name\": \"bot-prod\", \"namespace\": \"\", \"kind\": \"Service\"}]",
                     "openshift.io/generated-by": "STARTX"
                 }
             },
@@ -1911,7 +1995,7 @@
                     "stage": "prod",
                     "type": "frontend",
                     "provider": "startx",
-                    "template": "sxapi-demo-pipeline-template"
+                    "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
                 "annotations": {
                     "openshift.io/generated-by": "STARTX"
@@ -1943,7 +2027,7 @@
                     "stage": "prod",
                     "type": "frontend",
                     "provider": "startx",
-                    "template": "sxapi-demo-pipeline-template"
+                    "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
                 "annotations": {
                     "openshift.io/generated-by": "STARTX",
@@ -1968,7 +2052,7 @@
                     "stage": "prod",
                     "type": "frontend",
                     "provider": "startx",
-                    "template": "sxapi-demo-pipeline-template"
+                    "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
                 "annotations": {
                     "openshift.io/generated-by": "STARTX",
@@ -1982,9 +2066,94 @@
                     "weight": 100
                 }
             }
+        },
+        {
+            "kind": "Route",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "couchbase-admin",
+                "labels": {
+                    "app": "couchbase",
+                    "type": "couchbase",
+                    "provider": "startx",
+                    "template": "sxapi-demo-openshift-couchbase-pipeline-template"
+                },
+                "annotations": {
+                    "openshift.io/generated-by": "STARTX"
+                }
+            },
+            "spec": {
+                "to": {
+                    "kind": "Service",
+                    "name": "couchbase-node-ui",
+                    "weight": 100
+                },
+                "port": {
+                    "targetPort": "cb-admin"
+                }
+            }
+        },
+        {
+            "apiVersion": "couchbase.database.couchbase.com/v1beta1",
+            "kind": "CouchbaseCluster",
+            "metadata": {
+                "clusterName": "couchbase-cluster",
+                "name": "couchbase-node",
+                "labels": {
+                    "app": "couchbase",
+                    "type": "couchbase",
+                    "provider": "startx",
+                    "template": "sxapi-demo-openshift-couchbase-pipeline-template"
+                }
+            },
+            "spec": {
+                "authSecret": "couchbase-auth-test",
+                "baseImage": "couchbase/server",
+                "buckets": [
+                    {
+                        "conflictResolution": "seqno",
+                        "enableFlush": true,
+                        "enableIndexReplica": false,
+                        "ioPriority": "high",
+                        "memoryQuota": 400,
+                        "name": "${COUCHBASE_BUCKET}",
+                        "replicas": 1,
+                        "type": "${COUCHBASE_BUCKET_TYPE}"
+                    }
+                ],
+                "cluster": {
+                    "autoFailoverTimeout": 20,
+                    "dataServiceMemoryQuota": 800,
+                    "indexServiceMemoryQuota": 256,
+                    "indexStorageSetting": "memory_optimized",
+                    "searchServiceMemoryQuota": 256
+                },
+                "exposeAdminConsole": true,
+                "servers": [
+                    {
+                        "dataPath": "/opt/couchbase/var/lib/couchbase/data",
+                        "indexPath": "/opt/couchbase/var/lib/couchbase/data",
+                        "name": "all_services",
+                        "services": [
+                            "data",
+                            "index",
+                            "query"
+                        ],
+                        "size": 3
+                    }
+                ],
+                "version": "${CB_BASE_IMAGE_TAG}"
+            }
         }
     ],
     "parameters": [
+        {
+            "name": "APP_NAME",
+            "displayName": "Short name of the application",
+            "description": "Name of the application used to identify and tag ressources related to this full stack",
+            "value": "twitter",
+            "required": true
+        },
         {
             "name": "BASE_IMAGE_TAG",
             "displayName": "Base image tag",
@@ -1994,9 +2163,9 @@
         },
         {
             "name": "DEMO_API",
-            "displayName": "API fqdn suffix",
-            "description": "Domain name suffix for the API endpoint to use in this frontend (ex: xxxxx.apps.startx.fr were xxxxx is your project namespace)",
-            "value": "demo.apps.startx.fr",
+            "displayName": "API fqdn",
+            "description": "Domain name of the API endpoint to use in this frontend (api-xxxxx.openshift.demo.startx.fr were xxxxx is your project namespace)",
+            "value": "api-dev-demo.openshift.demo.startx.fr",
             "required": true
         },
         {
@@ -2008,36 +2177,70 @@
             "required": true
         },
         {
-            "name": "MYSQL_ROOT_PASSWORD",
-            "displayName": "Mysql root password",
-            "description": "The mysql root password to use. Generated if not provided",
-            "from": "[A-Z0-9]{16}",
-            "generate": "expression",
+            "name": "CB_BASE_IMAGE_TAG",
+            "displayName": "Couchbase release",
+            "description": "Couchbase image release to use for buidling cluster nodes and job task (5.1.0, 5.5.0-Mar, 5.5.0-beta)",
+            "value": "5.5.0-beta",
             "required": true
         },
         {
-            "name": "MYSQL_USER",
-            "displayName": "Mysql application user",
+            "name": "COUCHBASE_USER",
+            "displayName": "Couchbase application user",
             "description": "Database user to create",
-            "value": "dev-user",
+            "value": "Administrator",
             "from": "[A-Z0-9]{8}",
             "generate": "expression",
             "required": true
         },
         {
-            "name": "MYSQL_PASSWORD",
-            "displayName": "Mysql password",
+            "name": "COUCHBASE_PASSWORD",
+            "displayName": "Couchbase password",
             "description": "Database password of the application user",
-            "value": "dev-pwd123",
+            "value": "Administrator123",
             "from": "[A-Z0-9]{16}",
             "generate": "expression",
             "required": true
         },
         {
-            "name": "MYSQL_DATABASE",
-            "displayName": "Mysql database",
-            "description": "name of the default database to create",
+            "name": "COUCHBASE_BUCKET",
+            "displayName": "Couchbase bucket",
+            "description": "name of the bucket to create for example",
             "value": "demo",
+            "required": true
+        },
+        {
+            "name": "COUCHBASE_BUCKET_TYPE",
+            "displayName": "Couchbase bucket type",
+            "description": "Bucket type for the couchabse bucket (ephemeral, couchbase or memcache)",
+            "value": "ephemeral",
+            "required": true
+        },
+        {
+            "name": "twitter_consumer_key",
+            "displayName": "Twitter consumer key",
+            "description": "Twitter consumer key to use for receiving twitter stream",
+            "value": "xxxxxxxxxxxxx",
+            "required": true
+        },
+        {
+            "name": "twitter_consumer_secret",
+            "displayName": "Twitter consumer secret",
+            "description": "Twitter consumer secret to use for receiving twitter stream",
+            "value": "xxxxxxxxxxxxx",
+            "required": true
+        },
+        {
+            "name": "twitter_access_token_key",
+            "displayName": "Twitter access token key",
+            "description": "Twitter access token key to use for receiving twitter stream",
+            "value": "xxxxxxxxxxxxx",
+            "required": true
+        },
+        {
+            "name": "twitter_access_token_secret",
+            "displayName": "Twitter access token secret",
+            "description": "Twitter access token secret to use for receiving twitter stream",
+            "value": "xxxxxxxxxxxxx",
             "required": true
         }
     ]

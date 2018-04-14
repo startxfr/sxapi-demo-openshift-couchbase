@@ -88,8 +88,6 @@
                 "strategy": {
                     "type": "Rolling",
                     "rollingParams": {
-                        "updatePeriodSeconds": 1,
-                        "intervalSeconds": 1,
                         "timeoutSeconds": 50,
                         "maxUnavailable": "25%",
                         "maxSurge": "25%"
@@ -177,12 +175,6 @@
                         ]
                     }
                 }
-            },
-            "status": {
-                "observedGeneration": 2,
-                "replicas": 1,
-                "updatedReplicas": 1,
-                "availableReplicas": 1
             }
         },
         {
@@ -210,20 +202,6 @@
                 "port": {
                     "targetPort": "cb-admin"
                 }
-            },
-            "status": {
-                "ingress": [
-                    {
-                        "routerName": "router",
-                        "conditions": [
-                            {
-                                "type": "Admitted",
-                                "status": "True"
-                            }
-                        ],
-                        "wildcardPolicy": "None"
-                    }
-                ]
             }
         },
         {
@@ -270,7 +248,7 @@
                         "size": 4
                     }
                 ],
-                "version": "${BASE_IMAGE_TAG}"
+                "version": "${CB_BASE_IMAGE_TAG}"
             }
         },
         {
@@ -303,7 +281,7 @@
                         "containers": [
                             {
                                 "name": "couchbase-workload",
-                                "image": "couchbase/server:${BASE_IMAGE_TAG}",
+                                "image": "couchbase/server:${CB_BASE_IMAGE_TAG}",
                                 "command": [
                                     "sleep 60;",
                                     "cbworkloadgen",
@@ -339,7 +317,7 @@
     ],
     "parameters": [
         {
-            "name": "BASE_IMAGE_TAG",
+            "name": "CB_BASE_IMAGE_TAG",
             "displayName": "Couchbase release",
             "description": "Couchbase image release to use for buidling cluster nodes and job task (5.1.0, 5.5.0-Mar, 5.5.0-beta)",
             "value": "5.5.0-beta",

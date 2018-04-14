@@ -100,7 +100,7 @@ docker run -d \
        --name sxapi-demo-openshift-couchbase-www \
        -e SX_VERBOSE=true \
        -e SX_DEBUG=true \
-       -e DEMO_API=api-demo.apps.startx.fr \
+       -e DEMO_API=api-demo.openshift.demo.startx.fr \
        -p 8081:8080 \
        sxapi-demo-www \
        /bin/sx-nodejs run

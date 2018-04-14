@@ -9,7 +9,7 @@
         },
         "couchbase-api": {
             "_class": "couchbase",
-            "cluster": "http://{{{COUCHBASE_SERVICE_HOST}}}:8091",
+            "cluster": "http://{{{COUCHBASE_NODE_UI_SERVICE_HOST}}}:{{{COUCHBASE_NODE_UI_SERVICE_PORT}}}",
             "bucket": "{{{COUCHBASE_BUCKET}}}",
             "user": "{{{COUCHBASE_USER}}}",
             "password": "{{{COUCHBASE_PASSWORD}}}"

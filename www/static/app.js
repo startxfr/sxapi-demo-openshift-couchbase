@@ -1,4 +1,6 @@
 
+/* global h337 */
+
 app = {
   currentMousePos: {x: -1, y: -1, time: 0},
   config: {
@@ -7,13 +9,6 @@ app = {
   },
   init: function () {
     // listening mouse position
-    $(document).mousemove(function (event) {
-      var t = new Date();
-      app.currentMousePos.time = t.getTime();
-      app.currentMousePos.href = window.location.href;
-      app.currentMousePos.x = event.pageX;
-      app.currentMousePos.y = event.pageY;
-    }).mouseover();
     $.ajax({method: "GET", url: "/env"})
     .always(function (response, status) {
       if (status === "success" && response.code === "ok") {
@@ -23,6 +18,14 @@ app = {
         app.loadFrontendInfo();
         app.api.init();
         app.socket.init();
+        app.heatmap.init();
+        $(document).mousemove(function (event) {
+          var t = new Date();
+          app.currentMousePos.time = t.getTime();
+          app.currentMousePos.href = window.location.href;
+          app.currentMousePos.x = event.pageX;
+          app.currentMousePos.y = event.pageY;
+        }).mouseover();
       }
       else {
         app.tools.displayError("impossible de contacter le frontend www car " + (response.message || response));
@@ -66,6 +69,49 @@ app = {
       var t = new Date();
       app.currentMousePos.time = t.getTime();
       app.socket.emit('system:log:trace', app.currentMousePos);
+    }
+  },
+  heatmap: {
+    mapDom: null,
+    map: null,
+    init: function () {
+      this.mapDom = $("#heatmapDiv");
+      this.map = h337.create({
+        container: document.querySelector('.heatmap'),
+        radius: 80,
+        maxOpacity: .9,
+        minOpacity: .1,
+        blur: .75,
+        gradient: {
+          '.2': 'blue',
+          '.4': 'green',
+          '.6': 'yellow',
+          '.8': 'red',
+          '.95': 'white'
+        }
+      });
+      $(".HeatmapBtn").click(function () {
+        if (app.heatmap.mapDom.hasClass("on")) {
+          app.heatmap.mapDom.removeClass("on").hide();
+        }
+        else {
+          app.heatmap.mapDom.addClass("on").show();
+          app.heatmap.start();
+        }
+      });
+      $(document).mousemove(function (event) {
+        app.heatmap.map.addData({x: event.pageX, y: event.pageY, value: 1});
+      });
+      app.socket.on('log:trace', function (data) {
+        app.heatmap.map.addData(data);
+      });
+    },
+    start: function () {
+      this.map.setData({
+        min: 1,
+        max: 15,
+        data: [{x: 100, y: 150, value: 15}, {x: 220, y: 225, value: 10}, {x: 10, y: 15, value: 8}, {x: 10, y: 45, value: 3}, {x: 40, y: 45, value: 12}]
+      });
     }
   },
   api: {

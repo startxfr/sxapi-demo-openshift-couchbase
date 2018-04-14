@@ -26,6 +26,7 @@ var mylib = {
         if (typeof config.keyPrefix === "string") {
           key = config.keyPrefix + key;
         }
+        client.broadcast.emit("log:trace", {x: data.x, y: data.y, value: 1});
         $app.resources.get(config.outputResource).insert(key, data, function (key) {
           return function (coucherr, doc) {
             var duration = $timer.timeStop('couchbase_insert_' + key);
@@ -41,9 +42,7 @@ var mylib = {
     },
     disconnectEndpoint: function (client, config) {
       return function (data, param) {
-        console.log(data, param);
-        console.log("------disconnectEndpoint api");
-        console.log(client.id, config, data);
+        $log.info("websocket client '" + client.id + "' disconnected");
         client.broadcast.emit("test", data);
         client.emit("test", data);
       };

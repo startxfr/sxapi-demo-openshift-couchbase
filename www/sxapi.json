@@ -1,7 +1,7 @@
 {
     "name": "sxapi-demo-openshift-couchbase-prod-www",
     "description": "Web frontend application for the sxapi openshift demo (prod)",
-    "version": "0.1.25",
+    "version": "0.1.28",
     "debug": true,
     "log": {
         "filters": {

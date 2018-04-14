@@ -1,9 +1,9 @@
 {
-  "name": "sxapi-demo-openshift-couchbase-bot",
-  "description": "Bot streamer service for the sxapi openshift couchbase demo (prod)",
-  "version": "0.0.10",
+  "name": "sxapi-core",
+  "version": "0.2.16",
+  "description": "sxapi-core is an simple and extensible framework for building microservices API using javascript technologies",
   "author": "STARTX <dev+sxapi_core@startx.fr>",
-  "homepage": "https://github.com/startxfr/sxapi-demo-openshift-couchbase",
+  "homepage": "https://github.com/startxfr/sxapi-core",
   "license": "GPL-3.0-or-later",
   "private": false,
   "debug": true,

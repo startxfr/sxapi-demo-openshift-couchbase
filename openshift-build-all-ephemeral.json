@@ -750,7 +750,7 @@
                         "type": "ConfigChange"
                     }
                 ],
-                "replicas": 2,
+                "replicas": 1,
                 "test": false,
                 "selector": {
                     "app": "bot-${SOURCE_BRANCH}",

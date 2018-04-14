@@ -55,8 +55,8 @@ to deploy various stage with the same project (shared namespace) or in different
 ```bash
 oc new-project demo-api
 oc process -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/master/openshift-build-all-ephemeral.json \
-           -v SOURCE_BRANCH=test \
-           -v DEMO_API=api-test-demo.openshift.demo.startx.fr \
+           -v SOURCE_BRANCH=prod \
+           -v DEMO_API=api-prod-demo.openshift.demo.startx.fr \
            -v COUCHBASE_USER="Administrator" \
            -v COUCHBASE_PASSWORD="Administrator123" \
            -v COUCHBASE_BUCKET="demo" | \

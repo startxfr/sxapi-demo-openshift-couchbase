@@ -1357,7 +1357,7 @@
             "name": "SOURCE_BRANCH",
             "displayName": "Application source-code branch",
             "description": "Name of the branch to use for building this application (dev, master, test, prod)",
-            "value": "test",
+            "value": "prod",
             "required": true
         },
         {
@@ -1371,7 +1371,7 @@
             "name": "DEMO_API",
             "displayName": "API fqdn",
             "description": "Domain name of the API endpoint to use in this frontend (api-xxxxx.openshift.demo.startx.fr were xxxxx is your project namespace)",
-            "value": "api-test-demo.openshift.demo.startx.fr",
+            "value": "api-prod-demo.openshift.demo.startx.fr",
             "required": true
         },
         {

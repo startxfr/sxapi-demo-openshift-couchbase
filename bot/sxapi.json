@@ -1,6 +1,6 @@
 {
     "name": "sxapi-demo-openshift-couchbase-bot",
-    "description": "Bot streamer service for the sxapi openshift couchbase demo (test)",
+    "description": "Bot streamer service for the sxapi openshift couchbase demo (prod)",
     "version": "0.1.11",
     "debug": true,
     "resources": {

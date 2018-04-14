@@ -4,8 +4,8 @@
     "metadata": {
         "name": "sxapi-demo-openshift-couchbase-pipeline-template",
         "annotations": {
-            "openshift.io/display-name": "SXAPI Demo Couchbase Application (Ephemeral)",
-            "description": "Template for building a full demo application (frontend + api + bot + bucket) using sxapi in an openshift PaaS",
+            "openshift.io/display-name": "SXAPI Demo Couchbase Application using Pipeline (Ephemeral)",
+            "description": "Template for building a full demo stack (frontend + api + bot + bucket) using sxapi microservice framework and Jenkins pipeline in an openshift PaaS",
             "iconClass": "icon-nodejs",
             "tags": "startx,demo,sxapi,couchbase",
             "openshift.io/provider-display-name": "STARTX",
@@ -77,7 +77,7 @@
                 "labels": {
                     "base-image": "startx-${BASE_IMAGE_TAG}",
                     "app": "sxapi-demo",
-                    "type": "backend",
+                    "type": "image",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 }
@@ -141,7 +141,7 @@
                 "labels": {
                     "base-image": "startx-${BASE_IMAGE_TAG}-bot",
                     "app": "${APP_NAME}",
-                    "type": "frontend",
+                    "type": "image",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 }
@@ -154,7 +154,7 @@
                             "openshift.io/display-name": "SXAPI Demo image - Bot (test)",
                             "description": "Bot image for the SXAPI Demo",
                             "iconClass": "icon-nodejs",
-                            "tags": "startx,bot,nodejs",
+                            "tags": "startx,nodejs,backend,bot,test",
                             "supports": "http,websockets",
                             "version": "test"
                         }
@@ -165,7 +165,7 @@
                             "openshift.io/display-name": "SXAPI Demo image - Bot (prod)",
                             "description": "Bot image for the SXAPI Demo",
                             "iconClass": "icon-nodejs",
-                            "tags": "startx,bot,nodejs",
+                            "tags": "startx,nodejs,backend,bot,prod",
                             "supports": "http,websockets",
                             "version": "prod"
                         }
@@ -185,7 +185,7 @@
                 "labels": {
                     "base-image": "startx-${BASE_IMAGE_TAG}-nodejs",
                     "app": "${APP_NAME}",
-                    "type": "frontend",
+                    "type": "image",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 }
@@ -198,8 +198,8 @@
                             "openshift.io/display-name": "SXAPI Demo image - API (test)",
                             "description": "NodeJS API image for the SXAPI Demo",
                             "iconClass": "icon-nodejs",
-                            "tags": "startx,nodejs,frontend,api,api",
-                            "supports": "http,nodejs",
+                            "tags": "startx,nodejs,frontend,api,test",
+                            "supports": "http,websockets",
                             "version": "test"
                         }
                     },
@@ -209,8 +209,8 @@
                             "openshift.io/display-name": "SXAPI Demo image - API (prod)",
                             "description": "NodeJS API image for the SXAPI Demo",
                             "iconClass": "icon-nodejs",
-                            "tags": "startx,nodejs,frontend,api,api",
-                            "supports": "http,nodejs",
+                            "tags": "startx,nodejs,frontend,api,prod",
+                            "supports": "http,websockets",
                             "version": "prod"
                         }
                     }
@@ -229,7 +229,7 @@
                 "labels": {
                     "base-image": "startx-${BASE_IMAGE_TAG}-nodejs",
                     "app": "${APP_NAME}",
-                    "type": "backend",
+                    "type": "image",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 }
@@ -242,8 +242,8 @@
                             "openshift.io/display-name": "SXAPI Demo image - WWW (test)",
                             "description": "NodeJS Web image for the SXAPI Demo",
                             "iconClass": "icon-nodejs",
-                            "tags": "startx,nodejs,frontend,www",
-                            "supports": "http,nodejs",
+                            "tags": "startx,nodejs,frontend,www,test",
+                            "supports": "http",
                             "version": "test"
                         }
                     },
@@ -253,7 +253,7 @@
                             "openshift.io/display-name": "SXAPI Demo image - WWW (prod)",
                             "description": "NodeJS Web image for the SXAPI Demo",
                             "iconClass": "icon-nodejs",
-                            "tags": "startx,nodejs,frontend,www",
+                            "tags": "startx,nodejs,frontend,www,prod",
                             "supports": "http,nodejs",
                             "version": "prod"
                         }
@@ -663,7 +663,7 @@
                                     },
                                     {
                                         "name": "COUCHBASE_BUCKET",
-                                        "value": "${COUCHBASE_BUCKET}-test"
+                                        "value": "${COUCHBASE_BUCKET}test"
                                     },
                                     {
                                         "name": "twitter_consumer_key",
@@ -857,7 +857,7 @@
                                     },
                                     {
                                         "name": "COUCHBASE_BUCKET",
-                                        "value": "${COUCHBASE_BUCKET}-test"
+                                        "value": "${COUCHBASE_BUCKET}test"
                                     }
                                 ],
                                 "command": [
@@ -1503,7 +1503,7 @@
                                     },
                                     {
                                         "name": "COUCHBASE_BUCKET",
-                                        "value": "${COUCHBASE_BUCKET}-prod"
+                                        "value": "${COUCHBASE_BUCKET}prod"
                                     },
                                     {
                                         "name": "twitter_consumer_key",
@@ -1697,7 +1697,7 @@
                                     },
                                     {
                                         "name": "COUCHBASE_BUCKET",
-                                        "value": "${COUCHBASE_BUCKET}-prod"
+                                        "value": "${COUCHBASE_BUCKET}prod"
                                     }
                                 ],
                                 "command": [
@@ -2094,29 +2094,29 @@
                 "baseImage": "couchbase/server",
                 "buckets": [
                     {
+                        "name": "${COUCHBASE_BUCKET}test",
                         "conflictResolution": "seqno",
                         "enableFlush": true,
                         "enableIndexReplica": false,
-                        "ioPriority": "high",
-                        "memoryQuota": 200,
-                        "name": "${COUCHBASE_BUCKET}-test",
+                        "ioPriority": "low",
+                        "memoryQuota": 150,
                         "replicas": 1,
-                        "type": "${COUCHBASE_BUCKET_TYPE}"
+                        "type": "ephemeral"
                     },
                     {
+                        "name": "${COUCHBASE_BUCKET}prod",
                         "conflictResolution": "seqno",
                         "enableFlush": false,
-                        "enableIndexReplica": true,
+                        "enableIndexReplica": false,
                         "ioPriority": "high",
-                        "memoryQuota": 600,
-                        "name": "${COUCHBASE_BUCKET}-prod",
-                        "replicas": 2,
+                        "memoryQuota": 350,
+                        "replicas": 1,
                         "type": "${COUCHBASE_BUCKET_TYPE}"
                     }
                 ],
                 "cluster": {
                     "autoFailoverTimeout": 10,
-                    "dataServiceMemoryQuota": 900,
+                    "dataServiceMemoryQuota": 600,
                     "indexServiceMemoryQuota": 256,
                     "indexStorageSetting": "memory_optimized",
                     "searchServiceMemoryQuota": 256
@@ -2126,13 +2126,23 @@
                     {
                         "dataPath": "/opt/couchbase/var/lib/couchbase/data",
                         "indexPath": "/opt/couchbase/var/lib/couchbase/data",
+                        "name": "data_services",
+                        "services": [
+                            "data"
+                        ],
+                        "size": 2
+                    },
+                    {
+                        "dataPath": "/opt/couchbase/var/lib/couchbase/data",
+                        "indexPath": "/opt/couchbase/var/lib/couchbase/data",
                         "name": "all_services",
                         "services": [
                             "data",
                             "index",
-                            "query"
+                            "query",
+                            "search"
                         ],
-                        "size": 3
+                        "size": 2
                     }
                 ],
                 "version": "${CB_BASE_IMAGE_TAG}"
@@ -2198,14 +2208,14 @@
             "name": "COUCHBASE_BUCKET",
             "displayName": "Couchbase bucket",
             "description": "name of the bucket to create for example",
-            "value": "demo",
+            "value": "twitter",
             "required": true
         },
         {
             "name": "COUCHBASE_BUCKET_TYPE",
-            "displayName": "Couchbase bucket type",
+            "displayName": "Couchbase bucket type (for prod)",
             "description": "Bucket type for the couchabse bucket (ephemeral, couchbase or memcache)",
-            "value": "ephemeral",
+            "value": "couchbase",
             "required": true
         },
         {

@@ -2,8 +2,8 @@ api:
   container_name: "sxapi-demo-openshift-couchbase-api"
   build: api/
   environment:
-  - SX_VERBOSE=true
-  - SX_DEBUG=true
+  - SX_VERBOSE=false
+  - SX_DEBUG=false
   - COUCHBASE_NODE_UI_SERVICE_HOST=db
   - COUCHBASE_NODE_UI_SERVICE_PORT=8091
   - COUCHBASE_BUCKET=demo
@@ -26,8 +26,8 @@ www:
   container_name: "sxapi-demo-openshift-couchbase-www"
   build: www/
   environment:
-  - SX_VERBOSE=true
-  - SX_DEBUG=true
+  - SX_VERBOSE=false
+  - SX_DEBUG=false
   - DEMO_API=localhost:8080
   ports:
     - "8081:8080"
@@ -56,8 +56,8 @@ bot:
   build: bot/
   container_name: "sxapi-demo-openshift-couchbase-bot"
   environment:
-  - SX_VERBOSE=true
-  - SX_DEBUG=true
+  - SX_VERBOSE=false
+  - SX_DEBUG=false
   - COUCHBASE_NODE_UI_SERVICE_HOST=db
   - COUCHBASE_NODE_UI_SERVICE_PORT=8091
   - COUCHBASE_BUCKET=demo

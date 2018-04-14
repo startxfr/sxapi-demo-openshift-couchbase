@@ -228,7 +228,7 @@
                         "env": [
                             {
                                 "name": "SX_VERBOSE",
-                                "value": "true"
+                                "value": "false"
                             }
                         ]
                     }
@@ -298,7 +298,7 @@
                         "env": [
                             {
                                 "name": "SX_VERBOSE",
-                                "value": "true"
+                                "value": "false"
                             }
                         ]
                     }
@@ -368,7 +368,7 @@
                         "env": [
                             {
                                 "name": "SX_VERBOSE",
-                                "value": "true"
+                                "value": "false"
                             }
                         ]
                     }
@@ -563,11 +563,11 @@
                                 "env": [
                                     {
                                         "name": "SX_VERBOSE",
-                                        "value": "true"
+                                        "value": "false"
                                     },
                                     {
                                         "name": "SX_DEBUG",
-                                        "value": "true"
+                                        "value": "false"
                                     },
                                     {
                                         "name": "COUCHBASE_USER",
@@ -717,11 +717,11 @@
                                 "env": [
                                     {
                                         "name": "SX_VERBOSE",
-                                        "value": "true"
+                                        "value": "false"
                                     },
                                     {
                                         "name": "SX_DEBUG",
-                                        "value": "true"
+                                        "value": "false"
                                     },
                                     {
                                         "name": "COUCHBASE_USER",
@@ -907,11 +907,11 @@
                                 "env": [
                                     {
                                         "name": "SX_VERBOSE",
-                                        "value": "true"
+                                        "value": "false"
                                     },
                                     {
                                         "name": "SX_DEBUG",
-                                        "value": "true"
+                                        "value": "false"
                                     },
                                     {
                                         "name": "DEMO_API",

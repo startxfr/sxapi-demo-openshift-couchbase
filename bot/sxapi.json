@@ -24,8 +24,7 @@
     },
     "log": {
         "filters": {
-            "level": "0,1,2,3,4",
-            "type": "debug,info,error,warn"
+            "type": "info,error,warn"
         },
         "couchbase": {
             "resource": "couchbase-api",

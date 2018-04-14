@@ -22,13 +22,14 @@
             "kind": "ImageStream",
             "apiVersion": "v1",
             "metadata": {
-                "name": "couchbase-operator",
+                "name": "startx-${BASE_IMAGE_TAG}",
                 "annotations": {
-                    "openshift.io/display-name": "Couchbase operator",
+                    "openshift.io/display-name": "Base images startx (${BASE_IMAGE_TAG})",
                     "openshift.io/generated-by": "STARTX"
                 },
                 "labels": {
-                    "base-image": "couchbase-operator",
+                    "base-image": "startx-${BASE_IMAGE_TAG}",
+                    "app": "sxapi-demo",
                     "type": "backend",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-template"
@@ -37,7 +38,7 @@
             "spec": {
                 "tags": [
                     {
-                        "name": "latest",
+                        "name": "couchbase-operator",
                         "annotations": {
                             "openshift.io/display-name": "Couchbase operator (beta)",
                             "description": "Couchbase operator beta image relying on Kubernetes 1.7 or Openshift 3.7",
@@ -49,29 +50,7 @@
                             "kind": "DockerImage",
                             "name": "couchbase/k8s-operator:beta"
                         }
-                    }
-                ]
-            }
-        },
-        {
-            "kind": "ImageStream",
-            "apiVersion": "v1",
-            "metadata": {
-                "name": "startx-${BASE_IMAGE_TAG}",
-                "annotations": {
-                    "openshift.io/display-name": "Base images startx (${BASE_IMAGE_TAG})",
-                    "openshift.io/generated-by": "STARTX"
-                },
-                "labels": {
-                    "base-image": "startx-${BASE_IMAGE_TAG}",
-                    "app": "api",
-                    "type": "backend",
-                    "provider": "startx",
-                    "template": "sxapi-demo-openshift-couchbase-template"
-                }
-            },
-            "spec": {
-                "tags": [
+                    },
                     {
                         "name": "couchbase",
                         "annotations": {
@@ -128,7 +107,40 @@
                             "openshift.io/display-name": "SXAPI Demo - API (${SOURCE_BRANCH})",
                             "description": "NodeJS API frontend for the SXAPI Demo",
                             "iconClass": "icon-nodejs",
-                            "tags": "startx,nodejs,frontend,api,api",
+                            "tags": "startx,nodejs,frontend,api",
+                            "supports": "http,nodejs",
+                            "version": "latest"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "bot-${SOURCE_BRANCH}",
+                "annotations": {
+                    "openshift.io/display-name": "SXAPI Demo - BOT (${SOURCE_BRANCH})",
+                    "openshift.io/generated-by": "STARTX"
+                },
+                "labels": {
+                    "base-image": "startx-${BASE_IMAGE_TAG}-nodejs",
+                    "app": "bot-${SOURCE_BRANCH}",
+                    "type": "frontend",
+                    "provider": "startx",
+                    "template": "sxapi-demo-openshift-couchbase-template"
+                }
+            },
+            "spec": {
+                "tags": [
+                    {
+                        "name": "latest",
+                        "annotations": {
+                            "openshift.io/display-name": "SXAPI Demo - API (${SOURCE_BRANCH})",
+                            "description": "NodeJS API frontend for the SXAPI Demo",
+                            "iconClass": "icon-nodejs",
+                            "tags": "startx,nodejs,frontend,bot",
                             "supports": "http,nodejs",
                             "version": "latest"
                         }
@@ -189,18 +201,20 @@
             "kind": "Secret",
             "apiVersion": "v1",
             "metadata": {
-                "name": "couchbase-${SOURCE_BRANCH}",
+                "name": "bot-${SOURCE_BRANCH}",
                 "creationTimestamp": null,
                 "labels": {
-                    "app": "couchbase-${SOURCE_BRANCH}",
+                    "app": "bot-${SOURCE_BRANCH}",
                     "type": "backend",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-template"
                 }
             },
             "stringData": {
-                "COUCHBASE_USER": "${COUCHBASE_USER}",
-                "COUCHBASE_PASSWORD": "${COUCHBASE_PASSWORD}"
+                "twitter_consumer_key": "${twitter_consumer_key}",
+                "twitter_consumer_secret": "${twitter_consumer_secret}",
+                "twitter_access_token_key": "${twitter_access_token_key}",
+                "twitter_access_token_secret": "${twitter_access_token_secret}"
             }
         },
         {
@@ -285,6 +299,76 @@
                     "to": {
                         "kind": "ImageStreamTag",
                         "name": "api-${SOURCE_BRANCH}:latest"
+                    }
+                },
+                "resources": {}
+            }
+        },
+        {
+            "kind": "BuildConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "bot-${SOURCE_BRANCH}",
+                "labels": {
+                    "app": "bot-${SOURCE_BRANCH}",
+                    "type": "frontend",
+                    "provider": "startx",
+                    "template": "sxapi-demo-openshift-couchbase-template"
+                },
+                "annotations": {
+                    "openshift.io/generated-by": "STARTX"
+                }
+            },
+            "spec": {
+                "triggers": [
+                    {
+                        "type": "GitHub",
+                        "github": {
+                            "secret": "${WEBHOOK_TOKEN}"
+                        }
+                    },
+                    {
+                        "type": "Generic",
+                        "generic": {
+                            "secret": "${WEBHOOK_TOKEN}"
+                        }
+                    },
+                    {
+                        "type": "ImageChange",
+                        "imageChange": {}
+                    },
+                    {
+                        "type": "ConfigChange"
+                    }
+                ],
+                "runPolicy": "SerialLatestOnly",
+                "source": {
+                    "type": "Git",
+                    "git": {
+                        "uri": "https://github.com/startxfr/sxapi-demo-openshift-couchbase.git",
+                        "ref": "${SOURCE_BRANCH}"
+                    },
+                    "contextDir": "bot"
+                },
+                "strategy": {
+                    "type": "Source",
+                    "sourceStrategy": {
+                        "from": {
+                            "kind": "ImageStreamTag",
+                            "name": "startx-${BASE_IMAGE_TAG}:nodejs"
+                        },
+                        "env": [
+                            {
+                                "name": "SX_VERBOSE",
+                                "value": "true"
+                            }
+                        ]
+                    }
+                },
+                "output": {
+                    "to": {
+                        "kind": "ImageStreamTag",
+                        "name": "bot-${SOURCE_BRANCH}:latest"
                     }
                 },
                 "resources": {}
@@ -395,7 +479,7 @@
                             ],
                             "from": {
                                 "kind": "ImageStreamTag",
-                                "name": "couchbase-operator:latest"
+                                "name": "startx-${BASE_IMAGE_TAG}:couchbase-operator"
                             }
                         }
                     },
@@ -546,19 +630,11 @@
                                         "value": "true"
                                     },
                                     {
-                                        "name": "COUCHBASE_SERVICE_HOST",
-                                        "value": "couchbase-${SOURCE_BRANCH}"
-                                    },
-                                    {
-                                        "name": "BOT_SERVICE_HOST",
-                                        "value": "bot-${SOURCE_BRANCH}"
-                                    },
-                                    {
                                         "name": "COUCHBASE_USER",
                                         "valueFrom": {
                                             "secretKeyRef": {
-                                                "name": "couchbase-${SOURCE_BRANCH}",
-                                                "key": "COUCHBASE_USER"
+                                                "name": "couchbase-auth",
+                                                "key": "username"
                                             }
                                         }
                                     },
@@ -566,14 +642,204 @@
                                         "name": "COUCHBASE_PASSWORD",
                                         "valueFrom": {
                                             "secretKeyRef": {
-                                                "name": "couchbase-${SOURCE_BRANCH}",
-                                                "key": "COUCHBASE_PASSWORD"
+                                                "name": "couchbase-auth",
+                                                "key": "password"
                                             }
                                         }
                                     },
                                     {
                                         "name": "COUCHBASE_BUCKET",
                                         "value": "${COUCHBASE_BUCKET}"
+                                    }
+                                ],
+                                "command": [
+                                    "/bin/sx-nodejs"
+                                ],
+                                "args": [
+                                    "run"
+                                ],
+                                "ports": [
+                                    {
+                                        "containerPort": 8080,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "resources": {
+                                    "limits": {
+                                        "memory": "128Mi"
+                                    }
+                                },
+                                "livenessProbe": {
+                                    "exec": {
+                                        "command": [
+                                            "/bin/sx-nodejs",
+                                            "isLive"
+                                        ]
+                                    },
+                                    "initialDelaySeconds": 5,
+                                    "timeoutSeconds": 1,
+                                    "periodSeconds": 20,
+                                    "successThreshold": 1,
+                                    "failureThreshold": 3
+                                },
+                                "readinessProbe": {
+                                    "httpGet": {
+                                        "path": "/health",
+                                        "port": 8080,
+                                        "scheme": "HTTP"
+                                    },
+                                    "initialDelaySeconds": 10,
+                                    "timeoutSeconds": 1,
+                                    "periodSeconds": 15,
+                                    "successThreshold": 1,
+                                    "failureThreshold": 3
+                                },
+                                "terminationMessagePath": "/dev/termination-log",
+                                "imagePullPolicy": "Always"
+                            }
+                        ],
+                        "restartPolicy": "Always",
+                        "terminationGracePeriodSeconds": 30,
+                        "dnsPolicy": "ClusterFirst",
+                        "securityContext": {}
+                    }
+                }
+            }
+        },
+        {
+            "kind": "DeploymentConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "bot-${SOURCE_BRANCH}",
+                "generation": 2,
+                "labels": {
+                    "app": "bot-${SOURCE_BRANCH}",
+                    "type": "frontend",
+                    "provider": "startx",
+                    "template": "sxapi-demo-openshift-couchbase-template"
+                },
+                "annotations": {
+                    "openshift.io/generated-by": "STARTX"
+                }
+            },
+            "spec": {
+                "strategy": {
+                    "type": "Rolling",
+                    "rollingParams": {
+                        "timeoutSeconds": 30,
+                        "maxUnavailable": "25%",
+                        "maxSurge": "25%"
+                    },
+                    "resources": {}
+                },
+                "triggers": [
+                    {
+                        "type": "ImageChange",
+                        "imageChangeParams": {
+                            "automatic": true,
+                            "containerNames": [
+                                "bot-${SOURCE_BRANCH}"
+                            ],
+                            "from": {
+                                "kind": "ImageStreamTag",
+                                "name": "bot-${SOURCE_BRANCH}:latest"
+                            }
+                        }
+                    },
+                    {
+                        "type": "ConfigChange"
+                    }
+                ],
+                "replicas": 2,
+                "test": false,
+                "selector": {
+                    "app": "bot-${SOURCE_BRANCH}",
+                    "deploymentconfig": "bot-${SOURCE_BRANCH}"
+                },
+                "template": {
+                    "metadata": {
+                        "labels": {
+                            "app": "bot-${SOURCE_BRANCH}",
+                            "type": "frontend",
+                            "provider": "startx",
+                            "template": "sxapi-demo-openshift-couchbase-template",
+                            "deploymentconfig": "bot-${SOURCE_BRANCH}"
+                        },
+                        "annotations": {
+                            "openshift.io/generated-by": "STARTX"
+                        }
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "name": "bot-${SOURCE_BRANCH}",
+                                "image": " ",
+                                "env": [
+                                    {
+                                        "name": "SX_VERBOSE",
+                                        "value": "true"
+                                    },
+                                    {
+                                        "name": "SX_DEBUG",
+                                        "value": "true"
+                                    },
+                                    {
+                                        "name": "COUCHBASE_USER",
+                                        "valueFrom": {
+                                            "secretKeyRef": {
+                                                "name": "couchbase-auth",
+                                                "key": "username"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "COUCHBASE_PASSWORD",
+                                        "valueFrom": {
+                                            "secretKeyRef": {
+                                                "name": "couchbase-auth",
+                                                "key": "password"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "COUCHBASE_BUCKET",
+                                        "value": "${COUCHBASE_BUCKET}"
+                                    },
+                                    {
+                                        "name": "twitter_consumer_key",
+                                        "valueFrom": {
+                                            "secretKeyRef": {
+                                                "name": "bot-${SOURCE_BRANCH}",
+                                                "key": "twitter_consumer_key"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "twitter_consumer_secret",
+                                        "valueFrom": {
+                                            "secretKeyRef": {
+                                                "name": "bot-${SOURCE_BRANCH}",
+                                                "key": "twitter_consumer_secret"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "twitter_access_token_key",
+                                        "valueFrom": {
+                                            "secretKeyRef": {
+                                                "name": "bot-${SOURCE_BRANCH}",
+                                                "key": "twitter_access_token_key"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "twitter_access_token_secret",
+                                        "valueFrom": {
+                                            "secretKeyRef": {
+                                                "name": "bot-${SOURCE_BRANCH}",
+                                                "key": "twitter_access_token_secret"
+                                            }
+                                        }
                                     }
                                 ],
                                 "command": [
@@ -800,6 +1066,71 @@
                     "deploymentconfig": "api-${SOURCE_BRANCH}"
                 },
                 "type": "ClusterIP",
+                "sessionAffinity": "None"
+            }
+        },
+        {
+            "kind": "Service",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "bot-${SOURCE_BRANCH}",
+                "labels": {
+                    "app": "bot-${SOURCE_BRANCH}",
+                    "type": "frontend",
+                    "provider": "startx",
+                    "template": "sxapi-demo-openshift-couchbase-template"
+                },
+                "annotations": {
+                    "service.alpha.openshift.io/dependencies": "[{\"name\": \"couchbase-${SOURCE_BRANCH}\", \"namespace\": \"\", \"kind\": \"Service\"}]",
+                    "openshift.io/generated-by": "STARTX"
+                }
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "protocol": "TCP",
+                        "port": 8080,
+                        "targetPort": 8080
+                    }
+                ],
+                "selector": {
+                    "app": "bot-${SOURCE_BRANCH}",
+                    "deploymentconfig": "bot-${SOURCE_BRANCH}"
+                },
+                "type": "ClusterIP",
+                "sessionAffinity": "None"
+            }
+        },
+        {
+            "kind": "Service",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "couchbase-${SOURCE_BRANCH}",
+                "labels": {
+                    "app": "couchbase",
+                    "type": "backend",
+                    "provider": "startx",
+                    "template": "sxapi-demo-openshift-couchbase-template"
+                },
+                "annotations": {
+                    "openshift.io/generated-by": "STARTX"
+                }
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "protocol": "TCP",
+                        "name": "cb-admin",
+                        "port": 8091,
+                        "targetPort": 8091
+                    }
+                ],
+                "selector": {
+                    "app": "couchbase",
+                    "couchbase_cluster": "couchbase-node"
+                },
+                "type": "ClusterIP",
+                "clusterIP": "None",
                 "sessionAffinity": "None"
             }
         },
@@ -1088,6 +1419,34 @@
             "displayName": "Couchbase bucket type",
             "description": "Bucket type for the couchabse bucket (ephemeral, couchbase or memcache)",
             "value": "ephemeral",
+            "required": true
+        },
+        {
+            "name": "twitter_consumer_key",
+            "displayName": "Twitter consumer key",
+            "description": "Twitter consumer key to use for receiving twitter stream",
+            "value": "xxxxxxxxxxxxx",
+            "required": true
+        },
+        {
+            "name": "twitter_consumer_secret",
+            "displayName": "Twitter consumer secret",
+            "description": "Twitter consumer secret to use for receiving twitter stream",
+            "value": "xxxxxxxxxxxxx",
+            "required": true
+        },
+        {
+            "name": "twitter_access_token_key",
+            "displayName": "Twitter access token key",
+            "description": "Twitter access token key to use for receiving twitter stream",
+            "value": "xxxxxxxxxxxxx",
+            "required": true
+        },
+        {
+            "name": "twitter_access_token_secret",
+            "displayName": "Twitter access token secret",
+            "description": "Twitter access token secret to use for receiving twitter stream",
+            "value": "xxxxxxxxxxxxx",
             "required": true
         }
     ]

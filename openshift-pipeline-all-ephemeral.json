@@ -4,7 +4,7 @@
     "metadata": {
         "name": "sxapi-demo-openshift-couchbase-pipeline-template",
         "annotations": {
-            "openshift.io/display-name": "SXAPI Demo Couchbase (Ephemeral)",
+            "openshift.io/display-name": "SXAPI Demo Couchbase Application (Ephemeral)",
             "description": "Template for building a full demo application (frontend + api + bot + bucket) using sxapi in an openshift PaaS",
             "iconClass": "icon-nodejs",
             "tags": "startx,demo,sxapi,couchbase",
@@ -23,10 +23,9 @@
             "apiVersion": "v1",
             "metadata": {
                 "name": "pipeline",
-                "creationTimestamp": null,
                 "labels": {
                     "name": "pipeline",
-                    "app": "sxapi",
+                    "app": "sxapi-demo",
                     "type": "backend",
                     "provider": "startx",
                     "template": "sxapi-example-template-pipeline"
@@ -136,12 +135,12 @@
             "metadata": {
                 "name": "bot",
                 "annotations": {
-                    "openshift.io/display-name": "SXAPI Demo - Bot",
+                    "openshift.io/display-name": "SXAPI Demo image - Bot",
                     "openshift.io/generated-by": "STARTX"
                 },
                 "labels": {
                     "base-image": "startx-${BASE_IMAGE_TAG}-bot",
-                    "app": "sxapi",
+                    "app": "${APP_NAME}",
                     "type": "frontend",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
@@ -152,8 +151,8 @@
                     {
                         "name": "test",
                         "annotations": {
-                            "openshift.io/display-name": "SXAPI Demo - Bot (test)",
-                            "description": "Bot database for the SXAPI Demo",
+                            "openshift.io/display-name": "SXAPI Demo image - Bot (test)",
+                            "description": "Bot image for the SXAPI Demo",
                             "iconClass": "icon-nodejs",
                             "tags": "startx,bot,nodejs",
                             "supports": "http,websockets",
@@ -163,27 +162,12 @@
                     {
                         "name": "prod",
                         "annotations": {
-                            "openshift.io/display-name": "SXAPI Demo - Bot (prod)",
-                            "description": "Bot database for the SXAPI Demo",
+                            "openshift.io/display-name": "SXAPI Demo image - Bot (prod)",
+                            "description": "Bot image for the SXAPI Demo",
                             "iconClass": "icon-nodejs",
                             "tags": "startx,bot,nodejs",
                             "supports": "http,websockets",
                             "version": "prod"
-                        }
-                    },
-                    {
-                        "name": "latest",
-                        "annotations": {
-                            "openshift.io/display-name": "SXAPI Demo - MariaDB (latest)",
-                            "description": "Bot database for the SXAPI Demo",
-                            "iconClass": "icon-nodejs",
-                            "tags": "startx,bot,nodejs",
-                            "supports": "http,websockets",
-                            "version": "latest"
-                        },
-                        "from": {
-                            "kind": "ImageStreamTag",
-                            "name": "test"
                         }
                     }
                 ]
@@ -195,12 +179,12 @@
             "metadata": {
                 "name": "api",
                 "annotations": {
-                    "openshift.io/display-name": "SXAPI Demo - API",
+                    "openshift.io/display-name": "SXAPI Demo image - API",
                     "openshift.io/generated-by": "STARTX"
                 },
                 "labels": {
                     "base-image": "startx-${BASE_IMAGE_TAG}-nodejs",
-                    "app": "sxapi",
+                    "app": "${APP_NAME}",
                     "type": "frontend",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
@@ -211,8 +195,8 @@
                     {
                         "name": "test",
                         "annotations": {
-                            "openshift.io/display-name": "SXAPI Demo - API (test)",
-                            "description": "NodeJS API frontend for the SXAPI Demo",
+                            "openshift.io/display-name": "SXAPI Demo image - API (test)",
+                            "description": "NodeJS API image for the SXAPI Demo",
                             "iconClass": "icon-nodejs",
                             "tags": "startx,nodejs,frontend,api,api",
                             "supports": "http,nodejs",
@@ -222,27 +206,12 @@
                     {
                         "name": "prod",
                         "annotations": {
-                            "openshift.io/display-name": "SXAPI Demo - API (prod)",
-                            "description": "NodeJS API frontend for the SXAPI Demo",
+                            "openshift.io/display-name": "SXAPI Demo image - API (prod)",
+                            "description": "NodeJS API image for the SXAPI Demo",
                             "iconClass": "icon-nodejs",
                             "tags": "startx,nodejs,frontend,api,api",
                             "supports": "http,nodejs",
                             "version": "prod"
-                        }
-                    },
-                    {
-                        "name": "latest",
-                        "annotations": {
-                            "openshift.io/display-name": "SXAPI Demo - API (latest)",
-                            "description": "NodeJS API frontend for the SXAPI Demo",
-                            "iconClass": "icon-nodejs",
-                            "tags": "startx,nodejs,frontend,api,api",
-                            "supports": "http,nodejs",
-                            "version": "latest"
-                        },
-                        "from": {
-                            "kind": "ImageStreamTag",
-                            "name": "test"
                         }
                     }
                 ]
@@ -254,12 +223,12 @@
             "metadata": {
                 "name": "www",
                 "annotations": {
-                    "openshift.io/display-name": "SXAPI Demo - WWW",
+                    "openshift.io/display-name": "SXAPI Demo image - WWW",
                     "openshift.io/generated-by": "STARTX"
                 },
                 "labels": {
                     "base-image": "startx-${BASE_IMAGE_TAG}-nodejs",
-                    "app": "sxapi",
+                    "app": "${APP_NAME}",
                     "type": "backend",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
@@ -270,8 +239,8 @@
                     {
                         "name": "test",
                         "annotations": {
-                            "openshift.io/display-name": "SXAPI Demo - WWW (test)",
-                            "description": "NodeJS Web frontend for the SXAPI Demo",
+                            "openshift.io/display-name": "SXAPI Demo image - WWW (test)",
+                            "description": "NodeJS Web image for the SXAPI Demo",
                             "iconClass": "icon-nodejs",
                             "tags": "startx,nodejs,frontend,www",
                             "supports": "http,nodejs",
@@ -281,27 +250,12 @@
                     {
                         "name": "prod",
                         "annotations": {
-                            "openshift.io/display-name": "SXAPI Demo - WWW (prod)",
-                            "description": "NodeJS Web frontend for the SXAPI Demo",
+                            "openshift.io/display-name": "SXAPI Demo image - WWW (prod)",
+                            "description": "NodeJS Web image for the SXAPI Demo",
                             "iconClass": "icon-nodejs",
                             "tags": "startx,nodejs,frontend,www",
                             "supports": "http,nodejs",
                             "version": "prod"
-                        }
-                    },
-                    {
-                        "name": "latest",
-                        "annotations": {
-                            "openshift.io/display-name": "SXAPI Demo - WWW (latest)",
-                            "description": "NodeJS Web frontend for the SXAPI Demo",
-                            "iconClass": "icon-nodejs",
-                            "tags": "startx,nodejs,frontend,www",
-                            "supports": "http,nodejs",
-                            "version": "latest"
-                        },
-                        "from": {
-                            "kind": "ImageStreamTag",
-                            "name": "test"
                         }
                     }
                 ]
@@ -313,7 +267,9 @@
             "metadata": {
                 "name": "couchbase-auth-test",
                 "labels": {
-                    "type": "backend",
+                    "app": "${APP_NAME}-test",
+                    "stage": "test",
+                    "type": "conf",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 }
@@ -329,8 +285,9 @@
             "metadata": {
                 "name": "twitter-auth-test",
                 "labels": {
-                    "app": "${APP_NAME}",
-                    "type": "all",
+                    "app": "${APP_NAME}-test",
+                    "stage": "test",
+                    "type": "conf",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 }
@@ -348,9 +305,9 @@
             "metadata": {
                 "name": "bot-test",
                 "labels": {
-                    "app": "bot-test",
+                    "app": "${APP_NAME}-test",
                     "stage": "test",
-                    "type": "backend",
+                    "type": "bot",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
@@ -375,7 +332,7 @@
                     "sourceStrategy": {
                         "from": {
                             "kind": "ImageStreamTag",
-                            "name": "startx-${BASE_IMAGE_TAG}:bot"
+                            "name": "startx-${BASE_IMAGE_TAG}:nodejs"
                         },
                         "env": [
                             {
@@ -400,9 +357,9 @@
             "metadata": {
                 "name": "api-test",
                 "labels": {
-                    "app": "api-test",
+                    "app": "${APP_NAME}-test",
                     "stage": "test",
-                    "type": "frontend",
+                    "type": "api",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
@@ -452,9 +409,9 @@
             "metadata": {
                 "name": "www-test",
                 "labels": {
-                    "app": "www-test",
+                    "app": "${APP_NAME}-test",
                     "stage": "test",
-                    "type": "frontend",
+                    "type": "www",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
@@ -615,9 +572,9 @@
                 "name": "bot-test",
                 "generation": 2,
                 "labels": {
-                    "app": "bot-test",
+                    "app": "${APP_NAME}-test",
                     "stage": "test",
-                    "type": "backend",
+                    "type": "bot",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
@@ -654,15 +611,16 @@
                 "replicas": 1,
                 "test": false,
                 "selector": {
-                    "app": "bot-test",
+                    "app": "${APP_NAME}-test",
+                    "type": "bot",
                     "deploymentconfig": "bot-test"
                 },
                 "template": {
                     "metadata": {
                         "labels": {
-                            "app": "bot-test",
+                            "app": "${APP_NAME}-test",
                             "stage": "test",
-                            "type": "backend",
+                            "type": "bot",
                             "provider": "startx",
                             "template": "sxapi-demo-openshift-couchbase-pipeline-template",
                             "deploymentconfig": "bot-test"
@@ -705,7 +663,7 @@
                                     },
                                     {
                                         "name": "COUCHBASE_BUCKET",
-                                        "value": "${COUCHBASE_BUCKET}"
+                                        "value": "${COUCHBASE_BUCKET}-test"
                                     },
                                     {
                                         "name": "twitter_consumer_key",
@@ -805,9 +763,9 @@
                 "name": "api-test",
                 "generation": 2,
                 "labels": {
-                    "app": "api-test",
+                    "app": "${APP_NAME}-test",
                     "stage": "test",
-                    "type": "frontend",
+                    "type": "api",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
@@ -846,15 +804,17 @@
                 "replicas": 1,
                 "test": false,
                 "selector": {
-                    "app": "api-test",
+                    "app": "${APP_NAME}-test",
+                    "stage": "test",
+                    "type": "api",
                     "deploymentconfig": "api-test"
                 },
                 "template": {
                     "metadata": {
                         "labels": {
-                            "app": "api-test",
+                            "app": "${APP_NAME}-test",
                             "stage": "test",
-                            "type": "frontend",
+                            "type": "api",
                             "provider": "startx",
                             "template": "sxapi-demo-openshift-couchbase-pipeline-template",
                             "deploymentconfig": "api-test"
@@ -897,7 +857,7 @@
                                     },
                                     {
                                         "name": "COUCHBASE_BUCKET",
-                                        "value": "${COUCHBASE_BUCKET}"
+                                        "value": "${COUCHBASE_BUCKET}-test"
                                     }
                                 ],
                                 "command": [
@@ -961,9 +921,9 @@
                 "name": "www-test",
                 "generation": 2,
                 "labels": {
-                    "app": "www-test",
+                    "app": "${APP_NAME}-test",
                     "stage": "test",
-                    "type": "frontend",
+                    "type": "www",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
@@ -1002,15 +962,17 @@
                 "replicas": 1,
                 "test": false,
                 "selector": {
-                    "app": "www-test",
+                    "app": "${APP_NAME}-test",
+                    "stage": "test",
+                    "type": "www",
                     "deploymentconfig": "www-test"
                 },
                 "template": {
                     "metadata": {
                         "labels": {
-                            "app": "www-test",
+                            "app": "${APP_NAME}-test",
                             "stage": "test",
-                            "type": "frontend",
+                            "type": "www",
                             "provider": "startx",
                             "template": "sxapi-demo-openshift-couchbase-pipeline-template",
                             "deploymentconfig": "www-test"
@@ -1035,7 +997,7 @@
                                     },
                                     {
                                         "name": "DEMO_API",
-                                        "value": "${DEMO_API}"
+                                        "value": "api-test-${DEMO_API}"
                                     }
                                 ],
                                 "command": [
@@ -1098,9 +1060,9 @@
             "metadata": {
                 "name": "bot-test",
                 "labels": {
-                    "app": "bot-test",
+                    "app": "${APP_NAME}-test",
                     "stage": "test",
-                    "type": "backend",
+                    "type": "bot",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
@@ -1120,7 +1082,9 @@
                     }
                 ],
                 "selector": {
-                    "app": "bot-test",
+                    "app": "${APP_NAME}-test",
+                    "stage": "test",
+                    "type": "bot",
                     "deploymentconfig": "bot-test"
                 },
                 "type": "ClusterIP",
@@ -1133,9 +1097,9 @@
             "metadata": {
                 "name": "api-test",
                 "labels": {
-                    "app": "api-test",
+                    "app": "${APP_NAME}-test",
                     "stage": "test",
-                    "type": "frontend",
+                    "type": "api",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
@@ -1153,7 +1117,9 @@
                     }
                 ],
                 "selector": {
-                    "app": "api-test",
+                    "app": "${APP_NAME}-test",
+                    "stage": "test",
+                    "type": "api",
                     "deploymentconfig": "api-test"
                 },
                 "type": "ClusterIP",
@@ -1166,9 +1132,9 @@
             "metadata": {
                 "name": "www-test",
                 "labels": {
-                    "app": "www-test",
+                    "app": "${APP_NAME}-test",
                     "stage": "test",
-                    "type": "frontend",
+                    "type": "www",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
@@ -1185,7 +1151,9 @@
                     }
                 ],
                 "selector": {
-                    "app": "www-test",
+                    "app": "${APP_NAME}-test",
+                    "stage": "test",
+                    "type": "www",
                     "deploymentconfig": "www-test"
                 },
                 "type": "ClusterIP",
@@ -1198,9 +1166,9 @@
             "metadata": {
                 "name": "api-test",
                 "labels": {
-                    "app": "api-test",
+                    "app": "${APP_NAME}-test",
                     "stage": "test",
-                    "type": "frontend",
+                    "type": "api",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
@@ -1223,9 +1191,9 @@
             "metadata": {
                 "name": "www-test",
                 "labels": {
-                    "app": "www-test",
+                    "app": "${APP_NAME}-test",
                     "stage": "test",
-                    "type": "frontend",
+                    "type": "www",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
@@ -1248,7 +1216,9 @@
             "metadata": {
                 "name": "couchbase-auth-prod",
                 "labels": {
-                    "type": "backend",
+                    "app": "${APP_NAME}-prod",
+                    "stage": "prod",
+                    "type": "conf",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 }
@@ -1264,8 +1234,9 @@
             "metadata": {
                 "name": "twitter-auth-prod",
                 "labels": {
-                    "app": "${APP_NAME}",
-                    "type": "all",
+                    "app": "${APP_NAME}-prod",
+                    "stage": "prod",
+                    "type": "conf",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 }
@@ -1283,9 +1254,9 @@
             "metadata": {
                 "name": "bot-prod",
                 "labels": {
-                    "app": "bot-prod",
+                    "app": "${APP_NAME}-prod",
                     "stage": "prod",
-                    "type": "backend",
+                    "type": "bot",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
@@ -1310,7 +1281,7 @@
                     "sourceStrategy": {
                         "from": {
                             "kind": "ImageStreamTag",
-                            "name": "startx-${BASE_IMAGE_TAG}:bot"
+                            "name": "startx-${BASE_IMAGE_TAG}:nodejs"
                         },
                         "env": [
                             {
@@ -1335,9 +1306,9 @@
             "metadata": {
                 "name": "api-prod",
                 "labels": {
-                    "app": "api-prod",
+                    "app": "${APP_NAME}-prod",
                     "stage": "prod",
-                    "type": "frontend",
+                    "type": "api",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
@@ -1387,9 +1358,9 @@
             "metadata": {
                 "name": "www-prod",
                 "labels": {
-                    "app": "www-prod",
+                    "app": "${APP_NAME}-prod",
                     "stage": "prod",
-                    "type": "frontend",
+                    "type": "www",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
@@ -1440,9 +1411,9 @@
                 "name": "bot-prod",
                 "generation": 2,
                 "labels": {
-                    "app": "bot-prod",
+                    "app": "${APP_NAME}-prod",
                     "stage": "prod",
-                    "type": "backend",
+                    "type": "bot",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
@@ -1479,15 +1450,17 @@
                 "replicas": 1,
                 "test": false,
                 "selector": {
-                    "app": "bot-prod",
+                    "app": "${APP_NAME}-prod",
+                    "stage": "prod",
+                    "type": "bot",
                     "deploymentconfig": "bot-prod"
                 },
                 "template": {
                     "metadata": {
                         "labels": {
-                            "app": "bot-prod",
+                            "app": "${APP_NAME}-prod",
                             "stage": "prod",
-                            "type": "backend",
+                            "type": "bot",
                             "provider": "startx",
                             "template": "sxapi-demo-openshift-couchbase-pipeline-template",
                             "deploymentconfig": "bot-prod"
@@ -1514,7 +1487,7 @@
                                         "name": "COUCHBASE_USER",
                                         "valueFrom": {
                                             "secretKeyRef": {
-                                                "name": "couchbase-auth",
+                                                "name": "couchbase-auth-prod",
                                                 "key": "username"
                                             }
                                         }
@@ -1523,20 +1496,20 @@
                                         "name": "COUCHBASE_PASSWORD",
                                         "valueFrom": {
                                             "secretKeyRef": {
-                                                "name": "couchbase-auth",
+                                                "name": "couchbase-auth-prod",
                                                 "key": "password"
                                             }
                                         }
                                     },
                                     {
                                         "name": "COUCHBASE_BUCKET",
-                                        "value": "${COUCHBASE_BUCKET}"
+                                        "value": "${COUCHBASE_BUCKET}-prod"
                                     },
                                     {
                                         "name": "twitter_consumer_key",
                                         "valueFrom": {
                                             "secretKeyRef": {
-                                                "name": "twitter-auth",
+                                                "name": "twitter-auth-prod",
                                                 "key": "consumer_key"
                                             }
                                         }
@@ -1545,7 +1518,7 @@
                                         "name": "twitter_consumer_secret",
                                         "valueFrom": {
                                             "secretKeyRef": {
-                                                "name": "twitter-auth",
+                                                "name": "twitter-auth-prod",
                                                 "key": "consumer_secret"
                                             }
                                         }
@@ -1554,7 +1527,7 @@
                                         "name": "twitter_access_token_key",
                                         "valueFrom": {
                                             "secretKeyRef": {
-                                                "name": "twitter-auth",
+                                                "name": "twitter-auth-prod",
                                                 "key": "access_token_key"
                                             }
                                         }
@@ -1563,7 +1536,7 @@
                                         "name": "twitter_access_token_secret",
                                         "valueFrom": {
                                             "secretKeyRef": {
-                                                "name": "twitter-auth",
+                                                "name": "twitter-auth-prod",
                                                 "key": "access_token_secret"
                                             }
                                         }
@@ -1630,9 +1603,9 @@
                 "name": "api-prod",
                 "generation": 2,
                 "labels": {
-                    "app": "api-prod",
+                    "app": "${APP_NAME}-prod",
                     "stage": "prod",
-                    "type": "frontend",
+                    "type": "api",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
@@ -1671,15 +1644,17 @@
                 "replicas": 2,
                 "test": false,
                 "selector": {
-                    "app": "api-prod",
+                    "app": "${APP_NAME}-prod",
+                    "stage": "prod",
+                    "type": "api",
                     "deploymentconfig": "api-prod"
                 },
                 "template": {
                     "metadata": {
                         "labels": {
-                            "app": "api-prod",
+                            "app": "${APP_NAME}-prod",
                             "stage": "prod",
-                            "type": "frontend",
+                            "type": "api",
                             "provider": "startx",
                             "template": "sxapi-demo-openshift-couchbase-pipeline-template",
                             "deploymentconfig": "api-prod"
@@ -1706,7 +1681,7 @@
                                         "name": "COUCHBASE_USER",
                                         "valueFrom": {
                                             "secretKeyRef": {
-                                                "name": "couchbase-auth",
+                                                "name": "couchbase-auth-prod",
                                                 "key": "username"
                                             }
                                         }
@@ -1715,14 +1690,14 @@
                                         "name": "COUCHBASE_PASSWORD",
                                         "valueFrom": {
                                             "secretKeyRef": {
-                                                "name": "couchbase-auth",
+                                                "name": "couchbase-auth-prod",
                                                 "key": "password"
                                             }
                                         }
                                     },
                                     {
                                         "name": "COUCHBASE_BUCKET",
-                                        "value": "${COUCHBASE_BUCKET}"
+                                        "value": "${COUCHBASE_BUCKET}-prod"
                                     }
                                 ],
                                 "command": [
@@ -1786,9 +1761,9 @@
                 "name": "www-prod",
                 "generation": 2,
                 "labels": {
-                    "app": "www-prod",
+                    "app": "${APP_NAME}-prod",
                     "stage": "prod",
-                    "type": "frontend",
+                    "type": "www",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
@@ -1827,15 +1802,17 @@
                 "replicas": 2,
                 "test": false,
                 "selector": {
-                    "app": "www-prod",
+                    "app": "${APP_NAME}-prod",
+                    "stage": "prod",
+                    "type": "www",
                     "deploymentconfig": "www-prod"
                 },
                 "template": {
                     "metadata": {
                         "labels": {
-                            "app": "www-prod",
+                            "app": "${APP_NAME}-prod",
                             "stage": "prod",
-                            "type": "frontend",
+                            "type": "www",
                             "provider": "startx",
                             "template": "sxapi-demo-openshift-couchbase-pipeline-template",
                             "deploymentconfig": "www-prod"
@@ -1860,7 +1837,7 @@
                                     },
                                     {
                                         "name": "DEMO_API",
-                                        "value": "${DEMO_API}"
+                                        "value": "api-prod-${DEMO_API}"
                                     }
                                 ],
                                 "command": [
@@ -1923,9 +1900,9 @@
             "metadata": {
                 "name": "bot-prod",
                 "labels": {
-                    "app": "bot-prod",
+                    "app": "${APP_NAME}-prod",
                     "stage": "prod",
-                    "type": "backend",
+                    "type": "bot",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
@@ -1945,7 +1922,9 @@
                     }
                 ],
                 "selector": {
-                    "app": "bot-prod",
+                    "app": "${APP_NAME}-prod",
+                    "stage": "prod",
+                    "type": "bot",
                     "deploymentconfig": "bot-prod"
                 },
                 "type": "ClusterIP",
@@ -1958,9 +1937,9 @@
             "metadata": {
                 "name": "api-prod",
                 "labels": {
-                    "app": "api-prod",
+                    "app": "${APP_NAME}-prod",
                     "stage": "prod",
-                    "type": "frontend",
+                    "type": "api",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
@@ -1978,7 +1957,9 @@
                     }
                 ],
                 "selector": {
-                    "app": "api-prod",
+                    "app": "${APP_NAME}-prod",
+                    "stage": "prod",
+                    "type": "api",
                     "deploymentconfig": "api-prod"
                 },
                 "type": "ClusterIP",
@@ -1991,9 +1972,9 @@
             "metadata": {
                 "name": "www-prod",
                 "labels": {
-                    "app": "www-prod",
+                    "app": "${APP_NAME}-prod",
                     "stage": "prod",
-                    "type": "frontend",
+                    "type": "api",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
@@ -2010,7 +1991,9 @@
                     }
                 ],
                 "selector": {
-                    "app": "www-prod",
+                    "app": "${APP_NAME}-prod",
+                    "stage": "prod",
+                    "type": "api",
                     "deploymentconfig": "www-prod"
                 },
                 "type": "ClusterIP",
@@ -2023,9 +2006,9 @@
             "metadata": {
                 "name": "api-prod",
                 "labels": {
-                    "app": "api-prod",
+                    "app": "${APP_NAME}-prod",
                     "stage": "prod",
-                    "type": "frontend",
+                    "type": "api",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
@@ -2048,9 +2031,9 @@
             "metadata": {
                 "name": "www-prod",
                 "labels": {
-                    "app": "www-prod",
+                    "app": "${APP_NAME}-prod",
                     "stage": "prod",
-                    "type": "frontend",
+                    "type": "www",
                     "provider": "startx",
                     "template": "sxapi-demo-openshift-couchbase-pipeline-template"
                 },
@@ -2115,15 +2098,25 @@
                         "enableFlush": true,
                         "enableIndexReplica": false,
                         "ioPriority": "high",
-                        "memoryQuota": 400,
-                        "name": "${COUCHBASE_BUCKET}",
+                        "memoryQuota": 200,
+                        "name": "${COUCHBASE_BUCKET}-test",
                         "replicas": 1,
+                        "type": "${COUCHBASE_BUCKET_TYPE}"
+                    },
+                    {
+                        "conflictResolution": "seqno",
+                        "enableFlush": false,
+                        "enableIndexReplica": true,
+                        "ioPriority": "high",
+                        "memoryQuota": 600,
+                        "name": "${COUCHBASE_BUCKET}-prod",
+                        "replicas": 2,
                         "type": "${COUCHBASE_BUCKET_TYPE}"
                     }
                 ],
                 "cluster": {
-                    "autoFailoverTimeout": 20,
-                    "dataServiceMemoryQuota": 800,
+                    "autoFailoverTimeout": 10,
+                    "dataServiceMemoryQuota": 900,
                     "indexServiceMemoryQuota": 256,
                     "indexStorageSetting": "memory_optimized",
                     "searchServiceMemoryQuota": 256
@@ -2163,9 +2156,9 @@
         },
         {
             "name": "DEMO_API",
-            "displayName": "API fqdn",
-            "description": "Domain name of the API endpoint to use in this frontend (api-xxxxx.openshift.demo.startx.fr were xxxxx is your project namespace)",
-            "value": "api-dev-demo.openshift.demo.startx.fr",
+            "displayName": "API fqdn suffix",
+            "description": "Domain name of this project (xxxx.openshift.demo.startx.fr were xxxxx is your project namespace)",
+            "value": "demo.openshift.demo.startx.fr",
             "required": true
         },
         {

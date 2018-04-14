@@ -1,0 +1,53 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 14 avr. 2018, 18:13:45
+    Author     : cl
+*/
+html, body {
+    height: 100%;
+}
+
+#heatmapDiv {
+    color: white;
+    position:fixed;
+    margin: 0;
+    padding: 0;
+    z-index: 2000;
+    background-color: rgba(0,0,0,0);
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    min-height: 100vh;
+    display:none;
+    -webkit-transition: background-color 0.8s; /* Safari */
+    transition: background-color 0.8s;
+}
+
+#heatmapControl {
+    position:fixed;
+    z-index: 2001;
+    top: 5px;
+    left: 5px;
+}
+
+#heatmapDiv.on {
+    background-color: rgba(0,0,0,0.6);
+    display:block;
+}
+
+#heatmapDiv:before,
+#heatmapDiv:after  {
+    clear: both;
+}
+
+.heatmap-canvas,
+.heatmap { 
+    width:100vw;
+    height:100vh;
+}
+

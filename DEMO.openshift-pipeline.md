@@ -36,7 +36,7 @@ oc process -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-co
            -v COUCHBASE_USER="Administrator" \
            -v COUCHBASE_PASSWORD="Administrator123" \
            -v COUCHBASE_BUCKET="demo" | \
-oc create -f -
+oc apply -f -
 sleep 5
 oc get all
 ```

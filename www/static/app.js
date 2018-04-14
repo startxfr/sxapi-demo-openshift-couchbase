@@ -102,6 +102,9 @@ app = {
       $(document).mousemove(function (event) {
         app.heatmap.map.addData({x: event.pageX, y: event.pageY, value: 1});
       });
+      app.socket.on('log:trace', function (data) {
+        app.heatmap.map.addData(data);
+      });
     },
     start: function () {
       this.map.setData({

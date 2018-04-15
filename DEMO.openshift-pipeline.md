@@ -10,7 +10,31 @@ and [openshift environement](https://github.com/startxfr/sxapi-demo-openshift#se
 
 ## Openshift template
 
-This demo provide an [all-in-one pipeline template](https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/master/openshift-pipeline-all-ephemeral.json)
+### Pre-requirements
+
+The Couchbase Operator needs some special permissions in order to interact with the Kubernetes master. 
+These permissions need to be set for each project using the Couchbase Operator. 
+
+```bash
+# Need cluster admin access
+oc login -u system:admin
+# Create and/or connect to the demo project
+# oc new-project <project>
+oc new-project demo
+# Create a cluster-admin user for your project (enable kubernetes dialog and CRD events)
+# oc adm policy add-cluster-role-to-user cluster-admin -z <user_name> -n <project>
+oc adm policy add-cluster-role-to-user cluster-admin -z default -n demo
+# add security context for this user (start as root)
+# oc adm policy add-scc-to-user anyuid system:serviceaccount:<project>:<user_name>
+oc adm policy add-scc-to-user anyuid system:serviceaccount:demo:default
+```
+
+For full explanation on security constrains, read [couchbase - Openshift RBAC documentation](http://docs.couchbase.com/prerelease/couchbase-operator/beta/rbacOpenshift.html)
+
+
+### Full template
+
+This demo provide an [all-in-one pipeline template](https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/dev/openshift-pipeline-all-ephemeral.json)
 to build and deploy test and run stagging environement each containing the full application stack.
 
 This template will create the following objects :
@@ -32,10 +56,10 @@ users, network and node allocation.
 ```bash
 oc new-project demo
 oc process -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/master/openshift-pipeline-all-ephemeral.json \
-           -v DEMO_API=demo.openshift.demo.startx.fr \
-           -v COUCHBASE_USER="Administrator" \
-           -v COUCHBASE_PASSWORD="Administrator123" \
-           -v COUCHBASE_BUCKET="demo" | \
+           -p DEMO_API=demo.openshift.demo.startx.fr \
+           -p COUCHBASE_USER="Administrator" \
+           -p COUCHBASE_PASSWORD="Administrator123" \
+           -p COUCHBASE_BUCKET="demo" | \
 oc apply -f -
 sleep 5
 oc get all

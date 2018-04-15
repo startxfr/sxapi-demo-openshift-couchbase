@@ -2092,6 +2092,7 @@
             "spec": {
                 "authSecret": "couchbase-auth-test",
                 "baseImage": "couchbase/server",
+                "version": "${CB_BASE_IMAGE_TAG}",
                 "buckets": [
                     {
                         "name": "${COUCHBASE_BUCKET}-test",
@@ -2145,8 +2146,7 @@
                         ],
                         "size": 2
                     }
-                ],
-                "version": "${CB_BASE_IMAGE_TAG}"
+                ]
             }
         }
     ],

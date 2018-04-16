@@ -7,7 +7,6 @@ To run this demo, you must have have a demo environement setup configured. Follo
 to configure the [workstation environement](https://github.com/startxfr/sxapi-demo-openshift#setup-workstation-environement)
 and [openshift environement](https://github.com/startxfr/sxapi-demo-openshift#setup-openshift-environement).
 
-
 ## Openshift template
 
 ### Pre-requirements
@@ -34,7 +33,7 @@ For full explanation on security constrains, read [couchbase - Openshift RBAC do
 
 ### Full template
 
-This demo provide an [all-in-one build template](https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/test/openshift-build-all-ephemeral.json)
+This demo provide an [all-in-one build template](https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/test/openshift-build-all-ephemeral.yml)
 to build and deploy the full application stack using build config and deployement config for every services
 part of this example.
 
@@ -59,13 +58,13 @@ Don't forget to follow previous requirement before running this command otherwis
 and api as well as bot components will follow 
 ```bash
 oc project demo
-oc process -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/test/openshift-build-all-ephemeral.json \
-           -v APP_NAME=twitter \
-           -v SOURCE_BRANCH=test \
-           -v DEMO_API=demo.openshift.demo.startx.fr \
-           -v COUCHBASE_USER="Administrator" \
-           -v COUCHBASE_PASSWORD="Administrator123" \
-           -v COUCHBASE_BUCKET="demo" | \
+oc process -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/test/openshift-build-all-ephemeral.yml \
+           -p APP_NAME=twitter \
+           -p SOURCE_BRANCH=master \
+           -p DEMO_API=demo.openshift.demo.startx.fr \
+           -p COUCHBASE_USER="Administrator" \
+           -p COUCHBASE_PASSWORD="Administrator123" \
+           -p COUCHBASE_BUCKET="demo" | \
 oc create -f -
 sleep 5
 oc get all

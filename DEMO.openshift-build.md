@@ -33,7 +33,7 @@ For full explanation on security constrains, read [couchbase - Openshift RBAC do
 
 ### Full template
 
-This demo provide an [all-in-one build template](https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/master/openshift-build-all-ephemeral.json)
+This demo provide an [all-in-one build template](https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/master/openshift-build-all-ephemeral.yml)
 to build and deploy the full application stack using build config and deployement config for every services
 part of this example.
 
@@ -58,7 +58,7 @@ Don't forget to follow previous requirement before running this command otherwis
 and api as well as bot components will follow 
 ```bash
 oc project demo
-oc process -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/master/openshift-build-all-ephemeral.json \
+oc process -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/master/openshift-build-all-ephemeral.yml \
            -p APP_NAME=twitter \
            -p SOURCE_BRANCH=master \
            -p DEMO_API=demo.openshift.demo.startx.fr \

@@ -34,7 +34,7 @@ For full explanation on security constrains, read [couchbase - Openshift RBAC do
 
 ### Full template
 
-This demo provide an [all-in-one pipeline template](https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/dev/openshift-pipeline-all-ephemeral.json)
+This demo provide an [all-in-one pipeline template](https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/dev/openshift-pipeline-all-ephemeral.yml)
 to build and deploy test and run stagging environement each containing the full application stack.
 
 This template will create the following objects :
@@ -55,7 +55,7 @@ users, network and node allocation.
 
 ```bash
 oc new-project demo
-oc process -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/master/openshift-pipeline-all-ephemeral.json \
+oc process -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/master/openshift-pipeline-all-ephemeral.yml \
            -p DEMO_API=demo.openshift.demo.startx.fr \
            -p COUCHBASE_USER="Administrator" \
            -p COUCHBASE_PASSWORD="Administrator123" \

@@ -1,7 +1,7 @@
 {
     "name": "sxapi-demo-openshift-couchbase-master-bot",
     "description": "Bot streamer service for the sxapi openshift couchbase demo",
-    "version": "0.1.30",
+    "version": "0.1.31",
     "debug": true,
     "resources": {
         "serviceinfo": {

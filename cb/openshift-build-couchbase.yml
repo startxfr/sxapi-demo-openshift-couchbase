@@ -10,7 +10,7 @@ metadata:
     iconClass: icon-database
     tags: startx,demo,couchbase
     openshift.io/provider-display-name: STARTX
-    openshift.io/documentation-url: https://github.com/startxfr/sxapi-demo-openshift-couchbase/blob/master/README.md
+    openshift.io/documentation-url: https://github.com/startxfr/sxapi-demo-openshift-couchbase/blob/test/README.md
     openshift.io/support-url: https://github.com/startxfr/sxapi-demo-openshift-couchbase/issues/new
 message: Your couchbase demo stack started to be deployed in your project. You can
   use openshift console to observe deployment.

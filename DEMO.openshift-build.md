@@ -60,7 +60,7 @@ and api as well as bot components will follow
 oc project demo
 oc process -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/test/openshift-build-all-ephemeral.yml \
            -p APP_NAME=twitter \
-           -p SOURCE_BRANCH=master \
+           -p SOURCE_BRANCH=test \
            -p DEMO_API=demo.openshift.demo.startx.fr \
            -p COUCHBASE_USER="Administrator" \
            -p COUCHBASE_PASSWORD="Administrator123" \

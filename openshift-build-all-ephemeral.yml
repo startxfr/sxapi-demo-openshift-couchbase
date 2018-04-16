@@ -10,7 +10,7 @@ metadata:
     iconClass: icon-nodejs
     tags: startx,demo,sxapi,couchbase
     openshift.io/provider-display-name: STARTX
-    openshift.io/documentation-url: https://github.com/startxfr/sxapi-demo-openshift-couchbase/blob/master/README.md
+    openshift.io/documentation-url: https://github.com/startxfr/sxapi-demo-openshift-couchbase/blob/test/README.md
     openshift.io/support-url: https://github.com/startxfr/sxapi-demo-openshift-couchbase/issues/new
 message: Your demo stack started to build in your project. You can use openshift console
   to observe deployment.
@@ -814,7 +814,7 @@ parameters:
   required: true
 - name: SOURCE_BRANCH
   displayName: Application source-code branch
-  description: Name of the branch to use for building this application (dev, master,
+  description: Name of the branch to use for building this application (dev, test,
     test, prod)
   value: test
   required: true

@@ -29,35 +29,53 @@ objects:
       template: sxapi-example-template-pipeline
     annotations:
       openshift.io/generated-by: STARTX
-      pipeline.alpha.openshift.io/uses: '[{"name": "www-test", "namespace": "", "kind":
-        "DeploymentConfig"},{"name": "api-test", "namespace": "", "kind": "DeploymentConfig"},{"name":
-        "bot-test", "namespace": "", "kind": "DeploymentConfig"},{"name": "www-prod",
-        "namespace": "", "kind": "DeploymentConfig"},{"name": "api-prod", "namespace":
-        "", "kind": "DeploymentConfig"},{"name": "bot-prod", "namespace": "", "kind":
-        "DeploymentConfig"}]'
+      pipeline.alpha.openshift.io/uses: '[
+        {"name": "www-test", "namespace": "", "kind": "DeploymentConfig"},
+        {"name": "api-test", "namespace": "", "kind": "DeploymentConfig"},
+        {"name": "bot-test", "namespace": "", "kind": "DeploymentConfig"},
+        {"name": "www-prod", "namespace": "", "kind": "DeploymentConfig"},
+        {"name": "api-prod", "namespace": "", "kind": "DeploymentConfig"},
+        {"name": "bot-prod", "namespace": "", "kind": "DeploymentConfig"}]'
   spec:
     strategy:
       type: JenkinsPipeline
       jenkinsPipelineStrategy:
-        jenkinsfile: "try { \n    timeout(time: 30, unit: 'MINUTES') { \n        node('nodejs')
-          { \n            stage('Construction (test)') { \n                openshiftBuild(buildConfig:
-          'bot-test', showBuildLogs: 'true');\n                openshiftBuild(buildConfig:
-          'api-test', showBuildLogs: 'true');\n                openshiftBuild(buildConfig:
-          'www-test', showBuildLogs: 'true');\n            };\n            stage('Construction
-          (prod)') {\n                openshiftBuild(buildConfig: 'bot-prod', showBuildLogs:
-          'true');\n                openshiftBuild(buildConfig: 'api-prod', showBuildLogs:
-          'true');\n                openshiftBuild(buildConfig: 'www-prod', showBuildLogs:
-          'true');\n            };\n             stage('Deploiement (test)') { \n
-          \               openshiftDeploy(deploymentConfig: 'bot-test');\n                openshiftDeploy(deploymentConfig:
-          'api-test');\n                openshiftDeploy(deploymentConfig: 'www-test');\n
-          \           }; \n            stage('Approbation'){ \n                input
-          'Valider le test et lancer le déploiement en production ?'; \n            };\n
-          \           stage('Deploiement (prod)') { \n                openshiftDeploy(deploymentConfig:
-          'bot-prod');\n                openshiftDeploy(deploymentConfig: 'api-prod');\n
-          \              openshiftDeploy(deploymentConfig: 'www-prod');\n            };
-          \n        } \n    } \n} \ncatch (err) {     echo \"in catch block\";\n    echo
-          \"Caught: ${err}\";\n    currentBuild.result = 'FAILURE';\n    throw err;
-          }"
+        jenkinsfile: >-
+          try {
+            timeout(time: 30, unit: 'MINUTES') {
+                node('nodejs') {
+                    stage('Construction (test)') {
+                        openshiftBuild(buildConfig:'bot-test', showBuildLogs: 'true');
+                        openshiftBuild(buildConfig: 'api-test', showBuildLogs: 'true');
+                        openshiftBuild(buildConfig: 'www-test', showBuildLogs: 'true');
+                    };
+                    stage('Construction (prod)') {
+                        openshiftBuild(buildConfig: 'bot-prod', showBuildLogs: 'true');
+                        openshiftBuild(buildConfig: 'api-prod', showBuildLogs: 'true');
+                        openshiftBuild(buildConfig: 'www-prod', showBuildLogs: 'true');
+                    };
+                    stage('Deploiement (test)') {
+                        openshiftDeploy(deploymentConfig: 'bot-test');
+                        openshiftDeploy(deploymentConfig: 'api-test');
+                        openshiftDeploy(deploymentConfig: 'www-test');
+                    };
+                    stage('Approbation'){
+                        input 'Valider le test et lancer le déploiement en production ?';
+                    };
+                    stage('Deploiement (prod)') {
+                        openshiftDeploy(deploymentConfig: 'bot-prod');
+                        openshiftDeploy(deploymentConfig: 'api-prod');
+                        openshiftDeploy(deploymentConfig: 'www-prod');
+                    };
+                }
+            }
+          }
+          catch (err) {
+            echo "in catch block";
+            echo "Caught: ${err}";
+            currentBuild.result = 'FAILURE';
+            throw err;
+          }
     triggers:
     - type: GitHub
       github:

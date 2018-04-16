@@ -1,29 +1,49 @@
 apiVersion: couchbase.database.couchbase.com/v1beta1
 kind: CouchbaseCluster
 metadata:
+  clusterName: couchbase-cluster
   name: couchbase-node
+  labels:
+    app: couchbase
+    type: couchbase
+    provider: startx
+    app: couchbase
 spec:
   baseImage: couchbase/server
   version: 5.5.0-Mar
-  authSecret: couchbase-auth
+  authSecret: couchbase-auth-test
   exposeAdminConsole: true
   cluster:
-    dataServiceMemoryQuota: 1024
+    dataServiceMemoryQuota: 600
     indexServiceMemoryQuota: 256
     searchServiceMemoryQuota: 256
     indexStorageSetting: memory_optimized
-    autoFailoverTimeout: 20
+    autoFailoverTimeout: 10
   buckets:
-    - name: demo
-      type: ephemeral
-      memoryQuota: 400
-      replicas: 1
-      ioPriority: high
+    - name: twitter-test
       conflictResolution: seqno
+      evictionPolicy: nruEviction
       enableFlush: true
-      enableIndexReplica: false
+      ioPriority: low
+      memoryQuota: 100
+      type: ephemeral
+    - name: twitter-prod
+      conflictResolution: seqno
+      evictionPolicy: valueOnly
+      enableFlush: false
+      enableIndexReplica: true
+      ioPriority: high
+      memoryQuota: 300
+      type: couchbase
+      replicas: 1
   servers:
-    - size: 3
+    - size: 2
+      name: data_services
+      services:
+        - data
+      dataPath: /opt/couchbase/var/lib/couchbase/data
+      indexPath: /opt/couchbase/var/lib/couchbase/data
+    - size: 2
       name: all_services
       services:
         - data

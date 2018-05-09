@@ -1,7 +1,7 @@
 {
     "name": "sxapi-demo-openshift-couchbase-master-api",
     "description": "API application for the sxapi openshift demo",
-    "version": "0.1.32",
+    "version": "0.1.33",
     "debug": true,
     "log": {
         "filters": {

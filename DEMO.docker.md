@@ -1,4 +1,4 @@
-# Deploy demo application using docker only
+# Deploy demo application using docker only 
 
 This section of the [sxapi-demo-openshift-couchbase](https://github.com/startxfr/sxapi-demo-openshift-couchbase)
 will show you how to run the sxapi-demo application stack only using docker command.

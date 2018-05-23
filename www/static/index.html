@@ -1,70 +1,117 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>SXAPI Demo couchbase</title>
+        <title>SXAPI Demo Page</title>
         <meta charset="UTF-8">
-        <link rel="icon" type="image/x-icon" href="images/favicon.ico" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+        <link rel="icon" type="image/x-icon" href="images/favicon.ico" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <link rel="stylesheet" href="app.css">
+        <script defer src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <script defer src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script defer src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <script defer src="lib/fontawesome-all.min.js"></script>
+        <script defer src="lib/heatmap.min.js"></script>
+        <script defer src="socket.io.js"></script>
+        <script defer src="app.js"></script>
     </head>
     <body>
+        <header>
+            <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+                <a class="navbar-brand" href="/">
+                    <img alt="STARTX" src="images/startx.png" height="30">
+                    SXAPI Demo page
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </nav>
+        </header>
+
+        <button id="open-heatmap" type="button" class="btn btn-primary HeatmapBtn">Open Heatmap</button>
+
+        <div class="jumbotron mb-0 py-5">
+            <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+            <h1 class="h1">SXAPI Demo page</h1>
+            <p class="lead">
+                Bienvenue sur la demo d'une application multi-tier dans OpenShift.<br>
+                Le frontend statique est servi par le container <b id="appContainer"></b>
+                tandis que le contenu dynamique provient du container <b id="appSvContainer"></b>
+            </p>
+        </div>
+
         <div id="heatmapDiv">
             <div id="heatmapControl">
                 <button type="button" class="btn btn-danger HeatmapBtn">Close Heatmap</button>
             </div>
             <div class="heatmap">
-
             </div>
         </div>
-        <nav class="navbar navbar-default navbar-fixed-top">
-            <div class="container">
-                <div class="navbar-header">
-                    <a class="navbar-brand" href="/index.html">
-                        <img alt="STARTX" src="images/startx.png">
-                    </a>
-                    <h4 class="navbar-text">SXAPI Demo couchbase</h4>
-                </div>
-            </div>
-        </nav>
-        <div class="container">
-            <br>
-            <br>
-            <br>
-            <br>
-            <div class="jumbotron">
-                <h1><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> SXAPI Demo couchbase</h1>
-                <p>
-                    Bienvenue sur la demo d'un application multi-tier utilisant couchbase et openshift. 
-                    le frontend statique est servi par le container <b id="appContainer"></b> 
-                    tandis que le contenu dynamique provient du container <b id="appSvContainer"></b>
-                </p>
-            </div>
 
 
-            <!-- heatmap -->
-            <button type="button" class="btn btn-primary HeatmapBtn">Open Heatmap</button>
-
-            <!-- twitter -->
-            <h2>
-                <span class="glyphicon glyphicon-twitter" aria-hidden="true"></span> &nbsp;
-                Flux twitter
-            </h2>
+        <div class="container-fluid page-content">
             <p class="alert alert-danger" id="listeDepartementErrorMessage">
                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                 Le flux de tweet n'est pas chargée
             </p>
-        </div>
-        <nav class="navbar navbar-default navbar-fixed-bottom">
-            <div class="container">
-                &copy; STARTX - frontend : v<span id="appRelease">0.0.0</span> - api : v<span id="appSvRelease">0.0.0</span>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div id="search-tweets" class="card">
+                        <div class="card-header">
+                            <form class="form-inline">
+                                <div class="form-group justify-content-between" style="flex-grow: 1;">
+                                    <label for="input-search">
+                                        <i class="far fa-search fa-lg"></i>
+                                    </label>
+                                    <input id="input-search" class="form-control ml-3" style="flex-grow: 1;" type="text" name="" value="" placeholder="Titre, auteur, contenu...">
+                                </div>
+                            </form>
+                        </div>
+                        <ul class="list-group list-group-flush list-tweet">
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div id="latest-tweets" class="card">
+                        <div class="card-header">
+                            Tweets
+                        </div>
+                        <ul class="list-group list-group-flush list-tweet">
+                            <li class="list-group-item tweet">
+                                <img class="pp" src="https://pbs.twimg.com/profile_images/869972011291779072/cORueTQM_bigger.jpg" alt="Photo de profile twitter">
+                                <span class="full-name">Arthur Meyer</span>
+                                <span class="username">@meyeradev</span>
+                                <p class="content">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                            </li>
+                            <li class="list-group-item tweet">
+                                <img class="pp" src="https://pbs.twimg.com/profile_images/869972011291779072/cORueTQM_bigger.jpg" alt="Photo de profile twitter">
+                                <span class="full-name">Arthur Meyer</span>
+                                <span class="username">@meyeradev</span>
+                                <p class="content">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                            </li>
+                            <li class="list-group-item tweet">
+                                <img class="pp" src="https://pbs.twimg.com/profile_images/869972011291779072/cORueTQM_bigger.jpg" alt="Photo de profile twitter">
+                                <span class="full-name">Arthur Meyer</span>
+                                <span class="username">@meyeradev</span>
+                                <p class="content">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                            </li>
+                            <li class="list-group-item tweet">
+                                <img class="pp" src="https://pbs.twimg.com/profile_images/869972011291779072/cORueTQM_bigger.jpg" alt="Photo de profile twitter">
+                                <span class="full-name">Arthur Meyer</span>
+                                <span class="username">@meyeradev</span>
+                                <p class="content">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-        </nav>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        <script src="socket.io.js"></script>
-        <script src="heatmap.js"></script>
-        <script src="app.js"></script>
+        </div>
+
+        <div class="heatmap">
+        </div>
+
+        <footer>
+            <p class="mb-0">&copy; STARTX - frontend : v<span id="appRelease">0.0.0</span> - api : v<span id="appSvRelease">0.0.0</span></p>
+        </footer>
     </body>
 </html>

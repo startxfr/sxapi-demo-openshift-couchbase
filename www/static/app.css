@@ -72,7 +72,15 @@ body > header .navbar, body > footer {
     background: #fff !important;
 }
 body > header .navbar {
+    display: inline-block;
     border-bottom: 1px solid rgba(0,0,0,0.25);
+}
+button#open-heatmap {
+    display: inline-block;
+    position: fixed;
+    right: 10px;
+    top: 10px;
+    z-index: 1040;
 }
 body > header img {
     position: relative;
@@ -121,12 +129,6 @@ body > footer {
 .tweet .content {
     margin-bottom: 0px;
     margin-top: 3px;
-}
-
-button#open-heatmap {
-    position: absolute;
-    right: 10px;
-    top: 74px;
 }
 
 /* .heatmap {

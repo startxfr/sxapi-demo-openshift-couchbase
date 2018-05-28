@@ -7,9 +7,16 @@ and open the template in the editor.
     Created on : 14 avr. 2018, 18:13:45
     Author     : cl
 */
-/* html, body {
-    height: 100%;
-} */
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+body {
+    padding-top: 58px;
+    padding-bottom: 90px;
+    background: #E6ECF0;
+}
 
 #heatmapDiv {
     color: white;
@@ -27,43 +34,26 @@ and open the template in the editor.
     -webkit-transition: background-color 0.8s; /* Safari */
     transition: background-color 0.8s;
 }
-
 #heatmapControl {
     position:fixed;
     z-index: 2001;
     top: 5px;
     left: 5px;
 }
-
 #heatmapDiv.on {
     background-color: rgba(0,0,0,0.6);
     display:block;
 }
-
 #heatmapDiv:before,
 #heatmapDiv:after  {
     clear: both;
 }
-
 .heatmap-canvas,
 .heatmap {
     width:100vw;
     height:100vh;
 }
 
-
-
-
-
-html {
-    position: relative;
-    min-height: 100%;
-}
-body {
-    padding-top: 58px;
-    padding-bottom: 90px;
-    background: #E6ECF0;
-}
 .navbar-brand {
     color: rgb(102, 117, 127) !important;
     /* color: #1DA1F2 !important; */
@@ -87,20 +77,13 @@ body > header img {
     bottom: 2px;
     margin-right: 30px;
 }
-body > footer {
-    position: absolute;
-    bottom: 0px;
-    height: 60px;
-    width: 100%;
-    line-height: 60px;
-    text-align: center;
+
+.jumbotron p.lead {
     color: rgb(102, 117, 127) !important;
 }
+
 .card-header {
     background: #E8F5FD;
-    color: rgb(102, 117, 127) !important;
-}
-.jumbotron p.lead {
     color: rgb(102, 117, 127) !important;
 }
 .tweet {
@@ -131,11 +114,12 @@ body > footer {
     margin-top: 3px;
 }
 
-/* .heatmap {
+body > footer {
+    position: absolute;
+    bottom: 0px;
+    height: 60px;
     width: 100%;
-    min-height: 100vh;
-    position: absolute !important;
-    top: 0px;
-    left: 0px;
-    z-index: 10000;
-} */
+    line-height: 60px;
+    text-align: center;
+    color: rgb(102, 117, 127) !important;
+}

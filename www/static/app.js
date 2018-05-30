@@ -5,7 +5,7 @@ app = {
     currentMousePos: {x: -1, y: -1, time: 0},
     config: {
         apiUrl: "http://localhost/",
-        traceFrequency: 100
+        traceFrequency: 250
     },
     init: function () {
         // listening mouse position

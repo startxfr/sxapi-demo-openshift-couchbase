@@ -34,24 +34,46 @@ body {
     -webkit-transition: background-color 0.8s; /* Safari */
     transition: background-color 0.8s;
 }
-#heatmapControl {
+/* #heatmapControl  {
     position:fixed;
     z-index: 2001;
     top: 5px;
     left: 5px;
+} */
+
+
+.heatmap {
+    display: none;
 }
-#heatmapDiv.on {
-    background-color: rgba(0,0,0,0.6);
-    display:block;
+.heatmap.on {
+    background-color: rgba(0,0,0, 0.6);
+    display: block;
 }
-#heatmapDiv:before,
-#heatmapDiv:after  {
+.heatmap:before,
+.heatmap:after  {
     clear: both;
 }
-.heatmap-canvas,
 .heatmap {
-    width:100vw;
-    height:100vh;
+    width: 100%;
+    min-height: 100vh;
+
+    position: absolute !important;
+    top: 0px;
+    left: 0px;
+    z-index: 10000;
+}
+button#open-heatmap, button#close-heatmap {
+    position: fixed;
+    right: 10px;
+    top: 10px;
+}
+button#open-heatmap {
+    display: block;
+    z-index: 1040;
+}
+button#close-heatmap {
+    display: none;
+    z-index: 100000;
 }
 
 .navbar-brand {
@@ -64,13 +86,6 @@ body > header .navbar, body > footer {
 body > header .navbar {
     display: inline-block;
     border-bottom: 1px solid rgba(0,0,0,0.25);
-}
-button#open-heatmap {
-    display: inline-block;
-    position: fixed;
-    right: 10px;
-    top: 10px;
-    z-index: 1040;
 }
 body > header img {
     position: relative;

@@ -69,10 +69,11 @@ app = {
     },
     heatmap: {
         traces: [],
-        mapDom: null,
+        mapNode: null,
         map: null,
-        init: function () {
-            this.mapDom = $("#heatmapDiv");
+        init: function() {
+            $('.heatmap').height($(document).height());
+            this.mapNode = $(".heatmap");
             this.map = h337.create({
                 container: document.querySelector('.heatmap'),
                 radius: 20,
@@ -87,20 +88,27 @@ app = {
                     '.95': 'white'
                 }
             });
-            $(".HeatmapBtn").click(function () {
-                if(app.heatmap.mapDom.hasClass("on")) {
-                    app.heatmap.mapDom.removeClass("on").hide();
+            $(".HeatmapBtn").click(function() {
+                if(app.heatmap.mapNode.hasClass("on")) {
+                    app.heatmap.mapNode.removeClass("on").hide();
+                    $('button#open-heatmap').show();
+                    $('button#close-heatmap').hide();
                 }
                 else {
-                    app.heatmap.mapDom.addClass("on").show();
+                    app.heatmap.mapNode.addClass("on").show();
+                    $('button#open-heatmap').hide();
+                    $('button#close-heatmap').show();
                 }
             });
             $(document).mousemove(function(e) {
-                app.heatmap.addTrace(e.pageX, e.pageY-200);
+                $('.heatmap').height($(document).height());
+                $('.heatmap canvas').height($(document).height());
+                app.heatmap.addTrace(e.pageX, e.pageY);
                 app.heatmap.refreshHeatmap();
+                console.log(app.heatmap.traces);
             });
             app.socket.on('log:trace', function(data) {
-                app.heatmap.addTrace(e.pageX, e.pageY-200);
+                app.heatmap.addTrace(e.pageX, e.pageY);
                 app.heatmap.refreshHeatmap();
             });
         },
@@ -112,7 +120,6 @@ app = {
             else if(typeof app.heatmap.traces[coords] === 'number') {
                 app.heatmap.traces[coords]++;
             }
-            console.log(app.heatmap.traces[coords]);
         },
         refreshHeatmap: function() {
             var max = 3;
@@ -129,13 +136,12 @@ app = {
                 max: max,
                 data: heatmapData
             });
-            console.log(max);
         }
     },
     api: {
         info: null,
         init: function () {
-            this.get("info", null, function (error, response) {
+            this.get("info", null, function(error, response) {
                 if(error) {
                     app.tools.displayError("impossible de contacter l'API car " + (error.message || error.statusText || error));
                 }

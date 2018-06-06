@@ -1,3 +1,7 @@
+$(window).resize(function() {
+    console.log($(document).height());
+});
+
 app = {
     currentMousePos: {x: -1, y: -1, time: 0},
     config: {
@@ -71,8 +75,15 @@ app = {
         traces: [],
         mapNode: null,
         map: null,
+        setHeatmapSize: function() {
+            console.log($(document).height());
+            $('.heatmap').height($(document).height()+132);
+            $('.heatmap').width($(document).width());
+            $('.heatmap-canvas').height($(document).height()+132);
+            $('.heatmap-canvas').width($(document).width());
+        },
         init: function() {
-            $('.heatmap').height($(document).height());
+            app.heatmap.setHeatmapSize();
             this.mapNode = $(".heatmap");
             this.map = h337.create({
                 container: document.querySelector('.heatmap'),
@@ -101,11 +112,8 @@ app = {
                 }
             });
             $(document).mousemove(function(e) {
-                $('.heatmap').height($(document).height());
-                $('.heatmap canvas').height($(document).height());
                 app.heatmap.addTrace(e.pageX, e.pageY);
                 app.heatmap.refreshHeatmap();
-                console.log(app.heatmap.traces);
             });
             app.socket.on('log:trace', function(data) {
                 app.heatmap.addTrace(e.pageX, e.pageY);
@@ -122,6 +130,7 @@ app = {
             }
         },
         refreshHeatmap: function() {
+            // app.heatmap.setHeatmapSize();
             var max = 3;
             var heatmapData = [];
             var keys = Object.keys(app.heatmap.traces);
@@ -131,7 +140,7 @@ app = {
                 if(value > max) max = value;
                 heatmapData.push({x: coords[0], y: coords[1], value: value});
             }
-            this.map.setData({
+            return this.map.setData({
                 min: 1,
                 max: max,
                 data: heatmapData

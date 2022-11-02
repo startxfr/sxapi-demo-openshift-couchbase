@@ -1,0 +1,80 @@
+api:
+  container_name: "sxapi-demo-openshift-couchbase-api"
+  build: api/
+  environment:
+  - SX_VERBOSE=true
+  - SX_DEBUG=true
+  - COUCHBASE_SERVICE_HOST=db
+  - COUCHBASE_BUCKET=demo
+  - COUCHBASE_USER=Administrator
+  - COUCHBASE_PASSWORD=Administrator123
+  - BOT_SERVICE_HOST=bot
+  ports:
+    - "8080:8080"
+  links:
+    - "bot:bot"
+    - "db:db"
+  volumes:
+  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/api/app.js:/app/app.js:Z"
+  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/api/package.json:/app/package.json:Z"
+  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/api/sxapi.json:/app/sxapi.json:Z"
+  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/api/mylib.js:/app/mylib.js:Z"
+  command: ["/bin/sx-nodejs" , "run"]
+
+www:
+  container_name: "sxapi-demo-openshift-couchbase-www"
+  build: www/
+  environment:
+  - SX_VERBOSE=true
+  - SX_DEBUG=true
+  - DEMO_API=localhost:8080
+  ports:
+    - "8081:8080"
+  volumes:
+  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/www/app.js:/app/app.js:Z"
+  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/www/package.json:/app/package.json:Z"
+  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/www/sxapi.json:/app/sxapi.json:Z"
+  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/www/mylib.js:/app/mylib.js:Z"
+  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/www/static:/app/static:Z"
+  command: ["/bin/sx-nodejs" , "run"]
+
+db:
+  container_name: "sxapi-demo-openshift-couchbase-db"
+  image: couchbase/server:5.5.0-Mar
+  ports:
+    - "8091:8091"
+    - "8092:8092"
+    - "8093:8093"
+    - "8094:8094"
+    - "11207:11207"
+    - "11210:11210"
+    - "11211:11211"
+    - "18091-18094"
+
+bot:
+  build: bot/
+  container_name: "sxapi-demo-openshift-couchbase-bot"
+  environment:
+  - SX_VERBOSE=true
+  - SX_DEBUG=true
+  - COUCHBASE_SERVICE_HOST=db
+  - COUCHBASE_BUCKET=demo
+  - COUCHBASE_USER=Administrator
+  - COUCHBASE_PASSWORD=Administrator123
+#  - twitter_consumer_key=xxxxxxxxxxxxx
+#  - twitter_consumer_secret=xxxxxxxxxxxxx
+#  - twitter_access_token_key=xxxxxxxxxxxxx
+#  - twitter_access_token_secret=xxxxxxxxxxxxx
+  - twitter_consumer_key=kZlWWO7ZnsebAOFt3ANOUgkJq
+  - twitter_consumer_secret=DnBHpqWNhnvkoLTBMgiGv3VnZLdAncc610HnpBT7rbjjzd8zD0
+  - twitter_access_token_key=494936566-OFKwVK387ixoOIgh8SbH4gTGkO1WngmpvisTMWkh
+  - twitter_access_token_secret=xsie59y6bMyCDlwGq1YNntdAkZCZNAXpCMDry54dGmT22
+  ports:
+    - "8082:8080"
+  links:
+    - "db:db"
+  volumes:
+  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/bot/sxapi.json:/app/sxapi.json:z"
+  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/bot/package.json:/app/package.json:z"
+  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/bot/mylib.js:/app/mylib.js:z"
+  command: ["/bin/sx-nodejs" , "run"]

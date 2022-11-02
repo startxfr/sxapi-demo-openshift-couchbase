@@ -1,0 +1,221 @@
+kind: Template
+apiVersion: v1
+metadata:
+  name: sxv4-api-template
+  annotations:
+    openshift.io/display-name: ${SCOPE} - ${SERVICE} template
+    openshift.io/documentation-url: https://github.com/startxfr/sxv4/blob/dev/README.md
+    openshift.io/support-url: https://github.com/startxfr/sxv4/issues/new
+    openshift.io/generated-by: STARTX
+    openshift.io/provider-display-name: STARTX
+    description: Template for building the API backend for the STARTX v4 Information System
+      using sxapi in an openshift PaaS
+    iconClass: icon-nodejs
+    tags: startx,nodejs,sxapi,sxv4,api,mariadb,apache,nodejs
+  labels:
+    provider: startx
+    component: api
+    template: sxv4-api-template
+message: |-
+  Your service ${SERVICE} will be soon deployed in project ${ENV}-${SCOPE}.
+  Monitor the deployement for application availability and
+  Follow created route to browse running application
+
+  Scope          : ${SCOPE}
+  Environment    : ${ENV}
+  Service        : ${SERVICE}
+  Micro-services : app,db
+  
+  Source      : ${ENV}~git@github.com:startxfr/sxv4.git
+  Database    : ${SERVICE}-db
+  
+  Username    : ${MYSQL_USER}
+  Password    : ${MYSQL_PASSWORD}
+  Database    : ${MYSQL_DATABASE}
+  
+  Application : http://${SERVICE}-app:8080
+  Database    : mysql://${SERVICE}-db:3306
+  
+labels:
+  provider: startx
+  component: api
+  template: sxv4-api-template
+objects:
+- kind: Deployment
+  apiVersion: apps/v1
+  metadata:
+    name: "${SERVICE}-couchbase-operator"
+    namespace: "${ENV}-${SCOPE}"
+    annotations:
+      openshift.io/display-name: ${SCOPE} ${SERVICE} - Couchbase operator
+      openshift.io/generated-by: STARTX
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: "${SERVICE}-couchbase-operator"
+    template:
+      metadata:
+        labels:
+          app: "${SERVICE}-couchbase-operator"
+      spec:
+        containers:
+        - name: "${SERVICE}-couchbase-operator"
+          image: registry.connect.redhat.com/couchbase/operator:1.1.0-1
+          command:
+          - couchbase-operator
+          args:
+          - -enable-upgrades=false # Disable experimental upgrade feature
+          env:
+          - name: MY_POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: MY_POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          ports:
+            - name: readiness-port
+              containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: readiness-port
+            initialDelaySeconds: 3
+            periodSeconds: 3
+            failureThreshold: 19
+        serviceAccountName: "${SERVICE}-couchbase-operator"
+- kind: Secret
+  apiVersion: v1
+  metadata:
+    name: "${SERVICE}-cb-auth"
+    namespace: "${ENV}-${SCOPE}"
+    annotations:
+      openshift.io/display-name: ${SCOPE} - ${SERVICE} Couchbase credentials
+      openshift.io/generated-by: STARTX
+      template.openshift.io/expose-username: "{.data['COUCHBASE_USER']}"
+      template.openshift.io/expose-password: "{.data['COUCHBASE_PASSWORD']}"
+    labels:
+      scope: "${SCOPE}"
+      environement: "${ENV}"
+      app: "${SERVICE}"
+  stringData:
+    admin: "${COUCHBASE_USER}:${COUCHBASE_PASSWORD}"
+    username: "${COUCHBASE_USER}"
+    password: "${COUCHBASE_PASSWORD}"
+- kind: CouchbaseCluster
+  apiVersion: couchbase.com/v1
+  metadata:
+    name: ${SERVICE}-cb-cluster
+    namespace: "${ENV}-${SCOPE}"
+    annotations:
+      openshift.io/display-name: ${SCOPE} ${SERVICE} - CouchbaseCluster example
+      openshift.io/generated-by: STARTX
+  spec:
+    baseImage: registry.connect.redhat.com/couchbase/server
+    version: 5.5.2-2
+    authSecret: "${SERVICE}-cb-auth"
+    exposeAdminConsole: false
+    adminConsoleServices:
+      - data
+      - index
+      - query
+      - search
+      - eventing
+      - analytics
+    cluster:
+      dataServiceMemoryQuota: 256
+      indexServiceMemoryQuota: 256
+      searchServiceMemoryQuota: 256
+      eventingServiceMemoryQuota: 256
+      analyticsServiceMemoryQuota: 1024
+      indexStorageSetting: memory_optimized
+      autoFailoverTimeout: 120
+      autoFailoverMaxCount: 3
+      autoFailoverOnDataDiskIssues: true
+      autoFailoverOnDataDiskIssuesTimePeriod: 120
+      autoFailoverServerGroup: false
+    buckets:
+      - name: default
+        type: couchbase
+        memoryQuota: 128
+        replicas: 1
+        ioPriority: high
+        evictionPolicy: fullEviction
+        conflictResolution: seqno
+        enableFlush: true
+        enableIndexReplica: false
+    servers:
+      - size: 3
+        name: all_services
+        services:
+          - data
+          - index
+          - query
+          - search
+          - eventing
+          - analytics
+- kind: Route
+  apiVersion: v1
+  metadata:
+    name: "${SERVICE}-couchbase-admin"
+    namespace: "${ENV}-${SCOPE}"
+    annotations:
+      openshift.io/display-name: ${SCOPE} ${SERVICE} - Couchbase administration publique route
+      openshift.io/generated-by: STARTX
+    labels:
+      scope: "${SCOPE}"
+      environement: "${ENV}"
+      app: "${SERVICE}"
+      micro-service: couchbase
+  spec:
+    to:
+      kind: Service
+      name: "${SERVICE}-cb-cluster"
+      weight: 100
+    port:
+      targetPort: couchbases
+    tls:
+      insecureEdgeTerminationPolicy: Redirect
+      termination: passthrough
+    wildcardPolicy: None
+parameters:
+- name: SCOPE
+  displayName: Project scope
+  description: "Project scope (ex: sxv4)"
+  value: couchbase
+#  value: sxv4
+  required: true
+- name: ENV
+  displayName: Project environement
+  description: "Project environment (ex: dev, test or prod)"
+  value: dev
+  required: true
+- name: SERVICE
+  displayName: Project service
+  description: "Project service"
+  value: api
+  required: true
+- name: COUCHBASE_USER
+  displayName: Couchbase application user
+  description: Database user to create
+  from: "demo_[A-Z0-9]{8}"
+  generate: expression
+  required: true
+- name: COUCHBASE_PASSWORD
+  displayName: Couchbase password
+  description: Database password of the application user
+  from: "[A-Z0-9]{16}"
+  generate: expression
+  required: true
+- name: COUCHBASE_BUCKET
+  displayName: Couchbase bucket
+  description: name of the bucket to create for example
+  value: sxapi
+  required: true
+- name: COUCHBASE_BUCKET_TYPE
+  displayName: Couchbase bucket type
+  description: Bucket type for the couchabse bucket (ephemeral, couchbase or memcache)
+  value: ephemeral
+  required: true

@@ -10,7 +10,7 @@ metadata:
     iconClass: icon-nodejs
     tags: startx,demo,sxapi,couchbase
     openshift.io/provider-display-name: STARTX
-    openshift.io/documentation-url: https://github.com/startxfr/sxapi-demo-openshift-couchbase/blob/master/README.md
+    openshift.io/documentation-url: https://github.com/startxfr/sxapi-demo-openshift-couchbase/blob/test/README.md
     openshift.io/support-url: https://github.com/startxfr/sxapi-demo-openshift-couchbase/issues/new
 message: Your demo stack started to build in your project. You can use openshift console
   to observe deployment.
@@ -766,8 +766,8 @@ objects:
       kind: Service
       name: "${APP_NAME}-${SOURCE_BRANCH}-www"
       weight: 100
-- kind: CouchbaseCluster
-  apiVersion: couchbase.database.couchbase.com/v1beta1
+- apiVersion: couchbase.database.couchbase.com/v1beta1
+  kind: CouchbaseCluster
   metadata:
     clusterName: couchbase-cluster
     name: couchbase-node
@@ -775,32 +775,22 @@ objects:
       app: couchbase
       type: couchbase
       provider: startx
-      template: sxapi-demo-openshift-couchbase-pipeline-template
+      template: sxapi-demo-openshift-couchbase-template
   spec:
     authSecret: couchbase-auth
     baseImage: couchbase/server
-    version: "${CB_BASE_IMAGE_TAG}"
     buckets:
-    - name: "${COUCHBASE_BUCKET}-test"
-      conflictResolution: seqno
-      evictionPolicy: nruEviction
+    - conflictResolution: seqno
       enableFlush: true
-      ioPriority: low
-      memoryQuota: 100
-      replicas: 1
-      type: ephemeral
-    - name: "${COUCHBASE_BUCKET}-prod"
-      conflictResolution: seqno
-      evictionPolicy: valueOnly
-      enableFlush: false
-      enableIndexReplica: true
+      enableIndexReplica: false
       ioPriority: high
-      memoryQuota: 300
+      memoryQuota: 400
+      name: "${COUCHBASE_BUCKET}"
       replicas: 1
-      type: couchbase
+      type: "${COUCHBASE_BUCKET_TYPE}"
     cluster:
-      autoFailoverTimeout: 10
-      dataServiceMemoryQuota: 600
+      autoFailoverTimeout: 20
+      dataServiceMemoryQuota: 800
       indexServiceMemoryQuota: 256
       indexStorageSetting: memory_optimized
       searchServiceMemoryQuota: 256
@@ -808,19 +798,13 @@ objects:
     servers:
     - dataPath: "/opt/couchbase/var/lib/couchbase/data"
       indexPath: "/opt/couchbase/var/lib/couchbase/data"
-      name: data_services
-      services:
-      - data
-      size: 2
-    - dataPath: "/opt/couchbase/var/lib/couchbase/data"
-      indexPath: "/opt/couchbase/var/lib/couchbase/data"
       name: all_services
       services:
       - data
       - index
       - query
-      - search
-      size: 2
+      size: 3
+    version: "${CB_BASE_IMAGE_TAG}"
 parameters:
 - name: APP_NAME
   displayName: Short name of the application
@@ -830,9 +814,9 @@ parameters:
   required: true
 - name: SOURCE_BRANCH
   displayName: Application source-code branch
-  description: Name of the branch to use for building this application (dev, master,
+  description: Name of the branch to use for building this application (dev, test,
     test, prod)
-  value: dev
+  value: test
   required: true
 - name: BASE_IMAGE_TAG
   displayName: Base image tag
@@ -844,7 +828,7 @@ parameters:
   displayName: API fqdn
   description: Domain name of the API endpoint to use in this frontend (api-xxxxx.openshift.demo.startx.fr
     were xxxxx is your project namespace)
-  value: api-dev-demo.openshift.demo.startx.fr
+  value: api-test-demo.openshift.demo.startx.fr
   required: true
 - name: WEBHOOK_TOKEN
   displayName: Webhook token

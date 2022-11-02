@@ -16,10 +16,10 @@ api:
     - "bot:bot"
     - "db:db"
   volumes:
-  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/api/app.js:/app/app.js:Z"
-  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/api/package.json:/app/package.json:Z"
-  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/api/sxapi.json:/app/sxapi.json:Z"
-  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/api/mylib.js:/app/mylib.js:Z"
+  - "./api/app.js:/app/app.js:Z"
+  - "./api/package.json:/app/package.json:Z"
+  - "./api/sxapi.json:/app/sxapi.json:Z"
+  - "./api/mylib.js:/app/mylib.js:Z"
   command: ["/bin/sx-nodejs" , "run"]
 
 www:
@@ -32,11 +32,11 @@ www:
   ports:
     - "8081:8080"
   volumes:
-  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/www/app.js:/app/app.js:Z"
-  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/www/package.json:/app/package.json:Z"
-  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/www/sxapi.json:/app/sxapi.json:Z"
-  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/www/mylib.js:/app/mylib.js:Z"
-  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/www/static:/app/static:Z"
+  - "./www/app.js:/app/app.js:Z"
+  - "./www/package.json:/app/package.json:Z"
+  - "./www/sxapi.json:/app/sxapi.json:Z"
+  - "./www/mylib.js:/app/mylib.js:Z"
+  - "./www/static:/app/static:Z"
   command: ["/bin/sx-nodejs" , "run"]
 
 db:
@@ -72,7 +72,7 @@ bot:
   links:
     - "db:db"
   volumes:
-  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/bot/sxapi.json:/app/sxapi.json:z"
-  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/bot/package.json:/app/package.json:z"
-  - "/secure/dev/startx/sxapi-demo-openshift-couchbase/bot/mylib.js:/app/mylib.js:z"
+  - "./bot/sxapi.json:/app/sxapi.json:z"
+  - "./bot/package.json:/app/package.json:z"
+  - "./bot/mylib.js:/app/mylib.js:z"
   command: ["/bin/sx-nodejs" , "run"]

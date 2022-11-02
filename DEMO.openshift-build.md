@@ -33,7 +33,7 @@ For full explanation on security constrains, read [couchbase - Openshift RBAC do
 
 ### Full template
 
-This demo provide an [all-in-one build template](https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/dev/openshift-build-all-ephemeral.yml)
+This demo provide an [all-in-one build template](https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/test/openshift-build-all-ephemeral.yml)
 to build and deploy the full application stack using build config and deployement config for every services
 part of this example.
 
@@ -58,10 +58,10 @@ Don't forget to follow previous requirement before running this command otherwis
 and api as well as bot components will follow 
 ```bash
 oc project demo
-oc process -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/dev/openshift-build-all-ephemeral.yml \
+oc process -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/test/openshift-build-all-ephemeral.yml \
            -p APP_NAME=twitter \
-           -p SOURCE_BRANCH=dev \
-           -p DEMO_API=twitter-dev-api-demo.openshift.demo.startx.fr \
+           -p SOURCE_BRANCH=test \
+           -p DEMO_API=demo.openshift.demo.startx.fr \
            -p COUCHBASE_USER="Administrator" \
            -p COUCHBASE_PASSWORD="Administrator123" \
            -p COUCHBASE_BUCKET="demo" | \
@@ -75,12 +75,12 @@ oc get all
 If you run this demo from the web interface, you will face an error explaining that the CRD resource could not be created
 You can run the template anyway. 
 Your installation will be the partial and you will need to add the 
-[couchbase cluster CRD](https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/dev/openshift-crd-cluster.yml) 
+[couchbase cluster CRD](https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/test/openshift-crd-cluster.yml) 
 using the CLI.
 
 ```bash
 oc project demo
-oc create -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/dev/openshift-crd-cluster.yml
+oc create -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-couchbase/test/openshift-crd-cluster.yml
 ```
 
 
@@ -163,7 +163,7 @@ oc create -f https://raw.githubusercontent.com/startxfr/sxapi-demo-openshift-cou
 
 ### Access your application in your browser
 
-Access your application using your browser on `http://twitter-dev-www-demo.openshift.demo.startx.fr`
+Access your application using your browser on `http://twitter-test-www-demo.openshift.demo.startx.fr`
 
 
 ## Troubleshooting, contribute & credits

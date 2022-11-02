@@ -3,12 +3,19 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 */
-/* 
+/*
     Created on : 14 avr. 2018, 18:13:45
     Author     : cl
 */
-html, body {
-    height: 100%;
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+body {
+    padding-top: 58px;
+    padding-bottom: 90px;
+    background: #E6ECF0;
 }
 
 #heatmapDiv {
@@ -27,27 +34,107 @@ html, body {
     -webkit-transition: background-color 0.8s; /* Safari */
     transition: background-color 0.8s;
 }
-
-#heatmapControl {
+/* #heatmapControl  {
     position:fixed;
     z-index: 2001;
     top: 5px;
     left: 5px;
-}
+} */
 
-#heatmapDiv.on {
-    background-color: rgba(0,0,0,0.6);
-    display:block;
-}
 
-#heatmapDiv:before,
-#heatmapDiv:after  {
+.heatmap {
+    display: none;
+}
+.heatmap.on {
+    background-color: rgba(0,0,0, 0.6);
+    display: block;
+}
+.heatmap:before,
+.heatmap:after  {
     clear: both;
 }
+.heatmap {
+    width: 100%;
+    min-height: 100vh;
 
-.heatmap-canvas,
-.heatmap { 
-    width:100vw;
-    height:100vh;
+    position: absolute !important;
+    top: 0px;
+    left: 0px;
+    z-index: 10000;
+}
+button#open-heatmap, button#close-heatmap {
+    position: fixed;
+    right: 10px;
+    top: 10px;
+}
+button#open-heatmap {
+    display: block;
+    z-index: 1040;
+}
+button#close-heatmap {
+    display: none;
+    z-index: 100000;
 }
 
+.navbar-brand {
+    color: rgb(102, 117, 127) !important;
+    /* color: #1DA1F2 !important; */
+}
+body > header .navbar, body > footer {
+    background: #fff !important;
+}
+body > header .navbar {
+    display: inline-block;
+    border-bottom: 1px solid rgba(0,0,0,0.25);
+}
+body > header img {
+    position: relative;
+    bottom: 2px;
+    margin-right: 30px;
+}
+
+.jumbotron p.lead {
+    color: rgb(102, 117, 127) !important;
+}
+
+.card-header {
+    background: #E8F5FD;
+    color: rgb(102, 117, 127) !important;
+}
+.tweet {
+    padding-left: 72px;
+    padding-top: 7px;
+}
+.tweet:hover {
+    background: #f5f8fa;
+}
+.tweet img.pp {
+    border-radius: 50px;
+    width: 48px;
+    position: absolute;
+    left: 12px;
+    top: 12px;
+}
+.tweet .full-name, .tweet .username, .tweet .content {
+    font-size: 14px;
+}
+.tweet .full-name {
+    font-weight: 700;
+}
+.tweet .username {
+    color: #657786;
+}
+.tweet .content {
+    margin-bottom: 0px;
+    margin-top: 3px;
+}
+
+body > footer {
+    position: absolute;
+    bottom: 0px;
+    height: 60px;
+    width: 100%;
+    line-height: 60px;
+    text-align: center;
+    color: rgb(102, 117, 127) !important;
+}
